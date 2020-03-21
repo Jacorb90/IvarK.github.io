@@ -1,5 +1,5 @@
 function resetNGP5V() {
-	if (!player.aarexModifications.ngp5V) return
+	if (!player.aarexModifications.ngp5V) player.aarexModifications.ngp5V = true
 	player.ghostify.darkness = {
 		amount: new Decimal(0),
 		generators: new Decimal(0),
