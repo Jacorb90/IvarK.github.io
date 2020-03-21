@@ -3,7 +3,7 @@ var notifyId = 0
 function onLoad(noOffline) {
   tmp.ngp3=player.masterystudies!==undefined
   tmp.qu=player.quantum
-  if (player.aarexModifications.ngp5V !== undefined) buildDarknessTable()
+  if (player.aarexModifications.ngp5V !== undefined && (player.ghostify ? player.ghostify.darkness : false)) buildDarknessTable()
   happyHalloween=false
   if (player.totalmoney === undefined) player.totalmoney = player.money;
   if (player.tickspeed === undefined) player.tickspeed = new Decimal(1000)

@@ -1087,6 +1087,7 @@ function updateElectrons(auto=true) {
 
 function toggleElectronsAuto() {
 	player.aarexModifications.autoElectrons = !player.aarexModifications.autoElectrons
+	updateElectrons()
 }
 
 function updateElectronFullEffect() {

@@ -307,7 +307,8 @@ newsArray = [//always true
 ["If you read 'Congratulations for beating NG+3' message, here is a spoiler: In the next update, there will be W & Z Bosons!", "player.newsArray.includes('am68') && player.totalmoney.gte(Decimal.pow(10, 5e16))", "gn17"],
 ["WARNING: Do not interact evil ghosts. They can scare you out.", true, "gn18"],
 ["Do you know that ghosts are proved to be undead?", true, "gn19"],
-["I got Ghost Particles. I got Neutrinos. That makes me a ghost.", true, "gn20"]
+["I got Ghost Particles. I got Neutrinos. That makes me a ghost.", true, "gn20"],
+["You cannot complete NG+5 when NG+++ is already impossible, or at least I thought.", "player.aarexModifications.ngp5V !== undefined", "gn21"]
 ];}
 
 document.addEventListener("visibilitychange", function() {if (!document.hidden) {scrollNextMessage();}}, false);

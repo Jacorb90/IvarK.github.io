@@ -1,4 +1,5 @@
 function resetNGP5V() {
+	if (!player.aarexModifications.ngp5V) return
 	player.ghostify.darkness = {
 		amount: new Decimal(0),
 		generators: new Decimal(0),
@@ -135,7 +136,7 @@ function updateNGP5V(active,diff) {
 	updateScaleData()
 	if (active) updateBreakEternity()
 	document.getElementById("lEbG").textContent = currentAnnihilationTier()>0?"go quantum and ":"become a ghost and "
-	if (tmp.ngp3) if (hasNU(22) || player.ghostify.ghostlyPhotons.enpowerments >= 3 || currentAnnihilationTier()>0) updateElectrons()
+	if (tmp.ngp3) if (hasNU(22) || player.ghostify.ghostlyPhotons.enpowerments >= 3 || currentAnnihilationTier()>0 || player.aarexModifications.autoElectrons) updateElectrons()
 	document.getElementById('breakUpgR4').style.display = (active ? player.ghostify.endlessMirrors.amount > 0 : false) ? "" : "none"
 	document.getElementById('enabledilation').style.display = (active ? player.dilation.br['break'] : false) ? "none" : ""
 	document.getElementById('bru22min').textContent = shorten(Decimal.min(Decimal.pow('1e33',player.galaxies/1000),'1e1200'))
@@ -417,6 +418,7 @@ function updateDarknessUpgs() {
 
 function getDarknessUpgDesc(row,col) {
 	let descs = []
+	let em = player.ghostify.endlessMirrors ? player.ghostify.endlessMirrors.amount : 0
 	descs[0] = []
 	descs[0].push('Nanofield does not need to be active to gain Preon Charge, and you gain more Preon Charge based on your GHP.')
 	descs[0].push('You gain more Ghostly Photons and Dark Matter based on your Darkness.')
@@ -454,7 +456,7 @@ function getDarknessUpgDesc(row,col) {
 	descs[4].push('More of your Darkness is used for Free Electrons based on your Time Theorems.')
 	descs[5] = []
 	descs[5].push('Emperor Dimensions are boosted by your permanent Eighth Emperor Dimensions.')
-	descs[5].push('TP gain '+(player.ghostify.endlessMirrors.amount>0 ? " and Refracted Light gain are " : "is ")+'boosted by your Infinity Power.')
+	descs[5].push('TP gain '+(em>0 ? " and Refracted Light gain are " : "is ")+'boosted by your Infinity Power.')
 	descs[5].push('GHP gain is boosted by your Eternal Matter.')
 	descs[5].push('Dilation Rebuyable cost scaling starts later based on your Quantum Worth.')
 	descs[5].push('You gain more Darkness Generators based on your GHP.')
