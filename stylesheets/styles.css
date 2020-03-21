@@ -2535,6 +2535,20 @@ br {
 	cursor: pointer
 }
 
+.gluonupgrade.darknessgen {
+	background: repeating-linear-gradient(#626262, transparent 50%, #626262 100%), repeating-linear-gradient(90deg, transparent, #343434 50%, transparent 100%), black;
+	background-size: 200% 200%;
+	border: 1px solid transparent;
+	color: black;
+	text-shadow: 0px 0px 3px black, 0px 0px 6px white;
+	animation: wzb 5s linear infinite
+}
+
+.darknessgen:hover {
+	color: white;
+	cursor: pointer
+}
+
 .ghostlychallengediv {
 	display:table;
 	text-align:center;
@@ -2645,12 +2659,12 @@ br {
 }
 
 .gluonupgrade.cascade {
-	background: repeating-linear-gradient(#610c0c, transparent 50%, #610c0c 100%), repeating-linear-gradient(90deg, transparent, #c43416 50%, transparent 100%), black;
+	background: repeating-linear-gradient(#0C6161, transparent 50%, #0C6161 100%), repeating-linear-gradient(90deg, transparent, #1634C4 50%, transparent 100%), black;
 	background-size: 200% 200%;
 	border: 1px solid transparent;
 	color: black;
 	text-shadow: 0px 0px 3px black, 0px 0px 6px white;
-	animation: wzb 5s linear infinite
+	animation: cascade 12s linear infinite
 }
 
 .cascade:hover {
@@ -2661,6 +2675,48 @@ br {
 @keyframes wzb { 
 	0%{
 		background-position: 0% 0%
+	}
+	100%{
+		background-position: 200% 200%
+	}
+}
+
+@keyframes cascade { 
+	0%{
+		background-position: 0% 0%
+	}
+	10%{
+		background-position: 0% 50%
+	}
+	20%{
+		background-position: 0% 75%
+	}
+	25%{
+		background-position: 0% 100%
+	}
+	35%{
+		background-position: 50% 100%
+	}
+	45%{
+		background-position: 75% 100%
+	}
+	50%{
+		background-position: 100% 100%
+	}
+	60%{
+		background-position: 100% 150%
+	}
+	70%{
+		background-position: 100% 175%
+	}
+	75%{
+		background-position: 100% 200%
+	}
+	85%{
+		background-position: 150% 100%
+	}
+	95%{
+		background-position: 175% 100%
 	}
 	100%{
 		background-position: 200% 200%

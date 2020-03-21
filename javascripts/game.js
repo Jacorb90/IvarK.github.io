@@ -2736,6 +2736,12 @@ function toggleRepresentation() {
 	document.getElementById("hideRepresentation").textContent=(player.aarexModifications.hideRepresentation?"Show":"Hide")+" antimatter representation"
 }
 
+function toggleFooter() {
+	// 0 == visible, 1 == not visible
+	player.aarexModifications.hideFooter=!player.aarexModifications.hideFooter
+	document.getElementById("hideFooter").textContent=(player.aarexModifications.hideFooter?"Show":"Hide")+" footer"
+}
+
 // Replicanti stuff
 function unlockReplicantis() {
     if (player.infinityPoints.gte(player.galacticSacrifice!=undefined&&player.tickspeedBoosts==undefined?1e80:1e140)) {
@@ -8221,7 +8227,13 @@ function gameLoop(diff) {
     } else document.getElementById("hideProductionTab").style.display = "none"
     if (player.infDimensionsUnlocked[0] || player.eternities !== 0 || quantumed || showProdTab || player.aarexModifications.ngmX > 3) document.getElementById("dimTabButtons").style.display = "inline-block"
     document.getElementById("prodtabbtn").style.display=showProdTab?"inline-block":"none"
-
+	
+	let footers = document.getElementsByClassName("footer")
+	for (i=0;i<footers.length;i++) {
+		let footer = footers[i]
+		footer.style.display=player.aarexModifications.hideFooter?"none":"block"
+	}
+	
     if (player.currentEternityChall !== "eterc7") player.infinityPower = player.infinityPower.plus(DimensionProduction(1).times(diff/10))
     else if (!inNC(4) && player.currentChallenge !== "postc1") player.seventhAmount = player.seventhAmount.plus(DimensionProduction(1).times(diff/10))
 

@@ -668,7 +668,7 @@
 				</table>
 				<div><button class="storebtn" onclick="buyMaxEPMult()" style="height: 25px; width: 190px; font-size:10px; margin-top: -3px;">Max EP mult</button></div>
 				<div><button id="epmultauto" class="storebtn" onclick="toggleAutoEter('epmult')" style="height: 25px; width: 190px; font-size:10px; margin-top: 3px;"></button></div>
-				<div id="footercontainer">
+				<div id="footercontainer" class="footer">
 					<table id="footer">
 						<tr>
 							<td>
@@ -1144,7 +1144,7 @@
 					  <br/>
 					  <canvas id="blackHoleCanvas" width="400" height="400" style="user-select: none;"></canvas>
 				</div>
-				<div id="footercontainer">
+				<div id="footercontainer" class="footer">
 					<table id="footer">
 						<tr>
 							<td>
@@ -1203,7 +1203,7 @@
 						</td>
 					</tr>
 				</table>
-				<div id="footercontainer">
+				<div id="footercontainer" class="footer">
 					<table id="footer">
 						<tr>
 							<td>
@@ -1815,7 +1815,7 @@
 				<canvas id="normalDimChart" width="1500" height="500" style="user-select: none;"></canvas>
 				<b>Exponents of antimatter per second</b>
 			</div>
-			<div id="footercontainer">
+			<div id="footercontainer" class="footer">
 
 				<table id="footer">
 					<tr>
@@ -1895,7 +1895,7 @@
 			</div>
 			<div style="display:none;position:fixed;left:0;top:0"><textarea id="exportOutput" style="color:black; width: 200px; height: 55px;"></textarea></div>
 			<p id='hotkeysDesc'></p>
-			<div id="footercontainer">
+			<div id="footercontainer" class="footer">
 				<table id="footer">
 					<tr>
 						<td>
@@ -2196,7 +2196,7 @@
 				</ul><br><br>
 				</span>
 			</div>
-			<div id="footercontainer">
+			<div id="footercontainer" class="footer">
 				<table id="footer">
 					<tr>
 						<td>
@@ -4684,7 +4684,7 @@
 					<br><br><br><br>
 				</div>
 			</div>
-			<div id="footercontainer">
+			<div id="footercontainer" class="footer">
 					<table id="footer">
 						<tr>
 							<td>
@@ -4710,7 +4710,7 @@
 				You are getting <span id="darkMatterPerSecond" style="font-size:35px; color: black">0</span> dark matter per second.<br>
 				Next 2x dark matter production unlocks at <span id="nextUpgrade"></span> sacrificed IP.
 			</div>
-			<div id="footercontainer">
+			<div id="footercontainer" class="footer">
 					<table id="footer">
 						<tr>
 							<td>
@@ -4786,7 +4786,7 @@
 					</tr>
 				</table>
 			</div>
-			<div id="footercontainer">
+			<div id="footercontainer" class="footer">
 					<table id="footer">
 						<tr>
 							<td>
@@ -5138,7 +5138,7 @@
 						</tr>
 					</table>
 				</div>
-			<div id="footercontainer">
+			<div id="footercontainer" class="footer">
 				<table id="footer">
 					<tr>
 						<td>
@@ -5450,7 +5450,7 @@
 					<br><br>
 					<span style="font-size:15px;">You have <span id="darknessGens" class="darkness"></span> Darkness Generators</span>
 					<br>
-					<button id="buyDarknessGen" class="gluonupgrade wzb darkness" style="font-size:15px;" onclick="buyDarknessGen()"></button>
+					<button id="buyDarknessGen" class="gluonupgrade darknessgen darkness" style="font-size:15px;" onclick="buyDarknessGen()"></button>
 					<br><br>
 					<table style="text-align:center;display:inline-block;" id="darknessUpgs"></table>
 				</div>
@@ -5635,7 +5635,7 @@
 					</div>
 				</div>
 			</div>
-			<div id="footercontainer">
+			<div id="footercontainer" class="footer">
 				<table id="footer">
 					<tr>
 						<td>
@@ -5722,6 +5722,7 @@
 			<button id="hideCompletedAchs" onclick="toggleCompletedAchs()" class="storebtn" style="color:black; width: 200px; height: 55px; font-size: 15px"></button>
 			<button id="hideSecretAchs" onclick="toggleSecretAchs()" class="storebtn" style="color:black; width: 200px; height: 55px; font-size: 15px"></button>
 			<button id="hideProductionTab" onclick="toggleProductionTab()" class="storebtn" style="color:black; width: 200px; height: 55px; font-size: 15px"></button>
+			<button id="hideFooter" onclick="toggleFooter()" class="storebtn" style="color:black; width: 200px; height: 55px; font-size: 15px"></button>
 		</div>
 	</div>
 	<div class="popup optionmenu" id="confirmationoptions">
