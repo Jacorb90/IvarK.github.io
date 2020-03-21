@@ -207,12 +207,15 @@ function buyMaxTimeDimension(tier, bulk) {
 		if (inNC(2)||player.currentChallenge=="postc1"||player.pSac!=undefined) player.chall2Pow=0
 		reduceMatter(toBuy)
 	} else {
-		var toBuy=0
 		var increment=1
-		while (player.eternityPoints.gte(timeDimCost(tier,dim.bought+increment-1))) increment*=2
-		while (increment>=1) {
-			if (player.eternityPoints.gte(timeDimCost(tier,dim.bought+toBuy+increment-1))) toBuy+=increment
+		while (player.eternityPoints.gte(timeDimCost(tier,dim.bought+increment*2-1))) {
+			increment*=2
+		}
+		var toBuy=increment
+		for (p=0;p<53;p++) {
 			increment/=2
+			if (increment<1) break
+			if (player.eternityPoints.gte(timeDimCost(tier,dim.bought+toBuy+increment-1))) toBuy+=increment
 		}
 		var num=toBuy
 		var newEP=player.eternityPoints
@@ -227,7 +230,6 @@ function buyMaxTimeDimension(tier, bulk) {
 			num--
 		}
 		player.eternityPoints=newEP
-		if (isNaN(newEP.e)) player.eternityPoints=new Decimal(0)
 	}
 	dim.amount=dim.amount.plus(toBuy);
 	dim.bought+=toBuy
@@ -244,4 +246,13 @@ function buyMaxTimeDimension(tier, bulk) {
 
 function buyMaxTimeDimensions() {
 	for (i=1; i<9; i++) buyMaxTimeDimension(i)
+}
+
+function getTS11Mult() {
+	let bigRipped = player.masterystudies === undefined ? false : tmp.qu.bigRip.active
+	let log = -player.tickspeed.div(1e3).pow(0.005).times(0.95).plus(player.tickspeed.div(1e3).pow(0.0003).times(0.95)).log10()
+	if (bigRipped && log > 900) log = Math.sqrt(log * 900)
+	else if (player.galacticSacrifice === undefined) log = Math.min(log, 2500)
+	log /= player.aarexModifications.newGameExpVersion ? 4 : 1
+	return Decimal.pow(10, log)
 }

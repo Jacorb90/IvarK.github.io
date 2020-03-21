@@ -22,6 +22,7 @@ function getDimensionBoostPower(next, focusOn) {
 }
 
 function softReset(bulk, tier=1) {
+	//if (bulk < 1) bulk = 1 (fixing issue 184)
 	if (tmp.ri) return;
 	var oldResets = player.resets
 	player.resets+=bulk;
@@ -47,8 +48,8 @@ function softReset(bulk, tier=1) {
 	}
 	var costs=[10,100,1e4,1e6,1e9,1e13,1e18,1e24]
 	var costMults=[1e3,1e4,1e5,1e6,1e8,1e10,1e12,1e15]
-	if (inNC(10)||player.currentChallenge == "postc1") costs=[10,100,100,500,2500,2e4,2e5,4e6]
-	if (inNC(10)) costMults=[1e3,5e3,1e4,12e3,18e3,26e3,32e3,42e3]
+	if (!inNC(10) || player.currentChallenge == "postc1") costs=[10,100,100,500,2500,2e4,2e5,4e6]
+	if (player.currentChallenge == "postc1") costMults=[1e3,5e3,1e4,12e3,18e3,26e3,32e3,42e3]
 	for (var d=1;d<9;d++) {
 		var name=TIER_NAMES[d]
 		player[name+"Amount"]=new Decimal(0)
@@ -115,13 +116,13 @@ function setInitialDimensionPower() {
 	var dimensionBoostPower = getDimensionBoostPower()
 	if (player.eternities>=1e9&&player.dilation.upgrades.includes("ngpp6")&&player.masterystudies!=undefined) player.dbPower=dimensionBoostPower
 
-	for (tier = 1; tier < 9; tier++) player[TIER_NAMES[tier] + 'Pow'] = player.currentEternityChall=='eterc13' ? new Decimal(1) : dimensionBoostPower.pow(player.resets + 1 - tier).max(1)
+	if (!player.achievements.includes("ng5p24")) for (tier = 1; tier < 9; tier++) player[TIER_NAMES[tier] + 'Pow'] = player.currentEternityChall=='eterc13' ? new Decimal(1) : dimensionBoostPower.pow(player.resets + 1 - tier).max(1)
 
 	var tickspeedPower=player.totalTickGained
 	if (player.infinityUpgradesRespecced!=undefined) tickspeedPower+=player.infinityUpgradesRespecced[1]*10
 	player.tickspeed=Decimal.pow(getTickSpeedMultiplier(), tickspeedPower).times(player.aarexModifications.newGameExpVersion?500:1e3)
 	
-	var ic3Power=player.totalTickGained*getECReward(14)
+	var ic3Power=player.totalTickGained*getEC14Power()
 	if (player.tickspeedBoosts!=undefined&&player.currentChallenge!="postc5") {
 		let mult = 30
 		if ((inNC(14) && player.aarexModifications.ngmX == 3) || player.currentChallenge == "postcngm3_3") mult = 20
@@ -143,12 +144,16 @@ function setInitialDimensionPower() {
 		ic3Power += ic3PowerTB
 	}
 	if ((inNC(15) || player.currentChallenge == "postc1" || player.currentChallenge == "postcngm3_3") && player.aarexModifications.ngmX > 3) ic3Power-=(player.resets+player.tdBoosts)*10
-	player.postC3Reward=Decimal.pow(getPostC3Mult(),ic3Power)
+	player.postC3Reward=Decimal.pow(getPostC3RewardMult(),ic3Power)
 }
 
 function maxBuyDimBoosts(manual) {
 	let tier = player.pSac != undefined ? 6 : 8
-	if (inQC(6)) return
+	let lim = 1/0
+	if (inQC(6)) {
+		if (player.resets < getBRDBLim()) lim = getBRDBLim()
+		else return
+	}
 	if (player.autobuyers[9].priority >= getAmount(tier) || player.galaxies >= player.overXGalaxies || getShiftRequirement(0).tier < tier || manual) {
 		var bought = Math.min(getAmount(getShiftRequirement(0).tier), (player.galaxies >= player.overXGalaxies || manual) ? 1/0 : player.autobuyers[9].priority)
 		var r
@@ -160,27 +165,42 @@ function maxBuyDimBoosts(manual) {
 			if (player.galacticSacrifice && player.tickspeedBoosts === undefined && player.galacticSacrifice.upgrades.includes(21)) scaling = 6
 			var firstReq = getShiftRequirement(scaling - player.resets)
 			var supersonicStart = getSupersonicStart()
+			var hypersonicStart = getHypersonicStart()
 			r = (bought - firstReq.amount) / firstReq.mult + scaling + 1
+			var pointReq = firstReq
 			if (r > supersonicStart - 1) {
-				var a = getSupersonicMultIncrease() / 2
+				sc = 4e4
+				let mi = getSupersonicMultIncrease() 
+				var a = mi / 2
 				var b = firstReq.mult + a
-				var skips = (Math.sqrt(b * b + 4 * a * (bought - getShiftRequirement(supersonicStart - player.resets - 1).amount) / 4e4) - b) / (2 * a)
-				var setPoint = supersonicStart + Math.floor(skips) * 4e4
-				var pointReq = getShiftRequirement(setPoint - player.resets)
+				var skips = (Math.sqrt(b * b + 4 * a * (bought - getShiftRequirement(supersonicStart - player.resets - 1).amount) / sc) - b) / (2 * a)
+				var setPoint = supersonicStart + Math.floor(skips) * sc
+				pointReq = getShiftRequirement(setPoint - player.resets)
+				r = (bought - pointReq.amount) / pointReq.mult + setPoint + 1
+			}
+			if (r > hypersonicStart - 1) {
+				sc = 1e6
+				let mi = getHypersonicMultIncrease()
+				var a = mi / 2
+				var b = pointReq.mult + a
+				var skips = (Math.sqrt(b * b + 4 * a * (bought - getShiftRequirement(hypersonicStart - player.resets - 1).amount) / sc) - b) / (2 * a)
+				var setPoint = hypersonicStart + Math.floor(skips) * sc
+				pointReq = getShiftRequirement(setPoint - player.resets)
 				r = (bought - pointReq.amount) / pointReq.mult + setPoint + 1
 			}
 			r = Math.floor(r - player.resets) 
 		}
-
+		r = Math.min(r,lim - player.resets)
 		if (r > 749) giveAchievement("Costco sells dimboosts now")
 		if (r > 0) softReset(r)
 	}
 }
 
-function getShiftRequirement(bulk) {
+function getShiftRequirement(bulk,fr=false) {
 	let amount = 20
 	let mult = getDimboostCostIncrease()
 	var resetNum = player.resets + bulk
+	if (fr) resetNum = bulk
 	var maxTier = inNC(4) || player.pSac != undefined ? 6 : 8
 	tier = Math.min(resetNum + 4, maxTier)
 	if (player.aarexModifications.ngmX > 3 && player.pSac == undefined) amount = 10
@@ -188,14 +208,24 @@ function getShiftRequirement(bulk) {
 	var costStart = getSupersonicStart()
 	if (player.currentEternityChall == "eterc5") {
 		amount += Math.pow(resetNum, 3) + resetNum
-	} else if (resetNum >= costStart) {
-		var multInc = getSupersonicMultIncrease()
-		var increased = Math.ceil((resetNum - costStart + 1) / 4e4)
-		var offset = (resetNum - costStart) % 4e4 + 1
-		amount += (increased * (increased * 2e4 - 2e4 + offset)) * multInc
-		mult += multInc * increased
+	} else {
+		if (resetNum >= costStart) {
+			sc = 4e4
+			var multInc = getSupersonicMultIncrease()
+			var increased = Math.ceil((resetNum - costStart + 1) / sc)
+			var offset = (resetNum - costStart) % sc + 1
+			amount += (increased * (increased * (sc/2) - (sc/2) + offset)) * multInc
+			mult += multInc * increased
+		}
+		if (resetNum >= getHypersonicStart()) {
+			sc = 1e6
+			var multInc = getHypersonicMultIncrease()
+			var increased = Math.ceil((resetNum - getHypersonicStart() + 1) / sc)
+			var offset = (resetNum - getHypersonicStart()) % sc + 1
+			amount += (increased * (increased * (sc/2) - (sc/2) + offset)) * multInc
+			mult += multInc * increased
+		}
 	}
-
 	if (player.infinityUpgrades.includes("resetBoost")) amount -= 9;
 	if (player.challenges.includes("postc5")) amount -= 1
 	if (player.infinityUpgradesRespecced != undefined) amount -= getInfUpgPow(4)
@@ -223,24 +253,42 @@ function getDimboostCostIncrease () {
 
 function getSupersonicStart() {
 	if (inQC(5)) return 0
-	let r = 56e4
-	if (player.aarexModifications.nguspV && !player.aarexModifications.nguepV) r = 1e5
-	if (tmp.ngp3) {
-		if (player.masterystudies.includes("t331")) r += 24e4
-		if (player.masterystudies.includes("d12") && hasBosonicUpg(21)) r += getNanofieldRewardEffect(1, "supersonic")
-	}
-	return r
+	let mult = 1
+	if (player.masterystudies) if (tmp.qu.bigRip.active) mult = 1/3200
+	let add = 0
+	if (hasAnnihilationUpg(32)) if (!tmp.qu.bigRip.active) add += getAnnihilationUpgEff(32)
+	if (player.masterystudies) if (player.masterystudies.includes("t331")) return 8e5 * mult + add
+	return 56e4 * mult + add
 }
 
 function getSupersonicMultIncrease() {
-	if (inQC(5)) return 20
-	let r=4
-	if (player.masterystudies) if (player.masterystudies.includes("t331")) r=1
-	return r
+	let inc = 4
+	if (inQC(5)) inc = 20
+	else if (player.masterystudies) if (player.masterystudies.includes("t331")) inc = 1
+	if (player.aarexModifications.ngp5V !== undefined) if (player.ghostify.darkness.upgrades[3][0] === true) inc /= Math.max(getDarknessUpgReward(3,0)['reward'],1)
+	return inc 
+}
+
+function getHypersonicStart() {
+	let start = 5e7
+	if (hasNU(20)) start += 1e7
+	if (player.aarexModifications.ngp5V !== undefined) {
+		start += getBDUpgEff(10)
+	}
+	if (currentAnnihilationTier()>0) start /= 10
+	return start
+}
+
+function getHypersonicMultIncrease() {
+	let inc = 1e4
+	if (tmp.ngp3) inc /= (2-1/(getNanofieldRewardEffect("5t")+1))
+	return inc
 }
 
 document.getElementById("softReset").onclick = function () {
-	if (inQC(6)) return
+	if (inQC(6)) {
+		if (player.resets >= getBRDBLim()) return
+	}
 	if (cantReset()) return
 	var req = getShiftRequirement(0)
 	if (tmp.ri || getAmount(req.tier) < req.amount) return;

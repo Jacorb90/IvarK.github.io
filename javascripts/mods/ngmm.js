@@ -91,16 +91,16 @@ function getD8Exp(){
 		if (amt>1048576) amt = Math.pow(Math.log2(amt)/5,10)
 		if (amt>1024) amt = 24+Math.pow(Math.log2(amt),3)
 		exp += amt
-		if (player.totalmoney.log10() > 2.75e6) exp = Math.pow(exp,Math.min(1.3,1+player.totalmoney.log10()/1e8+Math.sqrt(player.totalmoney.log10()/275)/3e3))
+		if (player.totalmoney.log10 > 2.75e6) exp = Math.pow(exp,Math.min(1.3,1+player.totalmoney.log10()/1e8+Math.sqrt(player.totalmoney.log10()/275)/3e3))
 	}
 	return exp
 }
 
 function galacticSacrifice(auto, force, chall) {
-	if (getGSAmount().eq(0)&&!force) return
+	if (getGSAmount().eq(0) && !force) return
 	if (tmp.ri) return
 	if (player.options.gSacrificeConfirmation&&!auto&&!force) if (!confirm("Galactic Sacrifice will do a galaxy reset, and then remove all of your galaxies, in exchange of galaxy points which can be use to buy many overpowered upgrades, but it will take a lot of time to recover, are you sure you wanna do this?")) return
-	if (player.options.challConf&&chall) if (!confirm("You will Galactic Sacrifice without gaining anything. You need to Galactic Sacrifice with special conditions to complete this challenge. Some Galaxy Points gain multipliers won't work in this challenge.")) return
+    if (player.options.challConf&&chall) if (!confirm("You will Galactic Sacrifice without gaining anything. You need to Galactic Sacrifice with special conditions to complete this challenge. Some Galaxy Points gain multipliers won't work in this challenge.")) return
 	if (!force) {
 		player.galacticSacrifice.galaxyPoints=player.galacticSacrifice.galaxyPoints.plus(getGSAmount())
 		player.galacticSacrifice.times++
@@ -117,8 +117,8 @@ function galacticSacrifice(auto, force, chall) {
 				player.challengeTimes[player.galacticSacrifice.chall-2]=Math.min(player.challengeTimes[player.galacticSacrifice.chall-2],player.galacticSacrifice.time)
 			}
 			if (player.challenges.length>1) giveAchievement("Daredevil")
-			if (player.challenges.length==getTotalNormalChallenges()+1) giveAchievement("AntiChallenged")
-			if (player.challenges.length==getTotalNormalChallenges()+player.infchallengeTimes.length+1) giveAchievement("Anti-antichallenged")
+			if (player.challenges.length==player.challengeTimes.length+1) giveAchievement("AntiChallenged")
+			if (player.challenges.length==player.challengeTimes.length+player.infchallengeTimes.length+1) giveAchievement("Anti-antichallenged")
 			if (inNC(2)&&player.galacticSacrifice.time<=1800) giveAchievement("Many Deaths")
 			if (inNC(11)&&player.galacticSacrifice.time<=1800) giveAchievement("Gift from the Gods")
 			if (inNC(5)&&player.galacticSacrifice.time<=1800) giveAchievement("Is this hell?")
@@ -126,14 +126,14 @@ function galacticSacrifice(auto, force, chall) {
 			if (player.firstAmount==1&&player.resets==0&&player.galaxies==0&&inNC(12)) giveAchievement("ERROR 909: Dimension not found")
 		}
 		if (!chall&&(force||!player.options.retryChallenge)) delete player.galacticSacrifice.chall
-		document.getElementById("challengeconfirmation").style.display = "inline-block"
+        document.getElementById("challengeconfirmation").style.display = "inline-block"
 		updateChallenges()
 		updateNCVisuals()
 		updateChallengeTimes()
 		updateAutobuyers()
 	}
-	GPminpeak=new Decimal(0)
-	player.galacticSacrifice.time=0
+	GPminpeak = new Decimal(0)
+	player.galacticSacrifice.time = 0
 	resetPSac()
 	galaxyReset(-player.galaxies)
 }
@@ -337,10 +337,8 @@ function resetTickBoughtThisInf() {
 }
 
 function upgradeSacAutobuyer() {
-	let cost=player.autoSacrifice.cost
-	if ((player.aarexModifications.ngmX>3?player.galacticSacrifice.galaxyPoints:player.infinityPoints).lt(cost)) return false
-	if (player.aarexModifications.ngmX>3) player.galacticSacrifice.galaxyPoints=player.galacticSacrifice.galaxyPoints.sub(cost)
-	else player.infinityPoints=player.infinityPoints.sub(cost)
+	if (player.infinityPoints.lt(player.autoSacrifice.cost)) return false;
+	player.infinityPoints = player.infinityPoints.minus(player.autoSacrifice.cost);
 	if (player.autoSacrifice.interval > 100) {
 		player.autoSacrifice.interval = Math.max(player.autoSacrifice.interval*0.6, 100);
 		if (player.autoSacrifice.interval > 120) player.autoSacrifice.cost *= 2; //if your last purchase wont be very strong, dont double the cost
@@ -439,6 +437,22 @@ document.getElementById("postinfi63").onclick = function() {
 
 function getB60Mult() {
 	return Decimal.pow(getEternitied()>0?2.5:3,player.galaxies-95).max(1)
+}
+
+function getPostC3Exp() {
+	let g = getGalaxyPower(0)-player.dilation.freeGalaxies
+	if (g<7) return 1+g/5
+	let y=5
+	let z=.5
+	if (tmp.ec>29) {
+		if (player.currentEternityChall=="" || player.currentEternityChall=="eterc12") {
+			z=.9
+			if (tmp.ec>53) y = 1.4-((tmp.ec-54)/15)
+			else if (tmp.ec>42) y=2
+			else if (tmp.ec>37) y=3.5
+		} else z=.6
+	}
+	return 2+Math.pow(g-5,z)/y
 }
 
 //v2.3

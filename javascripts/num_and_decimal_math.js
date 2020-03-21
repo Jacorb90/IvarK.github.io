@@ -54,3 +54,8 @@ function nG(a,b) {
 	if (typeof(b)=="number") return true
 	return a.gt(b)
 }
+
+function nPw(a,b) {
+	if (typeof(a)=="number"&&typeof(b)=="number") return Math.pow(a,b)
+	return nN(Decimal.pow(a,b))
+}

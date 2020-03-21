@@ -45,7 +45,6 @@ button {
 }
 
 .challengesbtn {
-
     width:150px;
     height: 30px;
     color: black;
@@ -199,7 +198,66 @@ button {
     background: #007308;
     border: 4px solid #127A20;
     border-radius: 10px;
-	color: white
+	color: black
+}
+
+.shortBtn {
+    color: black;
+    background: #F2F2F2;
+    font-weight: bold;
+    font-family: Typewriter;
+    border: 1px solid #127A20;
+    width: 25px;
+    height: 25px;
+    transition-duration: 0.2s;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 13px;
+    vertical-align: top;
+}
+
+.shortBtn:hover {
+    color: #FFF;
+    background: #5AC467;
+}
+
+.shortbtnlckd {
+    color: #000000;
+    background: #A3A3A3;
+    font-weight: bold;
+    font-family: Typewriter;
+    border: 1px solid #B84B5F;
+    width: 25px;
+    height: 25px;
+    transition-duration: 0.2s;
+    border-radius: 4px;
+    font-size: 13px;
+    vertical-align: top;
+}
+
+.shortbtnlckd:hover {
+    color: #000000;
+    background: #B84B5F;
+}
+
+.tallbtn {
+    color: black;
+    background: #F2F2F2;
+    font-weight: bold;
+    font-family: Typewriter;
+    border: 1px solid #127A20;
+    width: 120px;
+    height: 50px;
+    transition-duration: 0.2s;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 13px;
+    vertical-align: top;
+}
+
+.tallbtn:hover {
+    color: #FFF;
+    background: #5AC467;
 }
 
 .storebtn {
@@ -220,6 +278,14 @@ button {
 .storebtn:hover {
     color: #FFF;
     background: #5AC467;
+}
+
+.achievementTxt {
+	font-weight: bold;
+    font-family: Typewriter;
+	font-size: 20px;
+	text-align: center;
+	-webkit-text-fill-color: white;
 }
 
 .infinimultbtn {
@@ -543,7 +609,6 @@ button {
 	top: 40px;
 	width: 210px;
 	height: 70px;
-	border-radius: 4px;
 	font-size: 11px
 }
 
@@ -792,9 +857,8 @@ button {
 }
 
 .ghostifybtn {
-	background: linear-gradient(#0c0033, #2e0033);
-	box-shadow: inset 0px 0px 24px 0px black;
-	border: 2px solid;
+	background: linear-gradient(#0c001e, #3a003f);
+	border: 2px solid transparent;
 	font-family: Typewriter;
 	font-weight: bold;
 	border-radius: 4px;
@@ -807,7 +871,8 @@ button {
 }
 
 .ghostifybtn:hover {
-	box-shadow: inset 0px 0px 12px 0px #420072;
+	border-color: rgba(255,255,255,0.5);
+	box-shadow: inset 0px 0px 12px 0px #ffffff;
 	cursor: pointer
 }
 
@@ -865,12 +930,6 @@ button {
     color: black;
     font-size: 70%;
     user-select: none;
-}
-
-.achRowInfo {
-    width: 104px;
-    margin: 0px auto;
-    text-align: center
 }
 
 .autoBuyerDiv {
@@ -1017,13 +1076,13 @@ button {
     pointer-events: none;
 }
 
+
 #footer {
     height: 50px;
     margin: auto;
     text-align:center;
     font-size: 15px;
     font-family: Typewriter;
-	display: var(--footer)
 }
 
 #footer tr td div {
@@ -1059,12 +1118,12 @@ button {
 .quantumProgress { background: #0a640a !important }
 .quantumProgress #progresspercent { color: #32c832 }
 
-.ghostifyProgress { 
-	background: linear-gradient(#0c0033, #2e0033) !important;
-	box-shadow: inset 0px 0px 24px 0px black
-}
+.ghostifyProgress { background: linear-gradient(#0c001e, #3a003f) !important }
 .ghostifyProgress #progresspercent { animation: ghostifytext 4s linear infinite }
 .ghostifyProgress #progresspercent::before { text-shadow: none }
+
+.annihilationProgress { background: #630b0a !important }
+.annihilationProgress #progresspercent { color: #c23030 }
 
 .greedbtn {
     height: 40px;
@@ -1096,7 +1155,7 @@ button {
 
 #replicantiresettoggle, #replicantibulkmodetoggle {
     margin-top: 3px;
-    margin-right: 0px;
+    margin-right: 6px;
 }
 
 .eternitychallengestudy {
@@ -1735,6 +1794,10 @@ dl {
     margin: 0 0 3px;
 }
 
+ul {
+	list-style-type: none;
+}
+
 h1,
 h2,
 h3 {
@@ -2108,14 +2171,14 @@ br {
 	border: 2px solid #4c4c4c;
 	width: 210px;
 	height: 90px;
-	text-shadow: 0px 0px 1px #4c4c4c, 0px 0px 2px #4c4c4c, 0px 0px 3px #4c4c4c;
-	color: #727272;
+	color: #4c4c4c;
 	font-size: 12px;
 	animation: nanofieldanimation 5s infinite
 }
 
 #produceQuarkCharge:hover {
-	color: #999999
+	color: #727272;
+	text-shadow: 0px 0px 1px #4c4c4c, 0px 0px 2px #4c4c4c, 0px 0px 3px #4c4c4c;
 }
 
 .nanofieldreward {
@@ -2300,8 +2363,7 @@ br {
 }
 
 .brCompleted {
-	background: linear-gradient(#0c0033, #2e0033);
-	box-shadow: inset 0px 0px 24px 0px black;
+	background: linear-gradient(#0c001e, #3a003f);
 	border: 2px solid transparent;
 	font-family: Typewriter;
 	border-radius: 10px;
@@ -2309,11 +2371,11 @@ br {
 	animation: ghostifytext 4s linear infinite
 }
 
-.brCompleted[ach-tooltip]:before, .bRune[ach-tooltip]:before {
+.brCompleted[ach-tooltip]:before {
 	text-shadow: none !important
 }
 
-#bugExport b, .warning {
+#tooMuchPowerConsumed {
 	color: #ff0000
 }
 
@@ -2324,7 +2386,7 @@ br {
 	width: 100%;
 	height: 0px;
 	animation: ghostifytext 4s linear infinite;
-	background: linear-gradient(#0c0033, #2e0033);
+	background: linear-gradient(#0c001e, #3a003f);
 	overflow: hidden;
 	transition-duration: 1s
 }
@@ -2341,31 +2403,25 @@ br {
 	transition-duration: 1s
 }
 
-.neutrinos {
-	font-size: 35px
-}
-
 .gluonupgrade.neutrinoupg {
 	background: black !important;
 	border: 1px solid #bfbfbf;
 	box-shadow: inset 0px 0px 20px 0px #bfbfbf;
-	color: #bfbfbf;
+	color: black;
 	text-shadow: 0px 0px 3px #bfbfbf, 0px 0px 6px #bfbfbf
 }
 
 .gluonupgrade.neutrinoupg:hover {
 	background: white !important;
-	color: #3f3f3f;
-	text-shadow: 0px 0px 3px #3f3f3f, 0px 0px 6px #3f3f3f;
 	cursor: pointer
 }
 
 .gluonupgradebought.neutrinoupg {
-	background: #bfbfbf !important;
-	border: 1px solid #7f7f7f;
-	box-shadow: inset 0px 0px 20px 0px #7f7f7f;
-	color: #3f3f3f;
-	text-shadow: 0px 0px 3px #3f3f3f, 0px 0px 6px #3f3f3f
+	background: white !important;
+	border: 1px solid #bfbfbf;
+	box-shadow: inset 0px 0px 20px 0px #bfbfbf;
+	color: white;
+	text-shadow: 0px 0px 3px black, 0px 0px 6px black
 }
 
 .neutrinoBoosts {
@@ -2417,212 +2473,198 @@ br {
 	color: #8f00bf
 }
 
-#bRunes {
-	width:100%
-}
-
-#bRunes td {
-	text-align:center;
-	font-size:25px
-}
-
-.bRune {
-	background: white;
-	height: 1em;
-	width: 1em;
-	box-shadow: 0px 0px 12px white;
-	display: inline-block
-}
-
-.bRune.Infinity {
-	background: #b67f33;
-	box-shadow: 0px 0px 12px #b67f33
-}
-
-.bRune.Eternity {
-	background: #b341e0;
-	box-shadow: 0px 0px 12px #b341e0
-}
-
-.bRune.Quantum {
-	background: #32c832;
-	box-shadow: 0px 0px 12px #32c832
-}
-
-.bRune.Ghostly {
-	background: #e900ff;
-	box-shadow: 0px 0px 12px #6a00ff
-}
-
-.bRune.Ethereal {
-	background: #3f6fff;
-	box-shadow: 0px 0px 12px #002fbf
-}
-
-.bRune.Sixth {
-	background: #26f4c1;
-	box-shadow: 0px 0px 12px #26f4c1
-}
-
-.bRune.Seventh {
-	background: #6a6ca3;
-	box-shadow: 0px 0px 12px #6a6ca3
-}
-
-.bRune.Eighth {
-	background: #d10fed;
-	box-shadow: 0px 0px 12px #d10fed
-}
-
-.bRune.Ninth {
-	background: #3a4e1d;
-	box-shadow: 0px 0px 12px #3a4e1d
-}
-
-.bRune.Tenth {
-	background: #f6d779;
-	box-shadow: 0px 0px 12px #f6d779
-}
-
-.bRune.Eleventh {
-	background: #d52d50;
-	box-shadow: 0px 0px 12px #d52d50
-}
-
-.bRune.Twelfth {
-	background: #f453e4;
-	box-shadow: 0px 0px 12px #f453e4
-}
-
-.chosenbtn {
-    width: 120px;
-	height: 25px;
-	background: #3A7F42;
-	border: 1px solid #127A20;
-	border-radius: 4px;
-	font-size: 13px;
+.darkness {
+	color: black;
 	font-weight: bold;
-    font-family: Typewriter;
-	transition-duration: 0.2s
+	text-shadow: 0px 0px 3px black, 0px 0px 6px white;
+	font-size: 20px;
 }
 
-.gluonupgrade.bl {
+.darknesslocked.gluonupgrade {
+	color: black;
+	font-weight: bold;
+	text-shadow: 0px 0px 3px black, 0px 0px 6px white;
+	font-size: 20px;
+	background: grey;
+	border: 1px solid transparent;
+}
+
+.darkness.gluonupgrade {
+	color: grey;
+	font-weight: bold;
+	text-shadow: 0px 0px 3px grey, 0px 0px 6px white;
+	font-size: 20px;
+	background: black;
+	border: 1px solid transparent;
+}
+
+.darkness.gluonupgrade:hover {
+	color: white;
+	cursor: pointer;
+}
+
+.darkness.gluonupgradebought {
+	color: black;
+	font-weight: bold;
+	text-shadow: 0px 0px 3px black, 0px 0px 6px white;
+	font-size: 20px;
+	background: green;
+	border: 1px solid transparent;
+}
+
+.gluonupgrade.wzb {
 	background: repeating-linear-gradient(#620d65, transparent 50%, #620d65 100%), repeating-linear-gradient(90deg, transparent, #c73415 50%, transparent 100%), black;
 	background-size: 200% 200%;
 	border: 1px solid transparent;
-	color: white;
+	color: black;
 	text-shadow: 0px 0px 3px black, 0px 0px 6px white;
-	animation: bl 5s linear infinite
+	animation: wzb 5s linear infinite
 }
 
-.gluonupgrade.bl:hover {
-	box-shadow: inset 0px 0px 24px #38cbea;
-	border-color: #38cbea;
-	cursor: pointer
-}
-
-.gluonupgradebought.bl {
+.gluonupgradebought.wzb {
 	background: repeating-linear-gradient(#9df29a, transparent 50%, #9df29a 100%), repeating-linear-gradient(90deg, transparent, #38cbea 50%, transparent 100%), black;
 	background-size: 200% 200%;
 	border: 1px solid transparent;
 	color: black;
 	text-shadow: 0px 0px 3px black, 0px 0px 6px white;
-	animation: bl 5s linear infinite
+	animation: wzb 5s linear infinite
 }
 
-#wQk {
-	position: relative;
-	left: calc(50% - 120px);
-	height: 240px;
-	width: 240px;
-	border-radius: 120px !important;
-	font-size: 120px;
-	margin-top: 24px;
-	margin-bottom: 24px;
-	transition-duration: 0.2s
-}
-
-.up {
-	background: #620d65;
-	box-shadow: 0px 0px 12px #620d65
-}
-
-.down {
-	background: #9df29a;
-	box-shadow: 0px 0px 12px #9df29a
-}
-
-.zero {
-	background: repeating-linear-gradient(#620d65, transparent 50%, #620d65 100%), repeating-linear-gradient(90deg, transparent, #9df29a 50%, transparent 100%), black;
-	background-size: 200% 200%;
-	box-shadow: 0px 0px 12px white;
-	animation: bl 5s linear infinite
-}
-
-#wQkSymbol {
-	position: absolute;
-	color: white
-}
-
-.up #wQkSymbol {
-	transform: translate(-50%, 15%)
-}
-
-.down #wQkSymbol {
-	transform: translate(-50%, 12%)
-}
-
-.zero #wQkSymbol {
-	transform: translate(-50%, 15%)
-}
-
-#zNe {
-	position: relative;
-	left: calc(50% - 120px);
-	height: 240px;
-	width: 240px;
-	background: #bfbfbf;
-	box-shadow: 0px 0px 12px #7f7f7f;
-	border-radius: 120px !important;
-	font-size: 120px;
-	margin-top: 24px;
-	margin-bottom: 24px;
-	transition-duration: 0.2s
-}
-
-#zNeSymbol {
-	position: absolute;
-	color: #3f3f3f;
-	text-shadow: 0px 0px 3px #3f3f3f, 0px 0px 6px #3f3f3f
-}
-
-.electron #zNeSymbol {
-	transform: translate(-50%, 10%)
-}
-
-.mu #zNeSymbol {
-	transform: translate(-50%, 0%)
-}
-
-.tau #zNeSymbol {
-	transform: translate(-50%, 0%)
-}
-
-#antipreon {
-	position: relative
-}
-
-#apgInfo {
-	position: relative;
-	width: 100%;
-	background: #e55be5;
-	box-shadow: 0px 0px 12px #e55be5;
+.wzb:hover {
 	color: white;
-	animation: apgInfo 5s ease infinite
+	cursor: pointer
 }
 
-#apgInfo .warning {
-	color: #bf0000
+.ghostlychallengediv {
+	display:table;
+	text-align:center;
+	width: 350px;
+	height: 140px;
+	background: black;
+	font-weight: bold;
+	font-family: Typewriter;
+	border: 3px solid white;
+	border-radius: 10px;
+	font-size: 80%;
+	transition-duration: 0.2s;
+	padding: 2px;
+	margin: 3px 8px;
+	position: relative;
+	animation: ghostifytext 4s linear infinite;
+}
+
+.lightEnergy {
+	color: #ffbfc1;
+	font-weight: bold;
+	text-shadow: 0px 0px 3px #ffbfc1, 0px 0px 6px white;
+	font-size: 20px;
+}
+
+.refraction {
+	background: repeating-linear-gradient(#ffbfc1, transparent 50%, #ffbfc1 100%), repeating-linear-gradient(90deg, transparent, #e900ff 50%, transparent 100%), black;
+	color: white;
+	text-shadow: 0px 0px 3px black, 0px 0px 6px white;
+	font-size: 20px;
+	animation: wzb 5s linear infinite;
+}
+
+.ghostifytxt {
+	text-shadow: 0px 0px 3px black, 0px 0px 6px white;
+	animation: ghostifytext 4s linear infinite;
+}
+
+.rad {
+	text-shadow: 0px 0px 3px black, 0px 0px 6px white;
+	animation: radtxt 4s linear infinite;
+}
+
+.annihilationbtn {
+	width:180px;
+	height:140px;
+	color: black;
+	background: #732f2d !important;
+	font-weight: bold;
+	font-family: Typewriter;
+	border: 3px solid #e3625b;
+	cursor: pointer;
+	border-radius: 10px;
+	color: #e3625b;
+	font-size: 140%;
+	transition-duration: 0.2s;
+	margin: auto;
+	box-shadow: inset 0px 0px 10px 0px #e3625b, inset 0px 0px 20px 0px #e3625b, inset 0px 0px 30px 0px #e3625b
+}
+
+.annihilationbtn:hover {
+	background: #e3a19f !important;
+	color: #996d6b
+}
+
+.annihilationTxt {
+	color: #e3625b;
+}
+
+.gluonupgrade.annihilate {
+	background: #73302e !important;
+	border: 3px solid #e3625b;
+	color: #e3625b;
+	box-shadow: inset 0px 0px 10px 0px #e3625b, inset 0px 0px 20px 0px #e3625b, inset 0px 0px 30px 0px #e3625b
+}
+
+.gluonupgrade.annihilate:hover {
+	background: #eda8a6 !important;
+	color: #966b69;
+	cursor: pointer
+}
+
+.gluonupgradebought.annihilate {
+	background: #eda8a6 !important;
+	border: 3px solid #966b69;
+	color: #1f1f1f;
+	box-shadow: inset 0px 0px 10px 0px #966b69, inset 0px 0px 20px 0px #966b69, inset 0px 0px 30px 0px #966b69
+}
+
+.annihilationGhostifybtn {
+	background: linear-gradient(#1a0100, #3d0000);
+	border: 2px solid transparent;
+	font-family: Typewriter;
+	font-weight: bold;
+	border-radius: 4px;
+	transition-duration: 0.2s;
+	animation: annihilationghostifytext 4s linear infinite
+}
+
+.annihilationGhostifybtn div {
+	animation: annihilationghostifytext 4s linear infinite
+}
+
+.annihilationGhostifybtn:hover {
+	border-color: rgba(255,255,255,0.5);
+	box-shadow: inset 0px 0px 12px 0px #ffffff;
+	cursor: pointer
+}
+
+.gluonupgrade.cascade {
+	background: repeating-linear-gradient(#610c0c, transparent 50%, #610c0c 100%), repeating-linear-gradient(90deg, transparent, #c43416 50%, transparent 100%), black;
+	background-size: 200% 200%;
+	border: 1px solid transparent;
+	color: black;
+	text-shadow: 0px 0px 3px black, 0px 0px 6px white;
+	animation: wzb 5s linear infinite
+}
+
+.cascade:hover {
+	color: white;
+	cursor: pointer
+}
+
+@keyframes wzb { 
+	0%{
+		background-position: 0% 0%
+	}
+	100%{
+		background-position: 200% 200%
+	}
 }
 
 @media print,
@@ -2905,39 +2947,45 @@ screen and (max-width: 480px) {
 
 @keyframes ghostifytext { 
 	0%{
-		border-color: #690072;
-		color: #e0ace5;
-		text-shadow: 0px 0px 3px white, 0px 0px 6px #d200e5;
+		color: #e900ff;
+		text-shadow: 0px 0px 3px #e900ff, 0px 0px 6px #ffffff;
 	}
 	50% {
-		border-color: #1c0072;
-		color: #baace5;
-		text-shadow: 0px 0px 6px white, 0px 0px 6px #3900e5;
+		color: #6a00ff;
+		text-shadow: 0px 0px 6px #6a00ff, 0px 0px 6px #ffffff;
 	}
 	100%{
-		border-color: #690072;
-		color: #e0ace5;
-		text-shadow: 0px 0px 3px white, 0px 0px 6px #d200e5;
+		color: #e900ff;
+		text-shadow: 0px 0px 3px #e900ff, 0px 0px 6px #ffffff;
 	}
 }
 
-@keyframes bl { 
+@keyframes radtxt {
 	0%{
-		background-position: 0% 0%
+		color: #6b0202;
+		text-shadow: 0px 0px 3px #6b0202, 0px 0px 6px #ffffff;
+	}
+	50% {
+		color: #02693c;
+		text-shadow: 0px 0px 6px #02693c, 0px 0px 6px #ffffff;
 	}
 	100%{
-		background-position: 200% 200%
+		color: #6b0202;
+		text-shadow: 0px 0px 3px #6b0202, 0px 0px 6px #ffffff;
 	}
 }
 
-@keyframes apgInfo { 
+@keyframes annihilationghostifytext { 
 	0%{
-		top: 0px
+		color: #ff0000;
+		text-shadow: 0px 0px 3px #ff0000, 0px 0px 6px #ffffff;
 	}
-	50%{
-		top: 6px
+	50% {
+		color: #ff7700;
+		text-shadow: 0px 0px 6px #ff7700, 0px 0px 6px #ffffff;
 	}
 	100%{
-		top: 0px
+		color: #ff0000;
+		text-shadow: 0px 0px 3px #ff0000, 0px 0px 6px #ffffff;
 	}
 }

@@ -146,7 +146,7 @@ function getTimeAbbreviation(seconds) {
 const inflog = Math.log10(Number.MAX_VALUE)
 function formatValue(notation, value, places, placesUnder1000, noInf) {
     if (notation === "Same notation") notation = player.options.notation
-    if (notation === 'Iroha' && (onPostBreak() || Decimal.lt(value, getLimit()) || noInf)) return iroha(value, 5)
+    if (notation === 'Iroha' && (onPostBreak() || Decimal.lt(value, Number.MAX_VALUE))) return iroha(value, 5)
     if (Decimal.eq(value, 1/0)) return "Infinite"
     if ((onPostBreak() || Decimal.lt(value, getLimit()) || noInf) && (Decimal.gte(value,1000))) {
         if (notation === "AF2019") {
@@ -157,26 +157,25 @@ function formatValue(notation, value, places, placesUnder1000, noInf) {
             for (var c=0;c<12;c++) result += digits[Math.floor(translated[c]+Math.max(Math.log10(Number.MAX_VALUE)*(c+1)-log*(c+2), 0))%64]
             return result
         }
-        if (notation === "Hexadecimal" || notation === "Base-64") {
-            var base = notation === "Hexadecimal" ? 16 : 64
-            value = Decimal.pow(value, 1/Math.log10(base))
-            var mantissa = Math.pow(value.m, Math.log10(base))
+        if (notation === "Hexadecimal") {
+            value = Decimal.pow(value, 1/Math.log10(16))
+            var mantissa = Math.pow(value.m, Math.log10(16))
             var power = value.e
-            if (mantissa > base - Math.pow(base, -2)/2) {
+            if (mantissa > 16 - Math.pow(16, -2)/2) {
                 mantissa = 1
                 power++
             }
-            var digits="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz+/"
-            mantissa=digits[Math.floor(mantissa)].toString()+'.'+digits[Math.floor(mantissa*base)%base].toString()+digits[Math.floor(mantissa*Math.pow(base,2))%base].toString()
+            var digits=[0,1,2,3,4,5,6,7,8,9,'A','B','C','D','E','F']
+            mantissa=digits[Math.floor(mantissa)].toString()+'.'+digits[Math.floor(mantissa*16)%16].toString()+digits[Math.floor(mantissa*256)%16].toString()
             if (power > 100000 && !(player.options.commas === "Commas")) return mantissa + "e" + formatValue(player.options.commas, power, 3, 3)
             else {
-                if (power >= Math.pow(base, 12)) return mantissa + "e" + formatValue(player.options.notation, power, 3, 3)
+                if (power >= Math.pow(16, 12)) return mantissa + "e" + formatValue(player.options.notation, power, 3, 3)
                 var digit=0
                 var result=''
                 var temp=power
                 while (power>0) {
-                    result=digits[power%base].toString()+(temp>1e5&&digit>0&&digit%3<1?',':'')+result
-                    power=Math.floor(power/base)
+                    result=digits[power%16].toString()+(temp>1e5&&digit>0&&digit%3<1?',':'')+result
+                    power=Math.floor(power/16)
                     digit++
                 }
                 return mantissa + "e" + result;
@@ -294,7 +293,7 @@ function formatValue(notation, value, places, placesUnder1000, noInf) {
             else pow = getFullExpansion(pow);
         }
 
-        if (notation === "Logarithm" || notation === 'Iroha' || (notation === "Mixed logarithm" && power > 32)) {
+        if (notation === "Logarithm" || (notation === "Mixed logarithm" && power > 32)) {
             var base=player.options.logarithm.base
             var prefix
             if (base==10) {
@@ -396,10 +395,10 @@ function formatValue(notation, value, places, placesUnder1000, noInf) {
             return (matissa + "e" + pow);
         } else if (notation === "Letters") {
             return matissa + letter(power,'abcdefghijklmnopqrstuvwxyz');
-        } else if (notation === "Emojis") {
-            return matissa + letter(power,['😠', '🎂', '🎄', '💀', '🍆', '🐱', '🌈', '💯', '🍦', '🎃', '💋', '😂', '🌙', '⛔', '🐙', '💩', '❓', '☢', '🙈', '👍', '☂', '✌', '⚠', '❌', '😋', '⚡'])
         } else if (notation === "Country Codes") {
             return matissa + letter(power,[" GR", " IL", " TR", " NZ", " HK", " SG", " DK", " NO", " AT", " MX", " ID", " RU", " SE", " BE", " BR", " NL", " TW", " CH", " ES", " IN", " KR", " AU", " CA", " IT", " FR", " DE", " UK", " JP", " CN", " US"])
+        } else if (notation === "Emojis") {
+            return matissa + letter(power,['😠', '🎂', '🎄', '💀', '🍆', '🐱', '🌈', '💯', '🍦', '🎃', '💋', '😂', '🌙', '⛔', '🐙', '💩', '❓', '☢', '🙈', '👍', '☂', '✌', '⚠', '❌', '😋', '⚡'])
         }
 
         else {
@@ -615,8 +614,6 @@ let iroha_negate = function (x) {return '見' + x}
 
 let iroha_invert = function (x) {return '世' + x}
 
-let iroha_log = function (x) {return 'ログ' + x}
-
 let iroha_special = 'いろはにほへとちりぬるをわかよたれそつねならむうゐのおくやまけふこえてあさきゆめみしゑひもせアイウエオカキクケコ';
 
 function iroha (n, depth) {
@@ -641,9 +638,6 @@ function iroha (n, depth) {
     return iroha_invert(iroha(bin_inv(n), depth));
   }
   let log = bin_log(bin_log(n));
-  if (log < -27 || log > 55) {
-	  return iroha_log(iroha(bin_log(n), depth))
-  }
   let prefix = (log.lt(0)) ? ((x) => x + 27) : ((x) => x);
   log = log.abs();
   let num = Math.round(log.floor().toNumber());

@@ -1,20 +1,29 @@
-function getTickSpeedMultiplier() {
-	return Decimal.div(getGalaxyTickSpeedMultiplier(), getExtraTickReductionMult())
-}
-
 function initialGalaxies() {
 	let g=player.galaxies
 	if (tmp.ngp3&&!tmp.be) {
-		g=Math.max(g-player.quantum.electrons.sacGals,0)
+		let sg = player.quantum.electrons.sacGals
+		sg -= getReducedSacGals()
+		g=Math.max(g-sg,0)
 		g*=Math.max(Math.min(10-(player.quantum.electrons.amount+g*getELCMult())/16857,1),0)
-		if (hasBosonicUpg(14)) g=Math.max(Math.min(player.galaxies,tmp.blu[14]),g)
+	}
+	if (tmp.ngp3&&tmp.be) {
+		if (isBigRipUpgradeActive(21)) g *= 1.2
 	}
 	if (tmp.rg4) g*=0.4
+	if (player.aarexModifications.ngp5V !== undefined) {
+		g *= getGCReward(4).toNumber()
+	}
 	if ((inNC(15)||player.currentChallenge=="postc1")&&player.aarexModifications.ngmX==3) g=0
 	return g
 }
 
-function getGalaxyPower(ng, bi, noDil) {
+function getReducedSacGals() {
+	if (!tmp.ngp3) return 0
+	let reduced = getNanofieldRewardEffect("8t")
+	return reduced
+}
+
+function getGalaxyPower(ng, bi) {
 	let replGalEff = 1
 	if (player.boughtDims) replGalEff = Math.log10(player.replicanti.limit.log(2))/Math.log10(2)/10
 	else if (ECTimesCompleted("eterc8") > 0) replGalEff = getECReward(8)
@@ -22,21 +31,20 @@ function getGalaxyPower(ng, bi, noDil) {
 	let extraReplGalPower = 0
 	if (player.timestudy.studies.includes(133)) extraReplGalPower += player.replicanti.galaxies/2
 	if (player.timestudy.studies.includes(132)) extraReplGalPower += player.replicanti.galaxies*0.4
+	if (player.replicantiBoosts !== undefined) extraReplGalPower += player.replicanti.galaxies*(0.2*player.replicantiBoosts.amount)
 	extraReplGalPower += extraReplGalaxies
 	
 	let otherGalPower = player.replicanti.galaxies
 	if (player.masterystudies ? player.masterystudies.includes("t342") : false) otherGalPower = (otherGalPower + extraReplGalPower) * replGalEff
 	else otherGalPower += Math.min(player.replicanti.galaxies, player.replicanti.gal) * (replGalEff - 1) + extraReplGalPower
-	if (!noDil) otherGalPower += Math.floor(player.dilation.freeGalaxies) * ((player.masterystudies ? player.masterystudies.includes("t343") : false) ? replGalEff : 1)
-	otherGalPower += tmp.aeg
+	otherGalPower += Math.floor(player.dilation.freeGalaxies) * ((player.masterystudies ? player.masterystudies.includes("t343") : false) ? replGalEff : 1)
 
-	let galaxyPower = ng
-	if (!tmp.be) galaxyPower = Math.max(ng-(bi?2:0),0)+otherGalPower
+	let galaxyPower = Math.max(ng-(bi?2:0),0)+(tmp.be?0:otherGalPower)
 	if ((inNC(7)||inQC(4))&&player.galacticSacrifice) galaxyPower *= galaxyPower
 	return galaxyPower
 }
 
-function getGalaxyEff(bi) {
+function getGalaxyPowerEff(bi) {
 	let eff = 1
 	if (player.galacticSacrifice) if (player.galacticSacrifice.upgrades.includes(22)) eff *= player.aarexModifications.ngmX>3?2:5;
 	if (player.infinityUpgrades.includes("galaxyBoost")) eff *= 2;
@@ -58,94 +66,54 @@ function getGalaxyEff(bi) {
 	if (player.timestudy.studies.includes(212)) eff *= Math.min(Math.pow(player.timeShards.max(2).log2(), 0.005), 1.1)
 	if (player.timestudy.studies.includes(232)&&bi) eff*=tmp.ts232
 
-	if (player.aarexModifications.nguspV !== undefined && player.dilation.active) eff *= exDilationBenefit() + 1
 	if (tmp.ngp3) eff *= colorBoosts.r
 	if (GUBought("rg2")) eff *= Math.pow(player.dilation.freeGalaxies/5e3+1,0.25)
 	if (tmp.rg4) eff *= 1.5
 	return eff
 }
 
-function getGalaxyTickSpeedMultiplier() {
+function getTickSpeedMultiplier() {
 	let g = initialGalaxies()
 	if ((player.currentChallenge == "postc3" || isIC3Trapped()) && !tmp.be) {
-		if (player.currentChallenge=="postcngmm_3" || player.challenges.includes("postcngmm_3")) return Decimal.pow(player.tickspeedBoosts != undefined ? 0.9995 : 0.998, getGalaxyPower(g) * getGalaxyEff(true))
+		if (player.currentChallenge=="postcngmm_3" || player.challenges.includes("postcngmm_3")) return Decimal.pow(player.tickspeedBoosts != undefined ? 0.9995 : 0.998, getGalaxyPower(g) * getGalaxyPowerEff(true))
 		return 1
 	}
 	if (inQC(2)) return 0.89
-	let inRS = player.boughtDims != undefined || player.infinityUpgradesRespecced != undefined
-	let galaxies = getGalaxyPower(g, !inRS) * getGalaxyEff(true)
-	let baseMultiplier = 0.8
-	let linearGalaxies = 2
-	let useLinear = g + player.replicanti.galaxies + player.dilation.freeGalaxies <= linearGalaxies
-	if (inNC(6) || player.currentChallenge == "postc1" || player.pSac != undefined) baseMultiplier = 0.83
-	if (inRS) {
-		linearGalaxies = Math.min(galaxies, 5)
+	let inERS = player.boughtDims != undefined || player.infinityUpgradesRespecced != undefined
+	let galaxies
+	let baseMultiplier
+	let useLinear
+	let linearGalaxies
+	if (inERS) {
+		galaxies = getGalaxyPower(g) * getGalaxyPowerEff(true)
+		linearGalaxies = Math.min(galaxies,5)
 		useLinear = true
+	} else {
+		linearGalaxies = 2
+		useLinear = g + player.replicanti.galaxies + player.dilation.freeGalaxies < 3
 	}
 	if (useLinear) {
 		baseMultiplier = 0.9;
-		if (inRS && galaxies == 0) baseMultiplier = 0.89
+		if (inERS && galaxies == 0) baseMultiplier = 0.89
 		else if (g == 0) baseMultiplier = 0.89
-		if (inNC(6) || player.currentChallenge == "postc1" || player.pSac != undefined) baseMultiplier = 0.93
-		if (inRS) {
+		if (inNC(6) || player.currentChallenge == "postc1") baseMultiplier = 0.93;
+		if (inERS) {
 			baseMultiplier -= linearGalaxies*0.02
 		} else {
-			let perGalaxy = 0.02 * getGalaxyEff()
-			return Math.max(baseMultiplier-g*perGalaxy,0.83)
+			let perGalaxy = 0.02 * getGalaxyPowerEff()
+			return Decimal.div(Math.max(baseMultiplier-g*perGalaxy,0.83), getExtraTickReductionMult());
 		}
+	}
+	if (!inERS) {
+		baseMultiplier = 0.8
+		if (inNC(6) || player.currentChallenge == "postc1") baseMultiplier = 0.83
+		galaxies = getGalaxyPower(g) * getGalaxyPowerEff(true)
 	}
 	let perGalaxy = player.infinityUpgradesRespecced != undefined ? 0.98 : 0.965
-	return Decimal.pow(perGalaxy, galaxies-linearGalaxies).times(baseMultiplier)
-}
-
-function getPostC3Mult() {
-	let base = getPostC3Base()
-	let exp = getPostC3Exp()
-	if (exp>1) return Decimal.pow(base,exp)
-	return base
-}
-
-function getPostC3Base() {
-	if (player.currentChallenge=="postcngmm_3") return 1
-	let perGalaxy = 0.005;
-	if (player.tickspeedBoosts != undefined) perGalaxy = 0.002
-	if (inQC(2)) perGalaxy = 0
-	if (tmp.ngp3 ? tmp.qu.bigRip.active : false) {
-		if (ghostified&&player.ghostify.neutrinos.boosts>8) perGalaxy*=tmp.nb[8]
-		if (hasNU(12)) perGalaxy*=tmp.nu[4].free
-	}
-	if (!player.galacticSacrifice) return player.galaxies*perGalaxy+1.05
-	if (tmp.cp>1) {
-		if (player.tickspeedBoosts != undefined) perGalaxy *= tmp.cp/10+.9
-		else perGalaxy *= tmp.cp/5+.8
-	}
-	var g=initialGalaxies()
-	perGalaxy *= getGalaxyEff()
-	let ret = getGalaxyPower(g)*perGalaxy+1.05
-	if (inNC(6)||player.currentChallenge=="postc1") ret -= player.aarexModifications.ngmX>3?0.02:0.05
-	else if (player.aarexModifications.ngmX == 3) ret -= 0.03
-	if (hasPU(33)) ret += puMults[33]()
-	return ret
-}
-
-function getPostC3Exp() {
-	let x=1
-	if (player.galacticSacrifice!==undefined) {
-		let g=getGalaxyPower(0,false,true)
-		if (g<7) return 1+g/5
-		let y=5
-		let z=.5
-		if (tmp.ec>29) {
-			if (player.currentEternityChall=="" || player.currentEternityChall=="eterc12") {
-				z=.9
-				if (tmp.ec>53) y = 1.4-((tmp.ec-54)/15)
-				else if (tmp.ec>42) y=2
-				else if (tmp.ec>37) y=3.5
-			} else z=.6
-		}
-		x=2+Math.pow(g-5,z)/y
-	}
-	return x
+	let gain = Decimal.pow(perGalaxy, galaxies-linearGalaxies).times(baseMultiplier).div(getExtraTickReductionMult())
+	if (player.aarexModifications.ngp5V !== undefined) if (inGC(4)) gain = new Decimal(1-1e-15)
+	if (tmp.ngp3) if (bigRipped && player.currentEternityChall=='eterc10'&&gain.lt('1e-15000')) gain = Decimal.pow(Decimal.log10(gain)*(-1),-3592)
+	return gain
 }
 
 function canBuyTickSpeed() {
@@ -165,17 +133,18 @@ function buyTickSpeed() {
 	reduceMatter(1)
 	if (!tmp.be) {
 		player.tickspeed = player.tickspeed.times(getTickSpeedMultiplier())
-		if (player.challenges.includes("postc3") || player.currentChallenge == "postc3" || isIC3Trapped()) player.postC3Reward = player.postC3Reward.times(getPostC3Mult())
+		if (player.challenges.includes("postc3") || player.currentChallenge == "postc3" || isIC3Trapped()) player.postC3Reward = player.postC3Reward.times(getPostC3RewardMult())
 	}
 	player.postC8Mult = new Decimal(1)
 	if (inNC(14) && player.tickspeedBoosts == undefined) player.tickBoughtThisInf.current++
 	player.why = player.why + 1
-	updateTickSpeed()
 	return true
 }
 
 document.getElementById("tickSpeed").onclick = function () {
-	buyTickSpeed()
+  buyTickSpeed();
+
+  updateTickSpeed();
 };
 
 function getTickSpeedCostMultiplierIncrease() {
@@ -200,7 +169,7 @@ function buyMaxPostInfTickSpeed (mult) {
 	reduceMatter(buying)
 	if (!tmp.be || player.currentEternityChall == "eterc10") {
 		player.tickspeed = player.tickspeed.times(Decimal.pow(mult, buying));
-		if (player.challenges.includes("postc3") || player.currentChallenge == "postc3" || isIC3Trapped()) player.postC3Reward = player.postC3Reward.times(Decimal.pow(getPostC3Mult(), buying))
+		if (player.challenges.includes("postc3") || player.currentChallenge == "postc3" || isIC3Trapped()) player.postC3Reward = player.postC3Reward.times(Decimal.pow(getPostC3RewardMult(), buying))
 	}
 	player.tickSpeedCost = player.tickSpeedCost.times(player.tickspeedMultiplier.pow(buying-1)).times(Decimal.pow(mi, (buying-1)*(buying-2)/2))
 	player.tickspeedMultiplier = player.tickspeedMultiplier.times(Decimal.pow(mi, buying-1))
@@ -228,7 +197,7 @@ function buyMaxTickSpeed() {
 		reduceMatter(toBuy)
 		if (!tmp.be || player.currentEternityChall == "eterc10") {
 			player.tickspeed = Decimal.pow(getTickSpeedMultiplier(), toBuy).times(player.tickspeed)
-			if (player.challenges.includes("postc3") || player.currentChallenge == "postc3" || isIC3Trapped()) player.postC3Reward = player.postC3Reward.times(Decimal.pow(getPostC3Mult(), toBuy))
+			if (player.challenges.includes("postc3") || player.currentChallenge == "postc3" || isIC3Trapped()) player.postC3Reward = player.postC3Reward.times(Decimal.pow(getPostC3RewardMult(), toBuy))
 		}
 		player.tickSpeedCost = player.tickSpeedCost.times(Decimal.pow(10, toBuy))
 		player.postC8Mult = new Decimal(1)
@@ -245,7 +214,7 @@ function buyMaxTickSpeed() {
 			reduceMatter(1)
 			if (!tmp.be || player.currentEternityChall == "eterc10") {
 				player.tickspeed = player.tickspeed.times(mult);
-				if (player.challenges.includes("postc3") || player.currentChallenge == "postc3" || isIC3Trapped()) player.postC3Reward = player.postC3Reward.times(getPostC3Mult())
+				if (player.challenges.includes("postc3") || player.currentChallenge == "postc3" || isIC3Trapped()) player.postC3Reward = player.postC3Reward.times(getPostC3RewardMult())
 			}
 			player.postC8Mult = new Decimal(1)
 			if (!cannotUsePostInfTickSpeed()) buyMaxPostInfTickSpeed(mult);
@@ -277,7 +246,7 @@ function updateTickSpeed() {
 		else if (exp > 1) label = 'Tickspeed: ' + tickspeed.toFixed(0)
 		else {
 			var expExp = Math.max(Math.min(Math.ceil(15 - Math.log10(2 - exp)), 3), 0)
-			if (expExp == 0) label = 'Tickspeed: ' + shortenCosts(Decimal.div(1000, tickspeed)) + "/s"
+			if (expExp == 0) label = 'Tick: ' + shortenCosts(Decimal.div(1000, tickspeed)) + "/s"
 			else label = 'Tickspeed: ' + Math.min(tickspeed.m * Math.pow(10, expExp - 1), Math.pow(10, expExp) - 1).toFixed(0) + ' / ' + shortenCosts(Decimal.pow(10,2 - exp))
 		}
 	}

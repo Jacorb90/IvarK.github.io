@@ -23,7 +23,7 @@ function buyWithIP() {
 }
 
 function buyWithEP() {
-  if (!canBuyTTWithEP()) {
+  if (player.timeDimension1.bought < 1) {
       alert("You need to buy at least 1 time dimension before you can purchase theorems with Eternity points.")
       return false;
   }
@@ -35,10 +35,6 @@ function buyWithEP() {
       updateEternityUpgrades()
       return true
   } else return false
-}
-
-function canBuyTTWithEP() {
-	return player.timeDimension1.bought || (player.masterystudies !== undefined && tmp.qu.bigRip.active)
 }
 
 function maxTheorems() {
@@ -57,7 +53,7 @@ function maxTheorems() {
 	}
 	
 	gainTT = Math.floor(player.eternityPoints.div(player.timestudy.epcost).plus(1).log2())
-	if (gainTT > 0 && canBuyTTWithEP()) {
+	if (gainTT > 0 && player.timeDimension1.bought > 0) {
 		player.timestudy.theorem += gainTT
 		player.eternityPoints = player.eternityPoints.sub(Decimal.pow(2, gainTT).sub(1).times(player.timestudy.epcost))
 		if (!break_infinity_js && isNaN(player.eternityPoints.logarithm)) player.eternityPoints = new Decimal(0)
@@ -96,6 +92,7 @@ function updateTheoremButtons() {
 }
 
 function buyTimeStudy(name, check, quickBuy) {
+	if (currentAnnihilationTier()>0) return
 	var cost = studyCosts[all.indexOf(name)]
 	if (player.boughtDims) {
 		if (player.timestudy.theorem<player.timestudy.ers_studies[name]+1) return
@@ -136,6 +133,7 @@ function buyTimeStudy(name, check, quickBuy) {
 }
 
 function buyDilationStudy(name, cost) {
+	if (currentAnnihilationTier()>0) return
     if (player.timestudy.theorem >= cost && !player.dilation.studies.includes(name) && (player.dilation.studies.includes(name-1)||name<2)) {
         if (name < 2) {
             if (ECTimesCompleted("eterc11")+ECTimesCompleted("eterc12")<10||getTotalTT(player)<13000) return
@@ -317,33 +315,6 @@ function updateTimeStudyButtons(changed) {
   }
 }
 
-function updateBoughtTimeStudies() {
-	for (var i=0; i<player.timestudy.studies.length; i++) {
-		var num=player.timestudy.studies[i]
-		if (typeof(num)!="number") num=parseInt(num)
-		if (!all.includes(num)) continue
-		if (num == 71 || num == 81 || num == 91 || num == 101) {
-			document.getElementById(num).className = "timestudybought normaldimstudy"
-		} else if (num == 72 || num == 82 || num == 92 || num == 102) {
-			document.getElementById(num).className = "timestudybought infdimstudy"
-		} else if (num == 73 || num == 83 || num == 93 || num == 103) {
-			document.getElementById(num).className = "timestudybought timedimstudy"
-		} else if (num == 121 || num == 131 || num == 141) {
-			document.getElementById(num).className = "timestudybought activestudy"
-		} else if (num == 122 || num == 132 || num == 142) {
-			document.getElementById(num).className = "timestudybought passivestudy"
-		} else if (num == 123 || num == 133 || num == 143) {
-			document.getElementById(num).className = "timestudybought idlestudy"
-		} else if (num == 221 || num == 224 || num == 225 || num == 228 || num == 231 || num == 234) {
-			document.getElementById(num).className = "timestudybought darkstudy"
-		} else if (num == 222 || num == 223 || num == 226 || num == 227 || num == 232 || num == 233) {
-			document.getElementById(num).className = "timestudybought lightstudy"
-		} else {
-			document.getElementById(num).className = "timestudybought"
-		}
-	}	
-}
-
 function studiesUntil(id) {
   var col = id % 10;
   var row = Math.floor(id / 10);
@@ -366,6 +337,7 @@ function studiesUntil(id) {
 }
 
 function respecTimeStudies(force, presetLoad) {
+  if (currentAnnihilationTier()>0) return
   var respecTime=player.respec||(force&&(presetLoad||player.eternityChallUnlocked<13))
   var respecMastery=false
   var gotAch=respecTime||player.timestudy.studies.length<1
@@ -382,6 +354,7 @@ function respecTimeStudies(force, presetLoad) {
           player.timestudy.ers_studies=[null,0,0,0,0,0,0]
        } else {
           var bru7activated = isBigRipUpgradeActive(7)
+		  if (ghostified) bru7activated = false
           for (var i=0; i<all.length; i++) {
               if (player.timestudy.studies.includes(all[i]) && (!bru7activated || all[i] !== 192)) {
                   player.timestudy.theorem += studyCosts[i]
@@ -521,7 +494,7 @@ function importSpec () {
 }
 
 function exportStudyTree() {
-  let output = document.getElementById('output');
+  let output = document.getElementById('treeExportOutput');
   let parent = output.parentElement;
 
   parent.style.display = "";
@@ -555,7 +528,6 @@ function exportStudyTree() {
       if (document.execCommand('copy')) {
           $.notify("exported to clipboard", "info");
           output.blur();
-          output.onblur();
       }
   } catch(ex) {
       // well, we tried.
@@ -644,19 +616,20 @@ function new_preset(importing) {
 	var placement=1
 	while (poData.includes(placement)) placement++
 	presets[placement]={preset:input}
-	localStorage.setItem(btoa(presetPrefix+placement),btoa(JSON.stringify(presets[placement])))
+	localStorage.setItem(btoa(prefix+placement),btoa(JSON.stringify(presets[placement])))
 	poData.push(placement)
 	latestRow=document.getElementById("presets").insertRow(loadedPresets)
 	latestRow.innerHTML=getPresetLayout(placement)
 	loadedPresets++
 	changePresetTitle(placement, loadedPresets)
-	localStorage.setItem(metaSaveId,btoa(JSON.stringify(metaSave)))
+	localStorage.setItem("AD_aarexModifications",btoa(JSON.stringify(metaSave)))
 	$.notify("Preset created", "info")
 }
 
 //Smart presets
 var onERS = false
 var onNGP3 = false
+var prefix = "dsAM_ST_"
 var poData
 
 function save_preset(id) {
@@ -678,7 +651,7 @@ function save_preset(id) {
 		}
 		presets[id].preset=player.timestudy.studies+(mtsstudies.length>0?","+mtsstudies:"")+"|"+player.eternityChallUnlocked
 	}
-	localStorage.setItem(btoa(presetPrefix+id),btoa(JSON.stringify(presets[id])))
+	localStorage.setItem(btoa(prefix+id),btoa(JSON.stringify(presets[id])))
 	$.notify("Preset saved", "info")
 }
 
@@ -706,7 +679,7 @@ function delete_preset(presetId) {
             changePresetTitle(poData[id], id)
         } else if (poData[id]==presetId) {
             delete presets[presetId]
-            localStorage.removeItem(btoa(presetPrefix+presetId))
+            localStorage.removeItem(btoa(prefix+presetId))
             alreadyDeleted=true
             document.getElementById("presets").deleteRow(id)
             loadedPresets--
@@ -714,13 +687,13 @@ function delete_preset(presetId) {
     }
     metaSave["presetsOrder"+(player.boughtDims?"_ers":"")]=newPresetsOrder
     poData=newPresetsOrder
-    localStorage.setItem(metaSaveId,btoa(JSON.stringify(metaSave)))
+    localStorage.setItem("AD_aarexModifications",btoa(JSON.stringify(metaSave)))
     $.notify("Preset deleted", "info")
 }
 
 function rename_preset(id) {
 	presets[id].title=prompt("Input a new name of this preset. It is necessary to rename it into related names!")
-	localStorage.setItem(btoa(presetPrefix+id),btoa(JSON.stringify(presets[id])))
+	localStorage.setItem(btoa(prefix+id),btoa(JSON.stringify(presets[id])))
 	placement=1
 	while (poData[placement-1]!=id) placement++
 	changePresetTitle(id, placement)
@@ -740,7 +713,7 @@ function move_preset(id,offset) {
 	document.getElementById("presets").rows[placement+offset].innerHTML=getPresetLayout(id)
 	changePresetTitle(poData[placement],placement)
 	changePresetTitle(poData[placement+offset],placement+offset)
-	localStorage.setItem(metaSaveId,btoa(JSON.stringify(metaSave)))
+	localStorage.setItem("AD_aarexModifications",btoa(JSON.stringify(metaSave)))
 }
 
 var loadedPresets=0
@@ -752,8 +725,8 @@ function openStudyPresets() {
 		document.getElementById("presets").innerHTML=""
 		presets = {}
 		onERS = saveOnERS
-		if (onERS) presetPrefix = prefix+"ERS_ST_"
-		else presetPrefix = prefix+"AM_ST_"
+		if (onERS) prefix = "dsERS_ST_"
+		else prefix = "dsAM_ST_"
 		loadedPresets = 0
 	} else if (saveOnNGP3!=onNGP3) {
 		onNGP3=saveOnNGP3
@@ -792,25 +765,11 @@ function getPresetLayout(id) {
 
 function changePresetTitle(id, placement) {
 	if (presets[id]===undefined) {
-		var preset=localStorage.getItem(btoa(presetPrefix+id))
+		var preset=localStorage.getItem(btoa(prefix+id))
 		if (preset===null) {
 			presets[id]={preset:"|0",title:"Deleted preset #"+placement}
-			localStorage.setItem(btoa(presetPrefix+id),btoa(JSON.stringify(presets[id])))
+			localStorage.setItem(btoa(prefix+id),btoa(JSON.stringify(presets[id])))
 		} else presets[id]=JSON.parse(atob(preset))
 	}
 	document.getElementById("preset_"+id+"_title").textContent=presets[id].title?presets[id].title:"Preset #"+placement
-}
-
-//Time Study Effects
-function getTS11Mult() {
-	let bigRipped = player.masterystudies === undefined ? false : tmp.qu.bigRip.active
-	let log = -player.tickspeed.div(1e3).pow(0.005).times(0.95).plus(player.tickspeed.div(1e3).pow(0.0003).times(0.95)).log10()
-	if (bigRipped && log > 900) log = Math.sqrt(log * 900)
-	else if (player.galacticSacrifice === undefined) log = Math.min(log, 2500)
-	log /= player.aarexModifications.newGameExpVersion ? 4 : 1
-	return Decimal.pow(10, log)
-}
-
-function getTS32Mult() {
-	return Math.pow(Math.max(player.resets,1),player.aarexModifications.newGameMult?4:1)
 }

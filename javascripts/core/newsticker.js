@@ -1,3 +1,5 @@
+var newsArray;
+
 function updateNewsArray() {
 newsArray = [//always true
 ["The cookie is a lie.", true, "a1"], ["Antimatter cookies have been confirmed to not exist, whoever claims that, stop.", true, "a4"], ["Antimatter ghosts do not exist. Just like matter ghosts. They don't have any matter, for that matter.", true, "a2"],
@@ -203,7 +205,7 @@ newsArray = [//always true
 ["New prestige layer coming soon, Police-ize! When you prestige, you unlock officer dimensions. They behave like all other dimensions except they produce anti-anti-antimatter. This anti-anti-antimatter can be used to purchase more officer dimensions. The anti-anti-antimatter also makes your galaxies feel more safer, providing a boost in galaxy efficiency, based on your highest reached AAAM.", "player.masterystudies !== undefined", "am50"],
 ['"THERE WILL BE NO NG+4. NG+3 ALWAYS HAVE UPDATES." - Aarex', "ghostified", "am51"],
 ["No. You are not really at current end-game.", "(player.masterystudies !== undefined ? player.quantum.bigRip.bestAntimatter.gte(Decimal.pow(10, 1e9)) : false)", "am52"],
-["Congratulations for beating NG+3! (for now...) A secret is unlocked in Ghostly News Ticker...", "player.totalmoney.gte(Decimal.pow(10, 2e17))", "am53"],
+["Congratulations for beating NG+3! (for now...) A secret is unlocked in Ghostly News Ticker...", "player.totalmoney.gte(Decimal.pow(10, 5e16))", "am53"],
 ["You're reading news too much.", "player.newsArray.length >= 215", "am54"],
 ["You're addicted to news.", "player.newsArray.length >= 230", "am55"],
 ["Okay. You can stop reading the news.", "player.newsArray.length >= 245", "am56"],
@@ -283,30 +285,29 @@ newsArray = [//always true
 ["Congratulations for beating NG-3! (for now...)", "player.tickspeedBoosts !== undefined && player.postChallUnlocked > 5", "am130"],
 ["Progressing as a Ghost...", "ghostified && player.ghostify.ghostlyPhotons.unl", "am131"],
 ["VROOOOOOM!!!", "player.infinityUpgrades.includes('postGalaxy')", "am132"],
-["Quantum Challenges are not challenging enough.", "player.masterystudies !== undefined && player.masterystudies.includes('d9')", "am133"],
-["U is the new M", "player.achievements.includes('ng3p45')", "am134"],
-["Antimatter has just declared war on Matter. We are no longer safe. We are no longer free.", true, "am135"],
-["Which one looks different? Preons or anti-preons?", 'player.achievements.includes("ng3p81")', "am136"],
-['"Anti-preons are coming. They will destroy our Nanofield work. We are doomed." ~ Worker replicant #179,769,308.', 'player.achievements.includes("ng3p81")', "am137"],
-["GET A FREE PASS TO A GHOST TRANSFORMATION MACHINE NOW! IT IS TOTALLY WORTH IT!", 'ghostified', "am138"],
-['I told you "don\'t click that news" or else you will get a useless achievement.', "player.achievements.includes('ng3ps12')", "am139"],
-["Want to decay a quark multiple times? Be a Bosonic Lab scientist!", "ghostified && player.ghostify.ghostlyPhotons.enpowerments>3", "am140"],
-['"Anti-preons destroyed our rewards by anti-Nanofield. We should take revenge and steal their rewards back." ~ Worker replicant #247,273,145.', 'ghostified && tmp.bl.upgrades.includes(24)', "am141"],
-["BOSONIC OVERDRIVE!!!", 'player.achievements.includes("ng3p81") && tmp.bl.odSpeed.gt(1) && tmp.bl.battery.gt(0)', "am142"],
-["If preons, Nanofield, and Anti-Preons exist, then why Anti-Nanofield doesn't exist?", 'ghostified && tmp.bl.upgrades.includes(24)', "am143"],
-['Wait a second. I think I\'ve realized something. The main writer never says what broadcasting channel we\'re on. I was always curious what channel our news show is on, so I went into a top secret room the main writer never tells us to go in. And what I found...I found what channel we broadcasted on. It is "999". But channel 999 doesn\'t exist! And I also found some other things...at the bottom-right of the page, it says "Sponsored by Hevipelle". Who is Hevipelle? I\'ve never heard anyone named Hevipelle in the world. Does this mean...does this mean that Hevipelle is a nickname for someone? A...oh no. There\'s more text. A sentence says...it says..."Because the physics of the game "Antimatter Dimensions" does not allow for visuals, all thoughts, feelings, and actions made by any being are put into short news tickers. OH MY GOD I\'M IN A VIDEOGAME OH GOD THIS IS A NEWS TICKER F\*\*\* THIS DEVELOP-sifdweyfwytrwqe8723648765237869iyusdqwe-0))$#(&)QBTR&_(B)&30-b5q&)rfb)+B0R-98w#$)9b)({bew)#(5R[q)(t()qet){(q#*bT8bb &){rb&rqw#b %&r7#w&R&{07&&b#w$&b )r ({e[-(b reafbgu ({brdiuufertuyreuyyuyuefuyuyfiYUiuyEYUFiuyGUY087378578052}}}}}}},,,', true , "am144"],
-["Hi, Billy Mays here for the Antimatter Dimensions game, the new easier way to waste time!", true, "am145"],
-["When does the 0th dimension come out", true, "am146"],
-["I was in a wrong laboratory. Then I found a better laboratory that actually boosts for good.", "player.achievements.includes('ng3p81')", "am147"],
-["I was stuck in a grinding section. Thanks to gods, I can finally get out of here.", false, "am148"],
-["The end is near...", "ghostified && tmp.bl.upgrades.includes(23)", "am149"],
-["We have updated our Terms of Service to comply with COPPA Act.", true, "am150"],
-["Tree of Decay isn't a upgrade tree, I have been lied to", "player.masterystudies !== undefined && player.masterystudies.includes('d13')", "am151"],
-["ELECTRONS CONSUME YOUR STARS", "player.masterystudies !== undefined && player.masterystudies.includes('d7')", "am152"],
-['"New game dammit" - GrayStillPlays', "player.masterystudies !== undefined", "am153"],
-['"More zeroes dammit" - GrayStillPlays', "player.masterystudies !== undefined", "am154"],
-["i know your type. you're, uh, very determined, aren't you? you'll never give up, even if there's, uh... absolutely NO benefit to persevering whatsoever. if i can make that clear. no matter what, you'll just keep going. not out of any desire for good or evil... but just because you think you can. and because you \"can\"... ... you \"have to\". but now, you've reached the end. there is nothing left for you now. so, uh, in my personal opinion... the most \"determined\" thing you can do here? is to, uh, completely give up. and... well... do literally anything else.", "player.masterystudies !== undefined", "am155"]
-/*NEXT ID: am153*/
+/*NEXT ID: am133*/
+
+//Ghostly news ticker messages
+["Kee-hee-hee!", true, "gn1"],
+["Every ghostly antimatter is safe.", true, "gn2"],
+["Are you a ghost and want to use computers? Get Ghostified Hands! This stuff makes your hands feel like a human again! To order, you need to pay Ghost Particles and pass through your universe.", true, "gn3"],
+["Ghosts can't actually pass through walls because they're stuck in space.", true, "gn4"],
+['"August is here already" - Aarex', true, "gn5"],
+["Ghostly news tickers are dead... they also serve no purpose... right..?", "player.newsArray.includes('am32')", "gn6"],
+["Did you forgot to read this message? You read too much messages of your normal news ticker. Because of this, you became a ghost for wasting your time too much.", "player.newsArray.length >= 215", "gn7"],
+["Ghosts can't die. So why humans can't be immortal?", true, "gn8"],
+["Because neutrinos are ghostly particles, you are made of ghost particles and neutrinos.", true, "gn9"],
+["How do you play this after you became a real ghost?", true, "gn10"],
+["R.I.P.  ------  You  ------  Died to Ghostify ------ xxxx-", true, "gn11"],
+["Spooky scary ghosts send neutrinos down your spine", true, "gn12"],
+["Ghostify has nothing to do with ghostping.", true, "gn13"],
+["Are your ghost particles ghostly? If not, talk to your ghostly boss.", true, "gn14"],
+["What's a ghostify? -some new person that joined the discord server", true, "gn15"],
+["BREAKING NEWS: Because of antimatter, someone has been turned into a basketball. The news ticker writers are baffled.", true, "gn16"],
+["If you read 'Congratulations for beating NG+3' message, here is a spoiler: In the next update, there will be W & Z Bosons!", "player.newsArray.includes('am68') && player.totalmoney.gte(Decimal.pow(10, 5e16))", "gn17"],
+["WARNING: Do not interact evil ghosts. They can scare you out.", true, "gn18"],
+["Do you know that ghosts are proved to be undead?", true, "gn19"],
+["I got Ghost Particles. I got Neutrinos. That makes me a ghost.", true, "gn20"]
 ];}
 
 document.addEventListener("visibilitychange", function() {if (!document.hidden) {scrollNextMessage();}}, false);
@@ -317,14 +318,14 @@ function scrollNextMessage() {
   if (player.options.newsHidden) return false
   var s = document.getElementById('news');
   updateNewsArray();
-  tmp.blankedOut=false
-
   //select a message at random
+
   try {
-    do {nextMsgIndex = Math.floor(Math.random() * newsArray.length)} while (!eval(newsArray[nextMsgIndex][1]) || (newsArray[nextMsgIndex][2].indexOf("am") > -1 && !player.achievements.includes("r22")))
+    do {nextMsgIndex = Math.floor(Math.random() * newsArray.length)} while (!eval(newsArray[nextMsgIndex][1]) || (newsArray[nextMsgIndex][2].indexOf("am") > -1 && !player.achievements.includes("r22")) || newsArray[nextMsgIndex][2].indexOf("gn") > -1)
   } catch(e) {
       console.log("Newsarray doesn't work at idx " + nextMsgIndex)
   }
+
   scrollTimeouts.forEach(function(v) {clearTimeout(v);});
   scrollTimeouts = [];
 
@@ -366,89 +367,22 @@ function scrollNextMessage() {
     s.style.transform = 'translateX(-'+(textWidth+5)+'px)';
     //automatically start the next message scrolling after this one finishes
     //you could add more time to this timeout if you wanted to have some time between messages
-	scrollTimeouts.push(setTimeout(function() {
-		if (newsArray[nextMsgIndex][2] == "am104") {
-			tmp.blankedOut=true
-			setTimeout(scrollNextMessage, 60e3)
-		} else scrollNextMessage()
-	}, Math.ceil(transformDuration * 1000)));
+    scrollTimeouts.push(setTimeout(scrollNextMessage, Math.ceil(transformDuration * 1000 + (newsArray[nextMsgIndex][2] == "am104" ? 6e4 : 0))));
   }, 100));
 }
-
-function updateGhostlyNewsArray() {
-ghostlyNewsArray = [//Ghostly news ticker messages
-["Kee-hee-hee!", true, "gn1"],
-["Every ghostly antimatter is safe.", true, "gn2"],
-["Are you a ghost and want to use computers? Get Ghostified Hands! This stuff makes your hands feel like a human again! To order, you need to pay Ghost Particles and pass through your universe.", true, "gn3"],
-["Ghosts can't actually pass through walls because they're stuck in space.", true, "gn4"],
-['"August is here already" - Aarex', true, "gn5"],
-["Ghostly news tickers are dead... they also serve no purpose... right..?", "player.newsArray.includes('am32')", "gn6"],
-["Did you forgot to read this message? You read too much messages of your normal news ticker. Because of this, you became a ghost for wasting your time too much.", "player.newsArray.length >= 215", "gn7"],
-["Ghosts can't die. So why humans can't be immortal?", true, "gn8"],
-["Because neutrinos are ghostly particles, you are made of ghost particles and neutrinos.", true, "gn9"],
-["How do you play this after you became a real ghost?", true, "gn10"],
-["R.I.P.  ------  You  ------  Died to Ghostify ------ xxxx-", true, "gn11"],
-["Spooky scary ghosts send neutrinos down your spine", true, "gn12"],
-["Ghostify has nothing to do with ghostping.", true, "gn13"],
-["Are your ghost particles ghostly? If not, talk to your ghostly boss.", true, "gn14"],
-["What's a ghostify? -some new person that joined the discord server", true, "gn15"],
-["BREAKING NEWS: Because of antimatter, someone has been turned into a basketball. The news ticker writers are baffled.", true, "gn16"],
-["If you read 'Congratulations for beating NG+3' message, here is a spoiler: In the next update, there will be Higgs Bosons!", "player.newsArray.includes('am68') && player.totalmoney.gte(Decimal.pow(10, 2e17))", "gn17"],
-["WARNING: Do not interact evil ghosts. They can scare you out.", true, "gn18"],
-["Do you know that ghosts are proved to be undead?", true, "gn19"],
-["I got Ghost Particles. I got Neutrinos. That makes me a ghost.", true, "gn20"],
-["Ghostly Photons can't emit light. They emit ghostly light!", "player.achievements.includes('ng3p71')", "gn21"],
-["You got Light Empowerments? That means you have Ghostly Light inside of you! Kee-hee-hee!", "player.ghostify.ghostlyPhotons.enpowerments", "gn22"],
-["Ghosts can experiment and discover some Bosons.", "player.achievements.includes('ng3p81')", "gn23"],
-["Some ghosts were injured due to the annihilation of preons and anti-preons.", "player.achievements.includes('ng3p81')", "gn24"],
-["A new study shows that ghosts can do extreme work.", true, "gn25"],
-["A new evidence states that there is Bosonic Lab inside of their secret laboratory.", true, "gn26"],
-["Ghosts have dominated some universes!", true, "gn27"],
-["Boo! Kee-hee-hee!", "Math.random() <= 0.001", "gn28"],
-["An anti-preon ghost is discovered. He is evil to Nanofield. Don't ever observe him or else he will take over your Nanofield.", "player.achievements.includes('ng3p81')", "gn29"],
-["Ghosts found a ghostly kind of Radioactive Decays!", "Math.max(Math.max(getRadioactiveDecays('r'), getRadioactiveDecays('g')), getRadioactiveDecays('b')) > 4", "gn30"],
-["Ghosts discovered that some particles, including bosons, are ghostly!", true, "gn31"],
-["Ghosts don't know how to write more news. They decided to stop it for today.", true, "gn32"],
-["The Anti-Preon Ghost is getting closer. He will destroy your Nanofield. Stay away from him.", "tmp.bl.upgrades.includes(13)", "gn33"],
-["WARNING! The Anti-Preon Ghost will control over your Nanofield! Be careful! Oh. Worker replicants are warned of that Ghost too.", "tmp.bl.upgrades.includes(21)", "gn34"],
-["A ghost tried to take Anti-Preons out, but Bosonic Lab workers decided to ban them out because an Anti-Preon is a resource of Bosonic Lab.", "player.achievements.includes('ng3p81')", "gn35"],
-["You got one ghostly particle, whatever that means.", "tmp.bl.upgrades.includes(21)", "gn36"],
-['"Welcome, a new ghost, to the Ghostify layer! Kee-hee-hee!" - Aarex', true, "gn37"],
-["Can you buy max light empowerments?", "player.ghostify.ghostlyPhotons.enpowerments>2", "gn38"],
-["Wait a second. This new laboratory isn't anti-Nanofield...", "tmp.bl.upgrades.includes(21)", "gn39"],
-["There is no 0x Brave Milestone because no one talks about it.", true, "gn40"],
-["There are actually no anti-ghosts because ghosts are made of ghostly matter.", true, "gn41"],
-["Are we living in ghostly universe or anti-ghostly universe?", true, "gn42"],
-["New matter discovered. Ghostly Matter! The scientists who discovered it were already dead.", true, "gn43"],
-["Florida man attempts to write down his antimatter. When finishes, he finds out he's a ghost.", true, "gn44"],
-["It's photons, not protons!", true, "gn45"],
-["Ghostly news company has become partners with us. They are made entirely of ghostly matter.", true, "gn46"],
-["Antimatter ghosts do not exist. Just like matter ghosts. But Ghostly Matter Ghosts do.", true, "gn47"]
-["I am a ghost, and I will do science for all eternity!", true, "gn48"],
-["Ghosts have created their own periodic tables. It looks pretty sophisticated, but the origin of this is unknown.", true, "gn49"],
-["There's a ghost society somewhere in these universes. It seems they're talking to each other using strange communication.", true, "gn50"],
-["Florida ghost breaks the universe, and goes beyond the limits.", true, "gn51"],
-["You still read this news? I thought you wouldn't be interested in our news after reading it for so long...", true, "gn52"],
-["Meta-infinity was proven to be possible. We can now big crunch in our big crunches.", true, "gn53"],
-["I wonder where all the news gets broadcasted from...", true, "gn54"],
-["'now i know why i can't get access to the ghostly news!' - usavictor", true, "gn55"],
-["Ghostify is just Quantum but spooky.", true, "gn56"]
-];}
 
 var ghostlyNewsTickerCache = false
 function nextGhostlyNewsTickerMsg() {
 	if (ghostlyNewsTickerCache) return
 	ghostlyNewsTickerCache = true
-	giveAchievement("News for other species")
-	updateGhostlyNewsArray()
-	tmp.blankedOut2=false
+	updateNewsArray()
 	try {
-		do {ghostlyNewsIndex = Math.floor(Math.random() * ghostlyNewsArray.length)} while (!eval(ghostlyNewsArray[ghostlyNewsIndex][1]))
+		do {nextMsgIndex = Math.floor(Math.random() * newsArray.length)} while (!eval(newsArray[nextMsgIndex][1]) || newsArray[nextMsgIndex][2].indexOf("gn") < 0)
 	} catch(e) {
-		console.log("Newsarray doesn't work at idx " + ghostlyNewsIndex)
+		console.log("Newsarray doesn't work at idx " + nextMsgIndex)
 	}
 	var newsText = document.getElementById("ghostlyNewsTickerText")
-	newsText.textContent = ghostlyNewsArray[ghostlyNewsIndex][0]
+	newsText.textContent = newsArray[nextMsgIndex][0]
 	newsText.innerHTML = "<b>NEWS!</b> " + newsText.innerHTML
 	newsText.style.left = "100%"
 	newsText.style["transition-duration"] = "0s"
@@ -462,12 +396,7 @@ function nextGhostlyNewsTickerMsg() {
 			newsText.style["transition-timing-function"] = "linear"
 			newsText.style["transition-duration"] = (duration / 100) + "s"
 			setTimeout(function() {
-				if (ghostlyNewsArray[ghostlyNewsIndex][2]=="gn32") {
-					tmp.blankedOut2=true
-					setTimeout(function() {
-						ghostlyNewsTickerCache=false
-					}, 60e3)
-				} else ghostlyNewsTickerCache=false
+				ghostlyNewsTickerCache = false
 			}, duration * 10)
 		}, 2000)
 	}, 100)
@@ -479,7 +408,3 @@ function toggleGhostlyNews() {
 	document.getElementById("ghostlyNewsTickerBlock").style.height=(player.options.secrets.ghostlyNews?16:0)+"px"
 	document.getElementById("ghostlynewsbtn").textContent=(player.options.secrets.ghostlyNews?"Hide":"Show")+" ghostly news ticker"
 }
-
-document.getElementById("ghostlyNewsTicker").onclick = function () {
-	if (tmp.blankedOut2) giveAchievement("Blanked out")
-};

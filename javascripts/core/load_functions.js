@@ -1,15 +1,11 @@
 var inflationCheck = false
-var betaId = ""
-var prefix = betaId + "ds"
-var savePrefix = prefix + "AM_"
-var presetPrefix = prefix + "AM_ST_"
-var metaSaveId = betaId + "AD_aarexModifications"
 var notifyId = 0
 function onLoad(noOffline) {
   tmp.ngp3=player.masterystudies!==undefined
   tmp.qu=player.quantum
+  if (player.aarexModifications.ngp5V !== undefined) buildDarknessTable()
   happyHalloween=false
-  if (player.totalmoney === undefined || isNaN(player.totalmoney)) player.totalmoney = player.money;
+  if (player.totalmoney === undefined) player.totalmoney = player.money;
   if (player.tickspeed === undefined) player.tickspeed = new Decimal(1000)
   if (player.options === undefined) {
       player.options = {
@@ -371,7 +367,6 @@ if (player.version < 5) {
       player.aarexModifications = {
           breakInfinity: false
       }
-      break_infinity_js = false
   }
   if (break_infinity_js!=player.aarexModifications.breakInfinity) {
       save_game(true)
@@ -402,18 +397,10 @@ if (player.version < 5) {
   }
   if (player.aarexModifications.tabsSave === undefined) player.aarexModifications.tabsSave = {on: false}
   if (player.aarexModifications.performanceTicks === undefined) player.aarexModifications.performanceTicks = false
-  if (player.aarexModifications.noFooter == undefined) player.aarexModifications.noFooter = player.options.theme == "Aarex's Modifications" || player.options.theme == "Aarex's Mods II"
-  if (player.masterystudies !== undefined && player.aarexModifications.newGame3PlusVersion === undefined) {
-	  forceHardReset = true
-	  reset_game()
-	  forceHardReset = false
-	  return
-  }
   if (player.aarexModifications.newGamePlusPlusVersion == undefined && player.aarexModifications.newGame3PlusVersion != undefined) {
       delete player.masterystudies
       delete player.aarexModifications.newGame3PlusVersion
   }
-  if (player.aarexModifications.newGame3PlusVersion>=2.2) tmp.bl=player.ghostify.bl
   slider.min=player.aarexModifications.performanceTicks?0:33
   transformSaveToDecimal();
   updateTickSpeed();
@@ -423,19 +410,16 @@ if (player.version < 5) {
   toggleChallengeRetry()
   toggleBulk()
   toggleBulk()
- 
+
   document.getElementById("rename").innerHTML = "<p style='font-size:15px'>Rename</p>Name: "+(player.aarexModifications.save_name?player.aarexModifications.save_name:"Save #" + savePlacement)
   document.getElementById("offlineProgress").textContent = "Offline progress: O"+(player.aarexModifications.offlineProgress?"N":"FF")
   document.getElementById("autoSave").textContent = "Auto save: O"+(player.aarexModifications.autoSave?"N":"FF")
-  document.getElementById("autoSaveInterval").textContent = "Auto-save interval: " + getAutoSaveInterval() + "s"
-  document.getElementById("autoSaveIntervalSlider").value = getAutoSaveInterval()
 
   if (!player.replicanti.auto[0]) document.getElementById("replauto1").textContent = "Auto: OFF"
   if (!player.replicanti.auto[1]) document.getElementById("replauto2").textContent = "Auto: OFF"
   if (!player.replicanti.auto[2]) document.getElementById("replauto3").textContent = "Auto: OFF"
 
   document.getElementById("automation_ng"+(player.aarexModifications.ngmX>3?"m4":"")+"_placement").appendChild(document.getElementById("autobuyers"))
-  if (player.aarexModifications.ngmX>3) document.getElementById("autobuyers").style.display="none"
   document.getElementById("autobuyers").className=(player.aarexModifications.ngmX>3?"":"inf")+"tab"
   document.getElementById("autobuyersbtn").style.display=player.aarexModifications.ngmX>3?"none":""
   loadAutoBuyerSettings();
@@ -463,7 +447,6 @@ if (player.version < 5) {
   document.getElementById("break").textContent = (player.break ? "FIX" : "BREAK") + " INFINITY"
 
   updateNotationOption()
-
   document.getElementById("floatingTextAnimBtn").textContent = "Floating text: " + ((player.options.animations.floatingText) ? "ON" : "OFF")
   document.getElementById("bigCrunchAnimBtn").textContent = "Big crunch: " + (player.options.animations.bigCrunch === "always" ? "ALWAYS" : player.options.animations.bigCrunch ? "ON" : "OFF")
   document.getElementById("tachyonParticleAnimBtn").textContent = "Tachyon particles: " + ((player.options.animations.tachyonParticles) ? "ON" : "OFF")
@@ -471,6 +454,10 @@ if (player.version < 5) {
   if (player.infinitied == 0 && getEternitied() == 0) document.getElementById("infinityPoints2").style.display = "none"
 
   var inERS=!(!player.boughtDims)
+  if (player.replicanti.galaxybuyer !== undefined && !inERS) {
+      replicantiGalaxyAutoToggle()
+      replicantiGalaxyAutoToggle()
+  }
 
   if (player.eternityChallUnlocked === null) player.eternityChallUnlocked = 0
   if (player.eternityChallUnlocked !== 0) document.getElementById("eterc"+player.eternityChallUnlocked+"div").style.display = "inline-block"
@@ -487,7 +474,28 @@ if (player.version < 5) {
 
   document.getElementById("epmult").innerHTML = "You gain 5 times more EP<p>Currently: "+shortenDimensions(player.epmult)+"x<p>Cost: "+shortenDimensions(player.epmultCost)+" EP"
 
-  updateBoughtTimeStudies()
+  for (var i=0; i<player.timestudy.studies.length; i++) {
+      if (player.timestudy.studies.length>0&&typeof(player.timestudy.studies[0])!=="number") break
+      if (player.timestudy.studies[i] == 71 || player.timestudy.studies[i] == 81 || player.timestudy.studies[i] == 91 || player.timestudy.studies[i] == 101) {
+          document.getElementById(""+player.timestudy.studies[i]).className = "timestudybought normaldimstudy"
+      } else if (player.timestudy.studies[i] == 72 || player.timestudy.studies[i] == 82 || player.timestudy.studies[i] == 92 || player.timestudy.studies[i] == 102) {
+          document.getElementById(""+player.timestudy.studies[i]).className = "timestudybought infdimstudy"
+      } else if (player.timestudy.studies[i] == 73 || player.timestudy.studies[i] == 83 || player.timestudy.studies[i] == 93 || player.timestudy.studies[i] == 103) {
+          document.getElementById(""+player.timestudy.studies[i]).className = "timestudybought timedimstudy"
+      } else if (player.timestudy.studies[i] == 121 || player.timestudy.studies[i] == 131 || player.timestudy.studies[i] == 141) {
+          document.getElementById(""+player.timestudy.studies[i]).className = "timestudybought activestudy"
+      } else if (player.timestudy.studies[i] == 122 || player.timestudy.studies[i] == 132 || player.timestudy.studies[i] == 142) {
+          document.getElementById(""+player.timestudy.studies[i]).className = "timestudybought passivestudy"
+      } else if (player.timestudy.studies[i] == 123 || player.timestudy.studies[i] == 133 || player.timestudy.studies[i] == 143) {
+          document.getElementById(""+player.timestudy.studies[i]).className = "timestudybought idlestudy"
+      } else if (player.timestudy.studies[i] == 221 || player.timestudy.studies[i] == 224 || player.timestudy.studies[i] == 225 || player.timestudy.studies[i] == 228 || player.timestudy.studies[i] == 231 || player.timestudy.studies[i] == 234) {
+          document.getElementById(player.timestudy.studies[i]).className = "timestudybought darkstudy"
+      } else if (player.timestudy.studies[i] == 222 || player.timestudy.studies[i] == 223 || player.timestudy.studies[i] == 226 || player.timestudy.studies[i] == 227 || player.timestudy.studies[i] == 232 || player.timestudy.studies[i] == 233) {
+          document.getElementById(player.timestudy.studies[i]).className = "timestudybought lightstudy"
+      } else {
+          document.getElementById(""+player.timestudy.studies[i]).className = "timestudybought"
+      }
+  }
   performedTS = false
 
   if (player.version > 7 && inERS && !player.aarexModifications.ersVersion) {
@@ -632,7 +640,7 @@ if (player.version < 5) {
           }
           player.aarexModifications.newGamePlusVersion = 1
           if (confirm("Do you want to migrate your NG++ save into new NG+++ mode?")) {
-              player.aarexModifications.newGame3PlusVersion = 2.205
+              player.aarexModifications.newGame3PlusVersion = 2.11
               player.respecMastery=false
               player.dbPower = 1
               player.dilation.times = 0
@@ -664,6 +672,7 @@ if (player.version < 5) {
               player.eternityBuyer.slowStop = false
               player.eternityBuyer.slowStopped = false
               player.eternityBuyer.ifAD = false
+              player.eternityBuyer.presets = {on: false, autoDil: false, selected: -1, left: 1, order: []}
               tmp.qu.autobuyer = {
                   enabled: false,
                   limit: 1,
@@ -693,7 +702,6 @@ if (player.version < 5) {
                   respec: false
               }
               tmp.qu.qcsNoDil = {}
-              tmp.qu.qcsMods = {current:[]}
               player.dilation.bestTP = 0
               player.old = false
               tmp.qu.autoOptions = {}
@@ -756,8 +764,8 @@ if (player.version < 5) {
                   conf: true,
                   times: 0,
                   bestThisRun: 0,
+                  bestAntimatter: 0,
                   totalAntimatter: 0,
-                  bestGals: 0,
                   savedAutobuyersNoBR: {},
                   savedAutobuyersBR: {},
                   spaceShards: 0,
@@ -797,39 +805,8 @@ if (player.version < 5) {
                       lights: [0,0,0,0,0,0,0,0],
                       maxRed: 0,
                       enpowerments: 0
-                  },
-                  bl: {
-                      watt: 0,
-                      speed: 1,
-                      ticks: 0,
-                      am: 0,
-                      typeToExtract: 1,
-                      extracting: false,
-                      extractProgress: 0,
-                      autoExtract: 0,
-                      glyphs: [],
-                      enchants: {},
-                      usedEnchants: [],
-                      upgrades: [],
-                      battery: 0,
-                      odSpeed: 1
-                  },
-                  wzb: {
-                      unl: false,
-                      dP: 0,
-                      dPUse: 0,
-                      wQkUp: true,
-                      wQkProgress: 0,
-                      zNeGen: 1,
-                      zNeProgress: 1,
-                      zNeReq: 1,
-                      wpb: 0,
-                      wnb: 0,
-                      wb: 0
                   }
               }
-              tmp.bl=player.ghostify.bl
-              for (var g=1;g<br.names.length;g++) tmp.bl.glyphs.push(0)
               player.options.animations.ghostify = true
               player.aarexModifications.ghostifyConf = true
           }
@@ -875,6 +852,11 @@ if (player.version < 5) {
       if (noD9AchCheck||metaBoostCheck) giveAchievement("Meta-boosting to the max")
       if (metaAchCheck||noD9AchCheck||metaBoostCheck) giveAchievement("I'm so meta")
       player.galaxyMaxBulk = false
+  }
+  if (player.aarexModifications.ngp5V === undefined && tmp.ngp3) {
+	  if (player.ghostify ? (player.ghostify.ghostlyPhotons ? player.ghostify.ghostlyPhotons.enpowerments>=3 : false) : false) if (confirm("You have reached the end of NG+++. Would you like to convert to a NG+5 save?")) {
+		convertToNG5()
+	  }
   }
   var quantumRestore = player.aarexModifications.newGamePlusPlusVersion < 2.9 || (!tmp.qu && player.aarexModifications.newGamePlusPlusVersion > 2.4)
   if (quantumRestore) {
@@ -1137,6 +1119,7 @@ if (player.version < 5) {
       player.eternityBuyer.slowStop = false
       player.eternityBuyer.slowStopped = false
       player.eternityBuyer.ifAD = false
+      player.eternityBuyer.presets = {on: false, autoDil: false, selected: -1, left: 1, order: []}
       tmp.qu.reached = tmp.qu.times > 0
       tmp.qu.nonMAGoalReached = {}
       tmp.qu.pairedChallenges.fastest = {}
@@ -1147,6 +1130,7 @@ if (player.version < 5) {
           conf: true,
           times: 0,
           bestThisRun: 0,
+          bestAntimatter: 0,
           totalAntimatter: 0,
           savedAutobuyersNoBR: {},
           savedAutobuyersBR: {},
@@ -1220,47 +1204,15 @@ if (player.version < 5) {
           enpowerments: 0
       }
   }
+  if (tmp.ngp3) if (player.ghostify.automatorGhosts) if (player.ghostify.automatorGhosts[15].mode === undefined) player.ghostify.automatorGhosts[15].mode = 'ghp'
+  if (tmp.ngp3) if (player.ghostify.automatorGhosts) if (player.ghostify.automatorGhosts[15].current === undefined) player.ghostify.automatorGhosts[15].current = new Decimal(1)
   if (player.aarexModifications.newGame3PlusVersion < 2.101) {
 	  var newAchievements=[]
       for (var a=0;a<player.achievements.length;a++) if (player.achievements[a]!="ng3p67") newAchievements.push(player.achievements[a])
 	  player.achievements=newAchievements
   }
-  if (player.aarexModifications.newGame3PlusVersion < 2.2) {
-      player.ghostify.bl = {
-          watt: 0,
-          ticks: 0,
-          speed: 1,
-          am: 0,
-          typeToExtract: 1,
-          extracting: false,
-          extractProgress: 0,
-          autoExtract: 0,
-          glyphs: [],
-          enchants: {},
-          usedEnchants: [],
-          upgrades: [],
-          battery: 0,
-          odSpeed: 1
-      }
-      player.ghostify.wzb = {
-          unl: false,
-          dP: 0,
-          dPUse: 0,
-          wQkUp: true,
-          wQkProgress: 0,
-          zNeGen: 1,
-          zNeProgress: 1,
-          zNeReq: 1,
-          wpb: 0,
-          wnb: 0,
-          wb: 0
-      }
-      tmp.bl=player.ghostify.bl
-      for (var g=1;g<br.names.length;g++) tmp.bl.glyphs.push(0)
-  }
-  if (player.aarexModifications.newGame3PlusVersion < 2.205) player.aarexModifications.newGame3PlusVersion = 2.205
+  if (player.aarexModifications.newGame3PlusVersion < 2.11) player.aarexModifications.newGame3PlusVersion = 2.11
   if (player.masterystudies) {
-	  if (player.eternityBuyer.presets === undefined) player.eternityBuyer.presets = {on: false, autoDil: false, selected: -1, selectNext: 0, left: 1, order: []}
       if (player.meta.bestOverQuantums === undefined) player.meta.bestOverQuantums = player.meta.bestAntimatter
       document.getElementById('prioritydil').value=player.eternityBuyer.dilationPerAmount
       if (player.achievements.includes("ng3p52")) document.getElementById("autoDilValue").value=player.eternityBuyer.dilationPerAmount
@@ -1268,8 +1220,7 @@ if (player.version < 5) {
       document.getElementById("workerReplWhat").textContent = player.ghostify.neutrinos.upgrades.includes(2) ? "babies" : "eggons"
       updateQuantumWorth()
       if (tmp.qu.autoOptions === undefined) tmp.qu.autoOptions = {}
-      if (tmp.qu.nonMAGoalReached === undefined || !tmp.qu.nonMAGoalReached.length) tmp.qu.nonMAGoalReached = []
-      if (tmp.qu.qcsMods === undefined) tmp.qu.qcsMods = {current:[]}
+      if (tmp.qu.nonMAGoalReached === undefined || typeof(tmp.qu.nonMAGoalReached) !== "array") tmp.qu.nonMAGoalReached = []
       if (tmp.qu.challengeRecords === undefined) tmp.qu.challengeRecords = {}
       if (tmp.qu.pairedChallenges.completions === undefined) tmp.qu.pairedChallenges.completions = {}
       if (tmp.qu["10ofield"] !== undefined) {
@@ -1294,24 +1245,107 @@ if (player.version < 5) {
           forceToQuantumAndRemove=true
           setTTAfterQuantum=2e94
       }
-      if (tmp.qu.bigRip.bestGals==undefined) tmp.qu.bigRip.bestGals=0
-      if (player.ghostify.neutrinos.boosts==undefined) player.ghostify.neutrinos.boosts=1
-      if (player.ghostify.ghostlyPhotons.maxRed==undefined) player.ghostify.ghostlyPhotons.maxRed=0
-      if (player.ghostify.wzb.unl) giveAchievement("Even Ghostlier than before")
-      if (!tmp.bl.usedEnchants.length) tmp.bl.usedEnchants=[]
-      if (player.ghostify.wzb.dPUse===undefined) {
-          player.ghostify.wzb.dPUse=0
-          player.ghostify.wzb.wQkUp=true
-          player.ghostify.wzb.zNeGen=1
-      }
-      tmp.bl.odSpeed=Math.max(tmp.bl.odSpeed,1)
-      if (Decimal.eq(player.ghostify.wzb.zNeReq,0)) player.ghostify.wzb.zNeReq=1
       updateAutoGhosts(true)
   }
   if (player.aarexModifications.newGame3PlusVersion!=undefined) {
       updateColorPowers()
       eds=tmp.qu.emperorDimensions
       tmp.be=tmp.qu.bigRip.active&&tmp.qu.breakEternity.break
+  }
+  if (player.aarexModifications.ngp5V !== undefined) {
+	  if (player.ghostify.darkness === undefined) {
+		resetNGP5V()
+	  }
+	  if (player.ghostify.challenges.records === undefined) player.ghostify.challenges.records = [1/0,1/0,1/0,1/0]
+	  if (player.ghostify.challenges.tiers === undefined) player.ghostify.challenges.tiers = [0,0,0,0]
+	  if (player.ghostify.dimensions.power === undefined) player.ghostify.dimensions.power = new Decimal(0)
+	  if (player.ghostify.dimensions.spirits === undefined) player.ghostify.dimensions.spirits = 0
+	  if (player.ghostify.endlessMirrors == 0) {
+		  player.ghostify.endlessMirrors = {
+			amount: 0,
+			lightEnergy: new Decimal(0),
+			refraction: {
+				energy: new Decimal(0),
+				light: new Decimal(0),
+				rebuyable: 0,
+			},
+		  }
+	  }
+	  if (player.ghostify.endlessMirrors.refraction.rebuyable === undefined) player.ghostify.endlessMirrors.refraction.rebuyable = 0
+	  if (player.dilation.br === undefined) {
+		  player.dilation.br = {
+			"break": false,
+			upgrades: [],
+			rebuyable: 0,
+			cherenkovRadiation: new Decimal(0),
+		  }
+	  }
+	  if (player.dilation.br.cherenkovRadiation === undefined) player.dilation.br.cherenkovRadiation = new Decimal(0)
+	  if (player.ghostify.baryons.hyperons.unl === undefined) player.ghostify.baryons.hyperons.unl = false
+	  if (player.replicantiBoosts === undefined) {
+		  player.replicantiBoosts = {
+			amount: 0,
+			auto: false,
+		  }
+	  }
+	  if (player.replicantiBoosts.auto === undefined) {
+		  player.replicantiBoosts.auto = false
+	  }
+	  if (player.ghostify.baryons.hyperons.target === undefined) player.ghostify.baryons.hyperons.target = 0
+	  if (player.ghostify.annihilation.tier === undefined) player.ghostify.annihilation.tier = 1
+	  if (player.aarexModifications.autoElectrons === undefined) player.aarexModifications.autoElectrons = false
+	  if (player.ghostify.annihilation.tier < 1 || player.ghostify.annihilation.maxTier < 1) {
+		  player.ghostify.annihilation.tier = 1
+		  player.ghostify.annihilation.maxTier = 1
+	  }
+	  if (player.ghostify.annihilation.storage === undefined) {
+		  player.ghostify.annihilation.storage = {
+			lE: 0,
+			brBreak: false,
+			timestudies: [],
+			dilstudies: [],
+			masterystudies: [],
+			neutrinoUpgs: [],
+			darkness: new Decimal(0),
+			eMr: 0,
+		  }
+	  }
+	  if (player.ghostify.annihilation.storage.dilUpgs === undefined) player.ghostify.annihilation.storage.dilUpgs = []
+	  if (player.ghostify.annihilation.storage.nb === undefined) player.ghostify.annihilation.storage.nb = 0
+	  if (player.ghostify.annihilation.storage.bru === undefined) player.ghostify.annihilation.storage.bru = []
+	  if (player.ghostify.annihilation.storage.gUpgs === undefined) player.ghostify.annihilation.storage.gUpgs = []
+	  if (player.ghostify.annihilation.storage.eM === undefined) player.ghostify.annihilation.storage.eM = 0
+	  if (player.ghostify.annihilation.storage.brEb === undefined) player.ghostify.annihilation.storage.brEb = false
+	  if (player.ghostify.annihilation.storage.brEu === undefined) player.ghostify.annihilation.storage.brEu = false
+	  document.getElementById("hyperonTarget").textContent = getFullExpansion(player.ghostify.baryons.hyperons.target)
+	  if (player.ghostify.annihilation.rebuyable === undefined) player.ghostify.annihilation.rebuyable = 0
+	  if (player.ghostify.annihilation.innerStorage === undefined) {
+		  player.ghostify.annihilation.innerStorage = {
+			qcs: {},
+			pcs: {
+				order: {},
+				completed: 0,
+			},
+			mT: 1,
+		}
+	  }
+	  if (player.ghostify.annihilation.innerStorage.mT === undefined) player.ghostify.annihilation.innerStorage.mT = 1
+	  if (player.ghostify.annihilation.antibaryons === undefined) {
+		  player.ghostify.annihilation.antibaryons = {
+			positrons: 0,
+			antiprotons: 0,
+			antineutrons: 0,
+			antihyperons: 0,
+			total: 0,
+		}
+	  }
+	  if (player.ghostify.annihilation.cascade === undefined) {
+		  player.ghostify.annihilation.cascade = {
+			times: 0,
+			amount: 0,
+			power: new Decimal(0),
+		}
+	  }
   }
   if (player.aarexModifications.newGameMinusMinusVersion === undefined && !player.meta) {
       if (player.exdilation == undefined && player.version == 13) player.version = 12
@@ -1389,7 +1423,7 @@ if (player.version < 5) {
       if (ECTimesCompleted("eterc6")>0) {
           forceHardReset=true
           inflationCheck=true
-          reset_game()
+          document.getElementById("reset").click()
           forceHardReset=false
           return
 	  }
@@ -1575,14 +1609,7 @@ if (player.version < 5) {
       player.version = 12
       player.aarexModifications.newGameUpdateVersion=1.1
   }
-  if (player.exdilation !== undefined) {
-      if (player.options.exdilationconfirm === undefined) player.options.exdilationconfirm = true
-      if (player.options.exdilationConfirm !== undefined) {
-          player.options.exdilationconfirm = player.options.exdilationConfirm
-          delete player.options.exdilationConfirm
-      }
-      if (player.meta !== undefined && player.exdilation.spent[4] === undefined) player.exdilation.spent[4] = 0
-  }
+  if (player.exdilation !== undefined && player.options.exdilationconfirm === undefined) player.options.exdilationconfirm = true
   if (player.aarexModifications.irsVersion < 1.1) {
       player.singularity = {
           unlocked: false,
@@ -1602,8 +1629,7 @@ if (player.version < 5) {
       for (dim=1;dim<9;dim++) player.dimtechs["dim"+dim+"Upgrades"] = 0
       player.aarexModifications.irsVersion = 1.2
   }
-  if (player.aarexModifications.ngudpV < 1.12) player.aarexModifications.ngudpV = 1.12
-  if (player.aarexModifications.nguepV < 1.03) player.aarexModifications.nguepV = 1.03
+  if (player.aarexModifications.ngudpV < 1.1) player.aarexModifications.ngudpV = 1.1
   if (player.aarexModifications.newGame4MinusVersion<2) {
       player.tdBoosts=0
       resetTDs()
@@ -1620,16 +1646,7 @@ if (player.version < 5) {
       resetIDs_ngm5()
       resetPDs(true)
   }
-  if (player.aarexModifications.ngm5V<0.52) player.aarexModifications.ngm5V=0.52
-  if (player.aarexModifications.nguspV !== undefined) {
-      if (player.blackholeDimension5 === undefined) for (var d=5;d<9;d++) player["blackholeDimension"+d] = {
-          cost: blackholeDimStartCosts[d],
-          amount: 0,
-          power: 1,
-          bought: 0
-      }
-      if (player.dilation.autoUpgrades === undefined) player.dilation.autoUpgrades = []
-  }
+  if (player.aarexModifications.ngm5V<0.51) player.aarexModifications.ngm5V=0.51
   ipMultPower=2
   if (player.masterystudies) if (player.masterystudies.includes("t241")) ipMultPower=2.2
   if (GUBought("gb3")) ipMultPower=2.3
@@ -1692,7 +1709,6 @@ if (player.version < 5) {
   document.getElementById("quantumConfirmBtn").style.display = quantumed ? "inline-block" : "none"
   document.getElementById("bigRipConfirmBtn").style.display = (player.masterystudies === undefined ? false : tmp.qu.bigRip.times) ? "inline-block" : "none"
   document.getElementById("ghostifyConfirmBtn").style.display = ghostified ? "inline-block" : "none"
-  document.getElementById("leConfirmBtn").style.display = ghostified && player.ghostify.ghostlyPhotons.enpowerments ? "inline-block" : "none"
 
   document.getElementById("confirmation").checked = !player.options.sacrificeConfirmation
   document.getElementById("sacConfirmBtn").textContent = "Sacrifice confirmation: O" + (player.options.sacrificeConfirmation ? "N" : "FF")
@@ -1701,11 +1717,10 @@ if (player.version < 5) {
   document.getElementById("challengeconfirmation").textContent = "Challenge confirmation: O" + (player.options.challConf ? "N" : "FF")
   document.getElementById("eternityconf").textContent = "Eternity confirmation: O" + (player.options.eternityconfirm ? "N" : "FF")
   document.getElementById("dilationConfirmBtn").textContent = "Dilation confirmation: O" + (player.aarexModifications.dilationConf ? "N" : "FF")
-  document.getElementById("exdilationConfirmBtn").textContent = "Reverse dilation confirmation: O" + (player.options.exdilationconfirm ? "N" : "FF")
+  document.getElementById("exdilationConfirmBtn").textContent = "Reverse dilation confirmation: O" + (player.options.exdilationConfirm ? "N" : "FF")
   document.getElementById("quantumConfirmBtn").textContent = "Quantum confirmation: O" + (player.aarexModifications.quantumConf ? "N" : "FF")
   document.getElementById("bigRipConfirmBtn").textContent = "Big Rip confirmation: O" + ((player.masterystudies === undefined ? false : tmp.qu.bigRip.conf) ? "N" : "FF")
   document.getElementById("ghostifyConfirmBtn").textContent = "Ghostify confirmation: O" + (player.aarexModifications.ghostifyConf ? "N" : "FF")
-  document.getElementById("leConfirmBtn").textContent = "Light Empowerment confirmation: O" + (player.aarexModifications.leNoConf ? "FF" : "N")
 
   document.getElementById("progressBarBtn").textContent = (player.aarexModifications.progressBar?"Hide":"Show")+" progress bar"
   document.getElementById("toggleLogRateChange").textContent = "Logarithm rate: O"+(player.aarexModifications.logRateChange?"N":"FF")
@@ -1713,8 +1728,11 @@ if (player.version < 5) {
   document.getElementById("performanceTicks").textContent = "Performance ticks: O"+(player.aarexModifications.performanceTicks?"N":"FF")
   dimDescEnd = (player.aarexModifications.logRateChange?" OoM":"%")+"/s)"
 
-  document.getElementById("maxHighestTD").parentElement.parentElement.style.display = player.aarexModifications.ngmX > 3 ? "" : "none"
+  document.getElementById("maxHighestTD").style.display = player.aarexModifications.ngmX > 3 ? "" : "none"
   document.getElementById("maxHighestTD").textContent = "Max only highest Time Dimensions: O"+(player.aarexModifications.maxHighestTD?"N":"FF")
+  
+  document.getElementById("convertNG5").style.display = (player.aarexModifications.ngp5V!==undefined ? false : (tmp.ngp3 ? player.ghostify.ghostlyPhotons.enpowerments>2 : false)) ? "" : "none"
+  document.getElementById("convertNG5").textContent = "Convert save to NG+5"
 
   document.getElementById("quickMReset").style.display = pSacrificed() ? "" : "none"
   document.getElementById("quickMReset").textContent = "Quick matter reset: O"+(player.aarexModifications.quickReset?"N":"FF")
@@ -1742,15 +1760,15 @@ if (player.version < 5) {
 
   document.getElementsByClassName("hideInMorse").display = player.options.notation == "Morse code" ? "none" : ""
 
-  document.getElementById("decimalMode").textContent = "Big numbers library: "+(break_infinity_js?"break_infinity (slow)":"logarithmica_numerus (fast)")
+  document.getElementById("decimalMode").textContent = "Decimal mode: "+(break_infinity_js?"Slow but accurate":"Fast but inaccurate")
   document.getElementById("decimalMode").style.visibility = Decimal.gt(player.totalmoney,"1e9000000000000000") ? "hidden" : ""
   document.getElementById("hideProductionTab").textContent = (player.aarexModifications.hideProductionTab?"Show":"Hide")+" production tab"
   document.getElementById("hideRepresentation").textContent=(player.aarexModifications.hideRepresentation?"Show":"Hide")+" antimatter representation"
-  document.getElementById("showAchRowNums").textContent=(player.aarexModifications.showAchRowNums?"Hide":"Show")+" achievement row info"
+  document.getElementById("showAchRowNums").textContent=(player.aarexModifications.showAchRowNums?"Hide":"Show")+" achievement row progresses"
   document.getElementById("hideCompletedAchs").textContent=(player.aarexModifications.hideCompletedAchs?"Show":"Hide")+" completed achievement rows"
   document.getElementById("hideSecretAchs").textContent=(player.aarexModifications.hideSecretAchs?"Show":"Hide")+" secret achievements"
 
-  updateHotkeys()
+  document.getElementById("hotkeysDesc").innerHTML = "Hotkeys: 1-8 for buy 10 dimension, shift+1-8 for buy 1 dimension, T to buy max tickspeed, shift+T to buy one tickspeed, M for max all<br>S for sacrifice, D for "+(player.dilation.studies.includes(1)?"dilate time":"dimension boost")+","+(player.tickspeedBoosts==undefined||tmp.ngp3?"":" B for tickspeed boost,")+" G for "+(player.achievements.includes("ng3p51")?"become a ghost":"galaxy")+", C for crunch, A for "+((player.aarexModifications.ngp5V?player.ghostify.baryons.hyperons.supercharge.hyperons>=5:false)?"annihilate your timeline":"toggle autobuyers")+", R for replicanti galaxies, E for eternity"+(player.meta?", Q for quantum":"")+(quantumed?", U for unstabilize all quarks":"")+(tmp.ngp3&&player.masterystudies.includes("d14")?", B for big rip":"")+(player.boughtDims?".":".<br>You can hold shift while buying time studies to buy all up until that point, see each study's number, and save study trees.<br>Hotkeys do not work while holding control.")
 
   document.getElementById("secretstudy").style.opacity = 0
   document.getElementById("secretstudy").style.cursor = "pointer"
@@ -1850,7 +1868,6 @@ if (player.version < 5) {
   document.getElementById("ic7desc").textContent="You can't get Antimatter Galaxies, but dimensional boost multiplier "+(player.galacticSacrifice?"is cubed":"2.5x -> 10x")
   document.getElementById("ic7reward").textContent="Reward: Dimensional boost multiplier "+(player.galacticSacrifice?"is squared":"2.5x -> 4x")
   document.getElementById("replicantitabbtn").style.display=player.infinityUpgradesRespecced?"none":""
-  document.getElementById("replicantiresettoggle").textContent="Auto galaxy "+(player.replicanti.galaxybuyer?"ON":"OFF")+(player.timestudy.studies.includes(131)&&speedrunMilestonesReached<20?" (disabled)":"")
   document.getElementById("41").innerHTML="Each galaxy gives a 1."+(player.aarexModifications.newGameExpVersion?5:2)+"x multiplier on IP gained. <span>Cost: 4 Time Theorems"
   document.getElementById("42").innerHTML=(player.galacticSacrifice?"Galaxy cost multiplier is reduced by "+(player.aarexModifications.newGameExpVersion?12:13)+"/15x":"Galaxy requirement goes up "+(player.aarexModifications.newGameExpVersion?48:52)+" 8ths instead of 60")+".<span>Cost: 6 Time Theorems"
   document.getElementById("61").innerHTML="You gain 10"+(player.aarexModifications.newGameExpVersion?0:"")+"x more EP<span>Cost: 3 Time Theorems"
@@ -1863,12 +1880,13 @@ if (player.version < 5) {
   document.getElementById("231desc").textContent = ""
   document.getElementById("232desc").textContent = ""
   document.getElementById('replicantigalaxypowerdiv').style.display=player.achievements.includes("r106")&&player.boughtDims?"":"none"
+  document.getElementById('epmultauto').style.display=player.achievements.includes("ngpp17")?"":"none"
   document.getElementById("dilationeterupgrow").style.display="none"
   document.getElementById("blackHoleAnimBtn").style.display="none"
   if (player.exdilation != undefined) {
       if (player.dilation.studies.includes(1)) document.getElementById("dilationeterupgrow").style.display="table-row"
       document.getElementById("blackHoleAnimBtn").textContent = "Black hole: " + ((player.options.animations.blackHole) ? "ON" : "OFF")
-      document.getElementById("blackholeMax").style.display = player.aarexModifications.ngudpV || player.aarexModifications.nguspV ? "" : "none"
+      document.getElementById("blackholeMax").style.display = player.aarexModifications.ngudpV ? "" : "none"
       document.getElementById("blackholeauto").style.display = player.aarexModifications.ngudpV && player.achievements.includes("ngpp17") ? "" : "none"
       document.getElementById('blackholeauto').textContent="Auto: O"+(player.aarexModifications.ngudpV&&player.autoEterOptions.blackhole?"N":"FF")
       if (player.blackhole.unl == true) {
@@ -1883,22 +1901,22 @@ if (player.version < 5) {
   var suffix="NG"+(player.meta!=undefined?"pp":"ud")
   document.getElementById("uhDiv"+suffix).appendChild(document.getElementById("Universal harmony"))
   document.getElementById("feDiv"+suffix).appendChild(document.getElementById("In the grim darkness of the far endgame"))
-  document.getElementById("dil11effect").textContent=player.aarexModifications.nguspV?"You gain even more tachyon particles from the previous upgrade.":"Tachyon particle formula is better."
-  document.getElementById("dil15").style["font-size"]=player.masterystudies==undefined||player.aarexModifications.nguspV!==undefined?"10px":"9px"
-  document.getElementById("dil15formula").style.display=player.masterystudies==undefined||player.aarexModifications.nguspV!==undefined?"none":""
-  document.getElementById("exDilationDesc").innerHTML = player.aarexModifications.nguspV ? 'making galaxies <span id="exDilationBenefit" style="font-size:25px; color: black">0</span>% stronger in dilation.' : 'making dilation <span id="exDilationBenefit" style="font-size:25px; color: black">0</span>% less severe.'
+  document.getElementById("dil15").style["font-size"]=player.masterystudies==undefined?"10px":"9px"
+  document.getElementById("dil15formula").style.display=player.masterystudies==undefined?"none":""
   document.getElementById("metaAntimatterEffectType").textContent=inQC(3)?"multiplier on all Infinity Dimensions":"extra multiplier per dimension boost"
+  for (i=1;i<9;i++) document.getElementById("td"+i+'auto').style.visibility=player.achievements.includes("ngpp17")?"visible":"hidden"
+  document.getElementById('togglealltimedims').style.visibility=player.achievements.includes("ngpp17")?"visible":"hidden"
+  document.getElementById('replicantibulkmodetoggle').style.display=player.achievements.includes("ngpp16")?"inline-block":"none"
+  document.getElementById('replicantibulkmodetoggle').textContent="Mode: "+(player.galaxyMaxBulk?"Max":"Singles")
   if (player.meta) {
       document.getElementById('epmultauto').textContent="Auto: O"+(player.autoEterOptions.epmult?"N":"FF")
       for (i=1;i<9;i++) document.getElementById("td"+i+'auto').textContent="Auto: O"+(player.autoEterOptions["td"+i]?"N":"FF")
   }
-  document.getElementById('replicantibulkmodetoggle').textContent="Mode: "+(player.galaxyMaxBulk?"Max":"Singles")
   document.getElementById('sacrificeAuto').style.display=speedrunMilestonesReached>24?"":"none"
   document.getElementById('toggleautoquantummode').style.display=(player.masterystudies?tmp.qu.reachedInfQK||player.achievements.includes("ng3p25"):false)?"":"none"
   document.getElementById('assignAll').style.display=(player.masterystudies?tmp.qu.reachedInfQK||ghostified:false)?"":"none"
   document.getElementById('autoReset').style.display=player.achievements.includes("ng3p47")?"":"none"
   document.getElementById('aftereternity').style.display=player.achievements.includes("ng3p52")?"":"none"
-  transformSaveToDecimal()
   if (player.pSac !== undefined) {
       updateParadoxUpgrades()
       updatePUCosts()
@@ -1912,8 +1930,8 @@ if (player.version < 5) {
       document.getElementById('reward4disable').textContent="4.5 hours reward: O"+(tmp.qu.disabledRewards[4]?"FF":"N")
       document.getElementById('reward11disable').textContent="33.3 mins reward: O"+(tmp.qu.disabledRewards[11]?"FF":"N")
       document.getElementById('reward27disable').textContent="10 seconds reward: O"+(tmp.qu.disabledRewards[27]?"FF":"N")
+      document.getElementById('coloredQuarksProduction').innerHTML=player.ghostify.milestones>1?"You are getting <span id='rPowerRate' style='font-size:35px' class='red'></span> red power, <span id='gPowerRate' style='font-size:35px' class='green'></span> green power, and <span id='bPowerRate' style='font-size:35px' class='blue'></span> blue power per second.":"They have a <span id='colorChargeAmount' style='font-size:35px'></span><span id='colorCharge'></span> charge, which produces <span id='powerRate' style='font-size:35px'></span> <span id='colorPower'></span> per second."
       document.getElementById('rebuyupgauto').textContent="Rebuyable upgrade auto: O"+(player.autoEterOptions.rebuyupg?"N":"FF")
-      document.getElementById('dilUpgsauto').textContent="Auto-buy dilation upgrades: O"+(player.autoEterOptions.dilUpgs?"N":"FF")
       document.getElementById('metaboostauto').textContent="Meta-boost auto: O"+(player.autoEterOptions.metaboost?"N":"FF")
       document.getElementById('priorityquantum').value=formatValue("Scientific", new Decimal(tmp.qu.autobuyer.limit), 2, 0)
       document.getElementById('rg4toggle').style.display=(inQC(1)||QCIntensity(1))?"none":""
@@ -1926,29 +1944,23 @@ if (player.version < 5) {
       document.getElementById("ratio_b").value = tmp.qu.assignAllRatios.b
       document.getElementById('autoAssign').textContent="Auto: O"+(tmp.qu.autoOptions.assignQK?"N":"FF")
       document.getElementById('autoAssignRotate').textContent="Rotation: "+(tmp.qu.autoOptions.assignQKRotate>1?"Left":tmp.qu.autoOptions.assignQKRotate?"Right":"None")
-      document.getElementById('autoReset').textContent="Auto: O"+(tmp.qu.autoOptions.replicantiReset?"N":"FF")
+      document.getElementById('autoReset').textContent="Auto: O"+(tmp.qu.autoOptions.assignQK?"N":"FF")
       document.getElementById("quantumstudies").style.display=quantumed&&player.masterystudies?"":"none"
       document.getElementById("replicantsstudies").style.display=player.masterystudies.includes("d10")||ghostified?"":"none"
       document.getElementById("timestudy322").style.display=player.masterystudies.includes("d10")||ghostified?"":"none"
       document.getElementById("empstudies").style.display=player.masterystudies.includes("d11")||ghostified?"":"none"
       document.getElementById("timestudy361").style.display=player.masterystudies.includes("d11")||ghostified?"":"none"
       document.getElementById("timestudy362").style.display=player.masterystudies.includes("d11")||ghostified?"":"none"
-      document.getElementById("timestudy362").style["font-size"] = player.masterystudies !== undefined ? "10px" : "0.65rem"
-      document.getElementById("362desc").textContent="Reduce the softcap for preon boost"+(player.aarexModifications.ngumuV?" and preons reduce green power effect.":".")
       document.getElementById("nfstudies").style.display=player.masterystudies.includes("d12")||ghostified?"":"none"
       document.getElementById("todstudies").style.display=player.masterystudies.includes("d13")||ghostified?"":"none"
-      document.getElementById("nanofieldtabbtn").style.display=player.masterystudies.includes("d12")?"":"none"
+      document.getElementById("nanofieldtabbtn").style.display=player.masterystudies.includes("d12")&&!currentAnnihilationTier()>0?"":"none"
       document.getElementById("ghostifyAnimBtn").textContent="Ghostify: O"+(player.options.animations.ghostify?"N":"FF")
       for (var u=5;u<13;u++) {
           if (u%3==1) document.getElementById("neutrinoUpg"+u).parentElement.parentElement.style.display=u>player.ghostify.times+2?"none":""
           else document.getElementById("neutrinoUpg"+u).style.display=u>player.ghostify.times+2?"none":""
       }
-      document.getElementById("gphUnl").textContent="To unlock Ghostly Photons, you need to get "+shortenCosts(Decimal.pow(10,6e9))+" antimatter while your universe is Big Ripped first."
-      document.getElementById("blUnl").textContent="To unlock Bosonic Lab, you need to get "+shortenCosts(Decimal.pow(10,1e10))+" ghostly unstable quarks first."
-      document.getElementById("bpc68").textContent=shortenMoney(tmp.qu.pairedChallenges.pc68best)
-      document.getElementById("odSlider").value=Math.round((tmp.bl.odSpeed-1)/4*50)
-      for (var g=1;g<br.names.length;g++) document.getElementById("typeToExtract"+g).className=tmp.bl.typeToExtract==g?"chosenbtn":"storebtn"
-      updateColoredQuarksProduction()
+      document.getElementById("gphUnl").textContent="To unlock Ghostly Photons, you need to get "+shortenCosts(Decimal.pow(10,61e8))+" antimatter while your universe is Big Ripped first."
+      document.getElementById("bpc68").textContent = shortenMoney(tmp.qu.pairedChallenges.pc68best)
       updateElectrons()
       updateAutoQuantumMode()
       updateColorCharge()
@@ -1958,9 +1970,8 @@ if (player.version < 5) {
       updateBraveMilestones()
       updateNeutrinoBoosts()
       updateGPHUnlocks()
-      updateBLUnlocks()
-      updateBosonicStuffCosts()
   }
+  transformSaveToDecimal();
   hideDimensions()
   updateChallenges()
   updateNCVisuals()
@@ -2026,21 +2037,18 @@ if (player.version < 5) {
   }
   notifyId=speedrunMilestonesReached
   notifyId2=player.masterystudies===undefined?0:player.ghostify.milestones
-  showHideFooter()
   document.getElementById("newsbtn").textContent=(player.options.newsHidden?"Show":"Hide")+" news ticker"
   document.getElementById("game").style.display=player.options.newsHidden?"none":"block"
   var tabsSave = player.aarexModifications.tabsSave
-  showDimTab((tabsSave.on && tabsSave.tabDims) || 'antimatterdimensions')
-  showStatsTab((tabsSave.on && tabsSave.tabStats) || 'stats')
-  showAchTab((tabsSave.on && (tabsSave.tabAchs == 'normalachievements' || tabsSave.tabAchs == 'secretachievements') && tabsSave.tabAchs) || 'normalachievements')
-  showChallengesTab((tabsSave.on && tabsSave.tabChalls) || 'normalchallenges')
-  showInfTab((tabsSave.on && tabsSave.tabInfinity) || 'preinf')
-  showEternityTab((tabsSave.on && tabsSave.tabEternity) || 'timestudies', true)
-  showQuantumTab((tabsSave.on && tabsSave.tabQuantum) || 'uquarks')
-  showNFTab((tabsSave.on && tabsSave.tabNF) || 'nanoverse')
-  showBranchTab((tabsSave.on && tabsSave.tabBranch) || 'red')
-  showGhostifyTab((tabsSave.on && tabsSave.tabGhostify) || 'neutrinos')
-  showBLTab((tabsSave.on && tabsSave.tabBL) || 'bextab')
+  showDimTab(tabsSave.on && tabsSave.tabDims !== undefined ? tabsSave.tabDims : 'antimatterdimensions')
+  showStatsTab(tabsSave.on && tabsSave.tabStats !== undefined ? tabsSave.tabStats : 'stats')
+  showAchTab(tabsSave.on && (tabsSave.tabAchs == 'normalachievements' || tabsSave.tabAchs == 'secretachievements') ? tabsSave.tabAchs : 'normalachievements')
+  showChallengesTab(tabsSave.on && tabsSave.tabChalls !== undefined ? tabsSave.tabChalls : 'normalchallenges')
+  showInfTab(tabsSave.on && tabsSave.tabInfinity !== undefined ? tabsSave.tabInfinity : 'preinf')
+  showEternityTab(tabsSave.on && tabsSave.tabEternity !== undefined ? tabsSave.tabEternity : 'timestudies', true)
+  showQuantumTab(tabsSave.on && tabsSave.tabQuantum !== undefined ? tabsSave.tabQuantum : 'uquarks')
+  showBranchTab(tabsSave.on && tabsSave.tabBranch !== undefined ? tabsSave.tabBranch : 'red')
+  showGhostifyTab(tabsSave.on && tabsSave.tabGhostify !== undefined ? tabsSave.tabGhostify : 'neutrinos')
   if (!player.options.newsHidden) scrollNextMessage()
   document.getElementById("secretoptionsbtn").style.display=player.options.secrets?"":"none"
   document.getElementById("ghostlynewsbtn").textContent=((player.options.secrets!==undefined?player.options.secrets.ghostlyNews:false)?"Hide":"Show")+" ghostly news ticker"
@@ -2053,18 +2061,14 @@ if (player.version < 5) {
   } else player.lastUpdate = new Date().getTime()
   if (player.totalTimePlayed < 1 || inflationCheck || forceToQuantumAndRemove) {
       ngModeMessages=[]
-      if (player.aarexModifications.newGameMult) ngModeMessages.push("Welcome to NG Multiplied mode, made by Despacit and Soul147! This mode adds too many overpowerful buffs! This mode may be broken.")
       if (player.aarexModifications.newGameExpVersion) ngModeMessages.push("Welcome to NG^ mode, made by Naruyoko! This mode adds way many buffs that this mode may be broken!")
       if (player.meta!==undefined||player.exdilation!==undefined) {
           if (!player.aarexModifications.newGamePlusVersion) ngModeMessages.push("WARNING! You are disabling NG+ features on NG++! Standard NG++ have all of NG++ features and I recommend you to create a new save with NG+ and NG++ modes on.")
-          if (player.aarexModifications.ngp4V) ngModeMessages.push("Welcome to NG++++ mode by Aarex! This is a NG+ version of NG+3 which makes you start with more stuff! It is recommended to not use this mode to progress in NG+3.")
+		  if (player.aarexModifications.ngp5V) ngModeMessages.push("Welcome to NG+5 mode! This mode has all NG++++ features, and this mode unlocks new features after Ghostly Photons!")
+          else if (player.aarexModifications.ngp4V) ngModeMessages.push("Welcome to NG++++ mode by Aarex! This is a NG+ version of NG+3 which makes you start with more stuff! It is recommended to not use this mode to progress in NG+3.")
           if (player.exdilation!==undefined) {
-              if (player.aarexModifications.nguspV) ngModeMessages.push("Welcome to NG Update Semiprime mode made by Aarex! This is like NGUd', but it is really a combination of NG+3 and NGUd. This mode is more balanced too. Good luck! :)")
-              if (player.aarexModifications.ngumuV||player.aarexModifications.nguepV) {
-                  if (player.aarexModifications.ngumuV) ngModeMessages.push("Welcome to NG Update Multiplied Prime mode, made by Aarex! This is a NG*-like mod of NGUd'. This mod is very easy to beat, but you can't break this mod. :'(")
-                  if (player.aarexModifications.nguepV) ngModeMessages.push("Welcome to NG Update Exponential Prime mode made by pg132! NGUd^' is like NGUd', but non-Black Hole nerfs are removed to make NGUd^' a NG^-like mod of NGUd'. This mod is very easy to beat, but you can't break this mod. :'(")
-              } else if (player.aarexModifications.nguspV) {}
-              else if (player.aarexModifications.ngudpV) ngModeMessages.push("Welcome to NG Update Prime mode made by pg132! NGUd' is like NGUd+, but you can't reverse dilation. Good luck for beating this mod. >:)")
+              if (player.aarexModifications.nguepV) ngModeMessages.push("Welcome to NG Update^' mode made by pg132! NGUd^' is like NGUd', but non-Black Hole nerfs are removed to make NGUd^' a NG^-like mod of NGUd'. This mod is very easy to beat, but you can't break this mod. :'(")
+              else if (player.aarexModifications.ngudpV) ngModeMessages.push("Welcome to NG Update' mode made by pg132! NGUd' is like NGUd+, but you can't reverse dilation. Good luck for beating this mod. >:)")
               else if (player.meta!==undefined) ngModeMessages.push("Welcome to NG Update+ mode, a combination made by Soul147 (Sigma)! This is a combination of dan-simon's NG Update and Aarex's NG+++. I think in this mode, you can break the game...")
               else ngModeMessages.push("Welcome to NG Update mode, an another dan-simon's end-game mod! In this mode, there are black hole and ex-dilation.")
           } else if (player.masterystudies&&!player.aarexModifications.ngp4V) ngModeMessages.push("Welcome to NG+++ mode, the extension of dan-simon's NG++ made by Aarex! There are a lot of content that are added. Good luck for beating this mode!")
@@ -2073,7 +2077,7 @@ if (player.version < 5) {
       if (player.infinityUpgradesRespecced) ngModeMessages.push('Welcome to Infinity Respecced, created by Aarex! In this mode, all of infinity upgrades are replaced with new upgrades except 2x IP mult. Oh, break infinity is removed.')
       if (player.boughtDims) ngModeMessages.push('Welcome to Eternity Respecced created by dan-simon! NOTE: This is broken right now. I will fix it in later time, like after months.')
       if (player.galacticSacrifice) {
-          if (player.aarexModifications.ngmX>4) ngModeMessages.push('Welcome to NG-5 mode, a more hardcore mode than NG-4! This is very hardcore because you are stuck in more challenges. You are also stuck in Automated Big Crunches Challenge which is a big impact on this mod. Good luck! This mode is made by Aarex.')
+          if (player.aarexModifications.ngmX>4) ngModeMessages.push('Welcome to NG-5 mode, a more hardcore mode than NG-4! This is very hardcore because you are stuck in more challenges. Good luck! This mode is made by Aarex.')
           else if (player.aarexModifications.ngmX>3) ngModeMessages.push('Welcome to NG-4 mode, the nerfed version of NG--- mode! This mode features even more changes from NG--- and is very hardcore. WIP by Nyan Cat and edited by Aarex.')
           else if (player.aarexModifications.newGame3MinusVersion) ngModeMessages.push('Welcome to NG--- mode, the nerfed version of NG-- mode! This mode reduces tickspeed multiplier multiplier and nerfs galaxies, but have a new feature called \"Tickspeed Boosts\" and 1 achievement buff.')
           else ngModeMessages.push('Welcome to NG-- mode created by Nyan cat! Dilation is always locked but have more balancing, IC3 trap, and a new feature called "Galactic Sacrifice".')
@@ -2086,7 +2090,6 @@ if (player.version < 5) {
           else ngModeMessages.push("Welcome to NG+-+-+ mode, created by earthernsence! This mode combines NG--, NG-, and NG+++ features. Good luck!")
       }
       if (inflationCheck) ngModeMessages = ["I'm terribly sorry. But your save was appeared that there is an inflation, which it defeats the rule of incremental games. Your save was forced to reset everything."]
-      if (infiniteCheck) ngModeMessages = ["I'm terribly sorry, but there has been an Infinite bug detected within your save file, which is why said save file will get reset. Luckily, you can export your save before this reset. Thanks! :)"]
       if (forceToQuantumAndRemove) {
           quantum(false, true, 0)
           ngModeMessages = ["Due to balancing changes, you are forced to quantum, lose your TT, and lose your best TP, but you now have "+shorten(setTTAfterQuantum)+" TT for free."]
@@ -2095,7 +2098,6 @@ if (player.version < 5) {
           document.getElementById('bestTP').textContent = "Your best ever Tachyon particles was 0."
       }
       inflationCheck = false
-      infiniteCheck = false
       closeToolTip()
       showNextModeMessage()
   } else if (player.aarexModifications.popUpId!="STD") showNextModeMessage()
@@ -2115,14 +2117,12 @@ function checkNGM(imported) {
 }
 
 var savePlacement
-function load_game(noOffline, init) {
+function load_game(noOffline) {
 	if (!metaSave.saveOrder.includes(metaSave.current)) metaSave.current=metaSave.saveOrder[0]
 	var dimensionSave=get_save(metaSave.current)
-	infiniteDetected=false
 	if (dimensionSave!=null) {
 		if (dimensionSave.quantum !== undefined) if (dimensionSave.quantum.timeFluxPower !== undefined) dimensionSave = get_save(metaSave.current + "_af2019")
 		player=dimensionSave
-		if (detectInfinite()) infiniteCheck=true
 	}
 	savePlacement=1
 	while (metaSave.saveOrder[savePlacement-1]!=metaSave.current) savePlacement++
@@ -2134,11 +2134,6 @@ function load_game(noOffline, init) {
 		nextAt = {postc1:new Decimal("1e2000"),postc1_ngmm:new Decimal("1e3000"),postc1_ngm3:new Decimal("1e3760"),postc2:new Decimal("1e5000"),postc3:new Decimal("1e12000"),postc4:new Decimal("1e14000"),postc5:new Decimal("1e18000"),postc5_ngm3:new Decimal("1e21500"),postc6:new Decimal("1e20000"),postc6_ngm3:new Decimal("1e23000"),postc7:new Decimal("1e23000"),postc7_ngm3:new Decimal("1e26000"),postc8:new Decimal("1e28000"),postcngmm_1:new Decimal("1e750"),postcngmm_1_ngm3:new Decimal("1e1080"),postcngmm_2:new Decimal("1e1350"),postcngmm_3:new Decimal("1e2000"),postcngmm_3_ngm3:new Decimal("1e2650"),postcngm3_1:new Decimal("1e1560"),postcngm3_2:new Decimal("1e2085"),postcngm3_3:new Decimal("1e8140"),postcngm3_4:new Decimal("1e17000")}
 		goals = {postc1:new Decimal("1e850"),postc1_ngmm:new Decimal("1e650"),postc1_ngm3:new Decimal("1e375"),postc2:new Decimal("1e10500"),postc2_ngm3:new Decimal("1e4250"),postc3:new Decimal("1e5000"),postc4:new Decimal("1e13000"),postc4_ngm3:new Decimal("1e4210"),postc5:new Decimal("1e11111"),postc5_ngm3:new Decimal("7.77e7777"),postc6:new Decimal("2e22222"),postc7:new Decimal("1e10000"),postc7_ngmm:new Decimal("1e15000"),postc7_ngm3:new Decimal(1/0),postc8:new Decimal("1e27000"),postc8_ngm3:new Decimal(1/0),postcngmm_1:new Decimal("1e550"),postcngmm_1_ngm3:new Decimal("1e650"),postcngmm_2:new Decimal("1e950"),postcngmm_2_ngm3:new Decimal("1e1090"),postcngmm_3:new Decimal("1e1200"),postcngmm_3_ngm3:new Decimal("1e1230"),postcngm3_1:new Decimal("1e550"),postcngm3_2:new Decimal("1e610"),postcngm3_3:new Decimal("8.8888e888"),postcngm3_4:new Decimal("1e12345")}
 		setUnlocks = [Decimal.pow(Number.MAX_VALUE, 2.9)]
-	}
-	if (infiniteCheck) exportInfiniteSave()
-	if (infiniteCheck || infiniteCheck2) {
-		updateNewPlayer(true)
-		infiniteCheck2 = false
 	}
 	onLoad(noOffline)
 	startInterval()
@@ -2153,26 +2148,9 @@ function reload() {
 
 var noSave=false
 function save_game(silent) {
-  isInfiniteDetected()
-  if (!game_loaded || noSave || infiniteDetected) return
+  if (noSave) return
   set_save(metaSave.current, player);
-  $.notify("Game saved", "info")
-}
-
-function toggleAutoSave() {
-	player.aarexModifications.autoSave = !player.aarexModifications.autoSave
-	document.getElementById("autoSave").textContent = "Auto save: O"+(player.aarexModifications.autoSave?"N":"FF")
-	autoSaveSeconds = 0
-}
-
-function changeAutoSaveInterval() {
-	player.aarexModifications.autoSaveInterval = document.getElementById("autoSaveIntervalSlider").value
-	document.getElementById("autoSaveInterval").textContent = "Auto-save interval: " + player.aarexModifications.autoSaveInterval + "s"
-	autoSaveSeconds = 0
-}
-
-function getAutoSaveInterval() {
-	return player.aarexModifications.autoSaveInterval || 30
+  if (!silent) $.notify("Game saved", "info")
 }
 
 function overwrite_save(id) {
@@ -2188,27 +2166,20 @@ function overwrite_save(id) {
 }
 
 function change_save(id) {
-	if (!game_loaded) {
-		metaSave.current=id
-		localStorage.setItem(metaSaveId, btoa(JSON.stringify(metaSave)))
-		document.location.reload(true)
-		return
-	}
-	save_game(true)
-	clearInterval(gameLoopIntervalId)
-	var oldId=metaSave.current
-	metaSave.current=id
-	changeSaveDesc(oldId, savePlacement)
-	updateNewPlayer()
-	infiniteCheck2 = false
-	closeToolTip()
-	load_game(shiftDown)
-	savePlacement=1
-	while (metaSave.saveOrder[savePlacement-1]!=id) savePlacement++
-	changeSaveDesc(metaSave.current, savePlacement)
+  save_game(true)
+  clearInterval(gameLoopIntervalId)
+  var oldId=metaSave.current
+  metaSave.current=id
+  changeSaveDesc(oldId, savePlacement)
+  updateNewPlayer()
+  closeToolTip()
+  load_game(shiftDown)
+  savePlacement=1
+  while (metaSave.saveOrder[savePlacement-1]!=id) savePlacement++
+  changeSaveDesc(metaSave.current, savePlacement)
 
-	$.notify("Save #"+savePlacement+" loaded", "info")
-	localStorage.setItem(metaSaveId,btoa(JSON.stringify(metaSave)))
+  $.notify("Save #"+savePlacement+" loaded", "info")
+  localStorage.setItem("AD_aarexModifications",btoa(JSON.stringify(metaSave)))
 }
 
 function rename_save(id) {
@@ -2245,16 +2216,13 @@ function rename_save(id) {
 }
 
 function export_save(id) {
-	var placement=1
-	if (!id) id=metaSave.current
-	while (metaSave.saveOrder[placement-1]!=id) placement++
-
-	let output = document.getElementById('output')
+    var placement=1
+    while (metaSave.saveOrder[placement-1]!=id) placement++
+	let output = document.getElementById('exportOutput')
 	let parent = output.parentElement
 
 	parent.style.display = ""
-	if (id == metaSave.current) output.value = btoa(JSON.stringify(player, function(k, v) { return (v === Infinity) ? "Infinity" : v }))
-	else output.value = localStorage.getItem(btoa(savePrefix+id))
+	output.value = localStorage.getItem(btoa("dsAM_"+id))
 
 	output.onblur = function() {
 		parent.style.display = "none"
@@ -2267,7 +2235,6 @@ function export_save(id) {
 		if (document.execCommand('copy')) {
 			$.notify("Exported save #"+placement+" to clipboard", "info")
 			output.blur()
-			output.onblur()
 		}
 	} catch(ex) {
 		// well, we tried.
@@ -2289,12 +2256,12 @@ function move(id,offset) {
 	document.getElementById("saves").rows[placement+offset].innerHTML=getSaveLayout(id)
 	changeSaveDesc(metaSave.saveOrder[placement], placement+1)
 	changeSaveDesc(id, placement+offset+1)
-	localStorage.setItem(metaSaveId,btoa(JSON.stringify(metaSave)))
+	localStorage.setItem("AD_aarexModifications",btoa(JSON.stringify(metaSave)))
 }
 
 function delete_save(saveId) {
 	if (metaSave.saveOrder.length<2) {
-		reset_game()
+		document.getElementById("reset").click()
 		return
 	} else if (!confirm("Do you really want to erase this save? You will lose access if you do that!")) return
 	var alreadyDeleted=false
@@ -2302,7 +2269,7 @@ function delete_save(saveId) {
 	for (orderId=0;orderId<metaSave.saveOrder.length;orderId++) {
 		if (alreadyDeleted) changeSaveDesc(metaSave.saveOrder[orderId], orderId)
 		if (metaSave.saveOrder[orderId]==saveId) {
-			localStorage.removeItem(btoa(savePrefix+saveId))
+			localStorage.removeItem(btoa("dsAM_"+saveId))
 			alreadyDeleted=true
 			document.getElementById("saves").deleteRow(orderId)
 			if (savePlacement>orderId+1) savePlacement--
@@ -2313,25 +2280,24 @@ function delete_save(saveId) {
 	if (metaSave.current==saveId) {
 		change_save(metaSave.saveOrder[0])
 		document.getElementById("loadmenu").style.display="block"
-	} else localStorage.setItem(metaSaveId,btoa(JSON.stringify(metaSave)))
+	} else localStorage.setItem("AD_aarexModifications",btoa(JSON.stringify(metaSave)))
 	$.notify("Save deleted", "info")
 }
 
 var ngModeMessages=[]
 function new_game(id) {
-	if (modes.arrows > 1 || modes.ngud > 3 || modes.nguep > 1 || modes.ngmu > 1 || modes.ngumu > 1) {
+	if (modes.arrows > 1 || modes.ngud > 2 || modes.nguep > 1) {
 		alert("Coming soon...")
 		return
 	}
 	save_game(true)
 	clearInterval(gameLoopIntervalId)
 	updateNewPlayer()
-	infiniteCheck2 = false
 	var oldId=metaSave.current
 	metaSave.current=1
 	while (metaSave.saveOrder.includes(metaSave.current)) metaSave.current++
 	metaSave.saveOrder.push(metaSave.current)
-	localStorage.setItem(metaSaveId,btoa(JSON.stringify(metaSave)))
+	localStorage.setItem("AD_aarexModifications",btoa(JSON.stringify(metaSave)))
 	changeSaveDesc(oldId, savePlacement)
 	latestRow=document.getElementById("saves").insertRow(loadedSaves)
 	latestRow.innerHTML=getSaveLayout(metaSave.current)
@@ -2343,7 +2309,7 @@ function new_game(id) {
 	startInterval()
 	
 	$.notify("Save created", "info")
-	localStorage.setItem(metaSaveId,btoa(JSON.stringify(metaSave)))
+	localStorage.setItem("AD_aarexModifications",btoa(JSON.stringify(metaSave)))
 	closeToolTip()
 	showDimTab('antimatterdimensions')
 	showStatsTab('stats')
@@ -2354,7 +2320,6 @@ function new_game(id) {
 	showQuantumTab('uquarks')
 	showBranchTab('red')
 	showGhostifyTab('neutrinos')
-	showBLTab('bextab')
 }
 
 function transformSaveToDecimal() {
@@ -2460,20 +2425,23 @@ function transformSaveToDecimal() {
   if (player.exdilation !== undefined) {
       player.blackhole.power = new Decimal(player.blackhole.power)
 
-      for (var d=1;d<9;d++) {
-          var dim=player["blackholeDimension"+d]
-          if (dim!==undefined) {
-              dim.amount = new Decimal(dim.amount)
-              dim.cost = new Decimal(dim.cost)
-              dim.power = new Decimal(dim.power)
-          }
-      }
+      player.blackholeDimension1.amount = new Decimal(player.blackholeDimension1.amount)
+      player.blackholeDimension2.amount = new Decimal(player.blackholeDimension2.amount)
+      player.blackholeDimension3.amount = new Decimal(player.blackholeDimension3.amount)
+      player.blackholeDimension4.amount = new Decimal(player.blackholeDimension4.amount)
+      player.blackholeDimension1.cost = new Decimal(player.blackholeDimension1.cost)
+      player.blackholeDimension2.cost = new Decimal(player.blackholeDimension2.cost)
+      player.blackholeDimension3.cost = new Decimal(player.blackholeDimension3.cost)
+      player.blackholeDimension4.cost = new Decimal(player.blackholeDimension4.cost)
+      player.blackholeDimension1.power = new Decimal(player.blackholeDimension1.power)
+      player.blackholeDimension2.power = new Decimal(player.blackholeDimension2.power)
+      player.blackholeDimension3.power = new Decimal(player.blackholeDimension3.power)
+      player.blackholeDimension4.power = new Decimal(player.blackholeDimension4.power)
 
       player.exdilation.unspent = new Decimal(player.exdilation.unspent)
       player.exdilation.spent[1] = new Decimal(player.exdilation.spent[1])
       player.exdilation.spent[2] = new Decimal(player.exdilation.spent[2])
       player.exdilation.spent[3] = new Decimal(player.exdilation.spent[3])
-      if (player.exdilation.spent[4] !== undefined) player.exdilation.spent[4] = new Decimal(player.exdilation.spent[4])
   }
 
   if (player.meta !== undefined) {
@@ -2595,38 +2563,172 @@ function transformSaveToDecimal() {
       player.meta.bestOverGhostifies = Decimal.max(player.meta.bestOverGhostifies, player.meta.bestOverQuantums)
       tmp.qu.pairedChallenges.pc68best = new Decimal(tmp.qu.pairedChallenges.pc68best)
       tmp.qu.bigRip.bestThisRun = new Decimal(tmp.qu.bigRip.bestThisRun)
+      tmp.qu.bigRip.bestAntimatter = new Decimal(tmp.qu.bigRip.bestAntimatter)
       tmp.qu.bigRip.totalAntimatter = new Decimal(tmp.qu.bigRip.totalAntimatter)
       tmp.qu.bigRip.spaceShards = new Decimal(tmp.qu.bigRip.spaceShards)
       tmp.qu.breakEternity.eternalMatter = new Decimal(tmp.qu.breakEternity.eternalMatter)
-      player.ghostify.times = nP(player.ghostify.times)
       player.ghostify.ghostParticles = new Decimal(player.ghostify.ghostParticles)
       for (var r=0;r<10;r++) player.ghostify.last10[r][1] = new Decimal(player.ghostify.last10[r][1])
       player.ghostify.neutrinos.electron = new Decimal(player.ghostify.neutrinos.electron)
       player.ghostify.neutrinos.mu = new Decimal(player.ghostify.neutrinos.mu)
       player.ghostify.neutrinos.tau = new Decimal(player.ghostify.neutrinos.tau)
-      if (player.ghostify.automatorGhosts!==undefined) player.ghostify.automatorGhosts[15].a=new Decimal(player.ghostify.automatorGhosts[15].a)
+      if (player.ghostify.automatorGhosts!==undefined) {
+		  player.ghostify.automatorGhosts[15].a=new Decimal(player.ghostify.automatorGhosts[15].a)
+		  player.ghostify.automatorGhosts[15].current=new Decimal(player.ghostify.automatorGhosts[15].current)
+	  }
       if (player.ghostify.ghostlyPhotons) {
           player.ghostify.ghostlyPhotons.amount=new Decimal(player.ghostify.ghostlyPhotons.amount)
           player.ghostify.ghostlyPhotons.ghostlyRays=new Decimal(player.ghostify.ghostlyPhotons.ghostlyRays)
           player.ghostify.ghostlyPhotons.darkMatter=new Decimal(player.ghostify.ghostlyPhotons.darkMatter)
       }
-      if (tmp.bl && player.ghostify.wzb) {
-          tmp.bl.ticks=new Decimal(tmp.bl.ticks)
-          tmp.bl.am=new Decimal(tmp.bl.am)
-          tmp.bl.extractProgress=new Decimal(tmp.bl.extractProgress)
-          tmp.bl.autoExtract=new Decimal(tmp.bl.autoExtract)
-          for (var t=0;t<br.names.length-1;t++) tmp.bl.glyphs[t]=new Decimal(tmp.bl.glyphs[t]||0)
-          tmp.bl.battery=new Decimal(tmp.bl.battery)
-          for (var g2=2;g2<br.names.length;g2++) for (var g1=1;g1<g2;g1++) if (tmp.bl.enchants[g1*10+g2]!==undefined) tmp.bl.enchants[g1*10+g2]=new Decimal(tmp.bl.enchants[g1*10+g2])
-
-          player.ghostify.wzb.dP=new Decimal(player.ghostify.wzb.dP)
-          player.ghostify.wzb.wQkProgress=new Decimal(player.ghostify.wzb.wQkProgress)
-          player.ghostify.wzb.zNeProgress=new Decimal(player.ghostify.wzb.zNeProgress)
-          player.ghostify.wzb.zNeReq=new Decimal(player.ghostify.wzb.zNeReq)
-          player.ghostify.wzb.wpb=new Decimal(player.ghostify.wzb.wpb)
-          player.ghostify.wzb.wnb=new Decimal(player.ghostify.wzb.wnb)
-          player.ghostify.wzb.zb=new Decimal(player.ghostify.wzb.zb)
-      }
+  }
+  if (player.aarexModifications.ngp5V) {
+		if (player.ghostify.darkness === undefined) resetNGP5V()
+		if (player.ghostify.challenges === undefined) {
+			player.ghostify.challenges = {
+		completed: [],
+		active: 0,
+		records: [1/0,1/0,1/0,1/0],
+		tiers: [0,0,0,0],
+	}
+		}
+		if (player.ghostify.challenges.completed === undefined) player.ghostify.challenges.completed = []
+		if (player.ghostify.challenges.active === undefined) player.ghostify.challenges.active = 0
+		if (player.ghostify.endlessMirrors === undefined) {
+			player.ghostify.endlessMirrors = {
+		amount: 0,
+		lightEnergy: new Decimal(0),
+		refraction: {
+			energy: new Decimal(0),
+			light: new Decimal(0),
+			rebuyable: 0,
+		},
+	}
+		}
+		if (player.ghostify.darkness === undefined) {
+			player.ghostify.dimensions = {
+		amount: [null,new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0)],
+		bought: [null,0,0,0,0,0,0,0,0],
+		power: new Decimal(0),
+		spirits: 0,
+	}
+		}
+		if (player.dilation.br === undefined) {
+			player.dilation.br = {
+		"break": hasAnnihilationUpg(24) ? player.dilation.br : false,
+		upgrades: [],
+		rebuyable: 0,
+		cherenkovRadiation: new Decimal(0),
+	}
+		}
+		if (player.ghostify.baryons === undefined) {
+			player.ghostify.baryons = {
+		nucleons: {
+			protons: 0,
+			neutrons: 0,
+			sacrificed: 0,
+		},
+		hyperons: {
+			unl: false,
+			target: 0,
+			lambda: 0,
+			sigma: 0,
+			xi: 0,
+			omega: 0,
+			supercharge: {
+				hyperons: 0,
+				active: false,
+			},
+		},
+	}
+		}
+		if (player.ghostify.annihilation === undefined) {
+			player.ghostify.annihilation = {
+		active: false,
+		tier: 1,
+		exoticMatter: new Decimal(0),
+		upgrades: [],
+		rebuyable: 0,
+		maxTier: 1,
+		storage: {
+			lE: 0,
+			brBreak: false,
+			timestudies: [],
+			dilstudies: [],
+			masterystudies: [],
+			neutrinoUpgs: [],
+			darkness: new Decimal(0),
+			eMr: 0,
+			dilUpgs: [],
+			nb: 0,
+			bru: [],
+			gUpgs: [],
+			eM: 0,
+			brEb: false,
+			brEu: [],
+		},
+		innerStorage: {
+			qcs: {},
+			pcs: {
+				order: {},
+				completed: 0,
+			},
+			mT: 1,
+		},
+		antibaryons: {
+			positrons: 0,
+			antiprotons: 0,
+			antineutrons: 0,
+			antihyperons: 0,
+			total: 0,
+		},
+		cascade: {
+			times: 0,
+			amount: 0,
+			power: new Decimal(0),
+		},
+	}
+		}
+		if (player.replicantiBoosts === undefined) {
+			player.replicantiBoosts = {
+				amount: 0,
+				auto: false,
+			}
+		}
+		if (player.aarexModifications.autoElectrons === undefined) player.aarexModifications.autoElectrons = false
+	    player.ghostify.darkness = {
+			amount: new Decimal(player.ghostify.darkness.amount),
+			generators: new Decimal(player.ghostify.darkness.generators),
+			upgrades: player.ghostify.darkness.upgrades,
+		}
+		player.ghostify.endlessMirrors.lightEnergy = new Decimal(player.ghostify.endlessMirrors.lightEnergy)
+		if (player.ghostify.endlessMirrors.refraction === undefined) {
+			player.ghostify.endlessMirrors.refraction = {
+			energy: new Decimal(0),
+			light: new Decimal(0),
+			rebuyable: 0,
+		}
+		}
+		player.ghostify.endlessMirrors.refraction.energy = new Decimal(player.ghostify.endlessMirrors.refraction.energy)
+		player.ghostify.endlessMirrors.refraction.light = new Decimal(player.ghostify.endlessMirrors.refraction.light)
+		player.ghostify.dimensions = {
+			amount: [null,new Decimal(player.ghostify.dimensions.amount[1]),new Decimal(player.ghostify.dimensions.amount[2]),new Decimal(player.ghostify.dimensions.amount[3]),new Decimal(player.ghostify.dimensions.amount[4]),new Decimal(player.ghostify.dimensions.amount[5]),new Decimal(player.ghostify.dimensions.amount[6]),new Decimal(player.ghostify.dimensions.amount[7]),new Decimal(player.ghostify.dimensions.amount[8])],
+			bought: player.ghostify.dimensions.bought,
+			power: new Decimal(player.ghostify.dimensions.power),
+			spirits: player.ghostify.dimensions.spirits,
+		}
+		if (player.dilation.br !== undefined) player.dilation.br.cherenkovRadiation = new Decimal(player.dilation.br.cherenkovRadiation)
+		else {
+			player.dilation.br = {
+				"break": false,
+				upgrades: [],
+				rebuyable: 0,
+				cherenkovRadiation: new Decimal(0),
+			}
+		}
+		player.ghostify.annihilation.exoticMatter = new Decimal(player.ghostify.annihilation.exoticMatter)
+		if (player.ghostify.annihilation.storage !== undefined) player.ghostify.annihilation.storage.darkness = new Decimal(player.ghostify.annihilation.storage.darkness)
+		if (player.ghostify.annihilation.cascade !== undefined) player.ghostify.annihilation.cascade.power = new Decimal(player.ghostify.annihilation.cascade.power)
   }
 }
 
@@ -2688,19 +2790,19 @@ function loadAutoBuyerSettings() {
 }
 
 function set_save(id, value) {
-	localStorage.setItem(btoa(savePrefix+id), btoa(JSON.stringify(value, function(k, v) { return (v === Infinity) ? "Infinity" : v; })));
+	localStorage.setItem(btoa('dsAM_'+id), btoa(JSON.stringify(value, function(k, v) { return (v === Infinity) ? "Infinity" : v; })));
 }
 
 function get_save(id) {
     try {
-        var dimensionSave = localStorage.getItem(btoa(savePrefix+id))
+        var dimensionSave = localStorage.getItem(btoa('dsAM_'+id))
         if (dimensionSave !== null) dimensionSave = JSON.parse(atob(dimensionSave, function(k, v) { return (v === Infinity) ? "Infinity" : v; }))
         return dimensionSave
     } catch(e) { }
 }
 
 function initiateMetaSave() {
-	metaSave = localStorage.getItem(metaSaveId)
+	metaSave = localStorage.getItem('AD_aarexModifications')
 	if (metaSave == null) metaSave = {presetsOrder: [], version: 2.02}
 	else metaSave = JSON.parse(atob(metaSave))
 	if (metaSave.current == undefined) {

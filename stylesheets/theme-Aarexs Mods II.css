@@ -62,6 +62,10 @@ button, div.storebtn {
 	color: #e5e5e5
 }
 
+#footer {
+    display: none
+}
+
 #progress {
     bottom: 5px !important;
     background-color: #191919 !important;
@@ -77,10 +81,6 @@ button, div.storebtn {
 	font-family: "Roboto" !important;
     color: #191919 !important;
     border-radius: 0px !important
-}
-
-#footer {
-	font-family: "Roboto" !important
 }
 
 #coinAmount, #dilatedGalaxies, #normalGalaxies, #sacrificedGals {
@@ -161,7 +161,7 @@ button, div.storebtn {
 	color: #e59900 !important;
 }
 
-.infinistorebtnbought, .completedchallengesbtn, .chosenbtn {
+.infinistorebtnbought, .completedchallengesbtn {
 	background-color: #00e500 !important;
 	color: #191919 !important;
 	border: none !important;
@@ -454,7 +454,7 @@ button, div.storebtn {
     background-color: #4c4c4c !important
 }
 
-#quantumFoodAmount, #workerProgress, #growupProgress, #quantumFoodAmountED, #quarkEnergy, #quarkEnergyRate, #quarkPower, #quarkPowerThreshold, #rewards, #rewards_AP {
+#quantumFoodAmount, #workerProgress, #growupProgress, #quantumFoodAmountED, #quarkEnergy, #quarkEnergyRate, #quarkPower, #quarkPowerThreshold, #rewards {
 	color: #39e539 !important
 }
 
@@ -560,46 +560,46 @@ button, div.storebtn {
 	border: none !important;
 	border-radius: 0px !important;
 	border-color: transparent !important;
-	box-shadow: inset 0px 0px 24px 0px black, 1px 2px rgba(229,229,229,0.4)
+	box-shadow: inset 0px 0px 12px 0px transparent, 1px 2px rgba(229,229,229,0.4)
 }
 
 .ghostifybtn:hover {
 	border-color: rgba(255,255,255,0.5);
-	box-shadow: inset 0px 0px 12px 0px #420072, 1px 2px rgba(229,229,229,0.4)
+	box-shadow: inset 0px 0px 12px 0px #ffffff, 1px 2px rgba(229,229,229,0.4)
 }
 
 .aarexmodsghostifybtn {
-	background: linear-gradient(#0c0033, #2e0033);
-	border-radius: 4px;
-	box-shadow: inset 0px 0px 24px 0px black, 1px 2px rgba(229,229,229,0.4);
+	background: linear-gradient(#0c001e, #3a003f) !important;
+	font-family: Typewriter;
 	font-weight: bold;
+	border-radius: 4px;
+	box-shadow: inset 0px 0px 12px 0px none, 1px 2px rgba(229,229,229,0.4);
 	transition-duration: 0.2s;
 	animation: ghostifytext 4s linear infinite
 }
 
 .aarexmodsghostifybtn:hover {
-	background: linear-gradient(#0c0033, #2e0033);
-	box-shadow: inset 0px 0px 12px 0px #420072, 1px 2px rgba(229,229,229,0.4)
+	box-shadow: inset 0px 0px 12px 0px #ffffff, 1px 2px rgba(229,229,229,0.4)
 }
 
 .neutrinos {
-	color: #5f5f5f
+	color: #cccccc
 }
 
 #GHPAmount, #quantumedBMAmount {
 	animation: ghostifytext 4s linear infinite
 }
 
-#bugExport b, .warning {
+#tooMuchPowerConsumed {
 	color: #e50000
 }
 
-#gphtabbtn button {
+#gphtabbtn {
 	background-color: #bfaf5f !important;
 	color: #191919 !important
 }
 
-#gphtabbtn button:hover {
+#gphtabbtn:hover {
 	background-color: #bcae67 !important
 }
 
@@ -635,90 +635,11 @@ button, div.storebtn {
 	color: #191919 !important;
 	text-shadow: 0px 0px 3px #191919, 0px 0px 6px #bfaf5f
 }
-
 .gluonupgrade.gph:hover {
 	color: #e5e5e5 !important;
 	text-shadow: 0px 0px 3px #e5e5e5, 0px 0px 6px #191919;
 }
-
-#bltabbtn button, .gluonupgrade.bl {
-	background: repeating-linear-gradient(#620d65, transparent 50%, #620d65 100%), repeating-linear-gradient(90deg, transparent, #c73415 50%, transparent 100%), #191919 !important;
-	background-size: 200% 200% !important;
-	box-shadow: inset 0px 0px 24px transparent, 1px 2px rgba(229,229,229,0.4);
-	color: #e5e5e5 !important;
-	text-shadow: 0px 0px 3px #191919, 0px 0px 6px #e5e5e5;
-	animation: bl 5s linear infinite
-}
-
-#bltabbtn button:hover, .gluonupgrade.bl:hover {
-	box-shadow: inset 0px 0px 24px #38cbea, 1px 2px rgba(229,229,229,0.4)
-}
-
-#bWatt, #bSpeed, #bTotalSpeed, #bAM, #bAMProduction, #bAMEffect, #bBt, #bBtProduction, #odSpeed, #zb, #zbSpeed {
-	color: #c73415
-}
-
-.bRune {
-	background: #e5e5e5;
-	box-shadow: 0px 0px 12px #e5e5e5
-}
-
-.bRune.Infinity {
-	background: #e59900;
-	box-shadow: 0px 0px 12px #e59900
-}
-
-.bRune.Eternity {
-	background: #8f39e5;
-	box-shadow: 0px 0px 12px #8f39e5
-}
-
-.bRune.Quantum {
-	background: #269926;
-	box-shadow: 0px 0px 12px #269926
-}
-
-.bRune.Ethereal {
-	box-shadow: 0px 0px 12px #3964e5
-}
-
-.gluonupgradebought.bl {
-	background: repeating-linear-gradient(#9df29a, transparent 50%, #9df29a 100%), repeating-linear-gradient(90deg, transparent, #38cbea 50%, transparent 100%), #191919 !important;
-	background-size: 200% 200% !important;
-	color: #191919 !important;
-	text-shadow: 0px 0px 3px #191919, 0px 0px 6px #e5e5e5;
-}
-
-#ap, #apProduction, #apLoss {
-	color: #e55be5 !important
-}
-
-#wpb, #wbTime, #wbOscillate, #wbProduction {
-	color: #7b267e;
-}
-
-#wnb {
-	color: #9df29a
-}
-
-.zero {
-	background: repeating-linear-gradient(#620d65, transparent 50%, #620d65 100%), repeating-linear-gradient(90deg, transparent, #9df29a 50%, transparent 100%), #191919;
-	background-size: 200% 200%;
-	box-shadow: 0px 0px 12px #e5e5e5
-}
-
-.down #wQkSymbol {
-	transform: translate(-50%, 15%)
-}
-
-.mu #zNeSymbol {
-	transform: translate(-50%, 10%)
-}
-
-.tau #zNeSymbol {
-	transform: translate(-50%, 10%)
-}
-
+				
 @keyframes rg {
 	0% {color: #e50000}
 	25% {color: #e5e500}

@@ -100,6 +100,13 @@ function DimensionPower(tier) {
   mult = dilates(mult, 2)
   if (player.replicanti.unl && player.replicanti.amount.gt(1) && player.galacticSacrifice !== undefined) mult = mult.times(getIDReplMult())
   if (player.galacticSacrifice !== undefined) mult = mult.times(ec9)
+  
+  if (player.aarexModifications.ngp5V !== undefined) {
+	  if (inGC(2)) mult = mult.pow(getGCNerf(2))
+	  if (inGC(4)) mult = mult.pow(getGCNerf(4))
+  }
+
+  if (mult.gte(Decimal.pow(10, 5e19))) mult = mult.sqrt().times(Decimal.pow(10, 2.5e19))
 
   return dilates(mult, 1)
 }
@@ -125,23 +132,28 @@ function getIDCost(tier) {
 }
 
 function getIDCostMult(tier) {
-	let ret=infCostMults[tier]
-	if (ECTimesCompleted("eterc12")) ret=Math.pow(ret,getECReward(12))
+	let ret=new Decimal(infCostMults[tier])
+	if (ECTimesCompleted("eterc12")) ret=Decimal.pow(ret,getECReward(12))
 	if (player.galacticSacrifice==undefined) return ret
-	if (player.infinityUpgrades.includes("postinfi53")) ret/=50
-	if (player.galacticSacrifice.upgrades.includes(42)) ret/=1+5*Math.log10(player.eternityPoints.plus(1).log10()+1)
+	if (player.infinityUpgrades.includes("postinfi53")) ret=ret.div(50)
+	if (player.galacticSacrifice.upgrades.includes(42)) ret=ret.div(1+5*Math.log10(player.eternityPoints.plus(1).log10()+1))
 	let cap = .1
 	if (player.achPow.gte(Decimal.pow(5,11.9))) {
 		cap = .02
-		ret /= Math.max(1,Math.log(player.totalmoney.log10())/10-.5)
+		ret = ret.div(Math.max(1,Math.log(player.totalmoney.log10())/10-.5))
 	}
-	return Math.max(ret,Math.pow(infCostMults[tier],cap))
+	return Decimal.max(ret,Decimal.pow(infCostMults[tier],cap))
 }
 
 function getInfBuy10Mult(tier) {
 	let ret = infPowerMults[player.galacticSacrifice!==undefined&&player.tickspeedBoosts===undefined?1:0][tier]
 	if (player.galacticSacrifice!==undefined&&player.galacticSacrifice.upgrades.includes(41)) ret *= player.galacticSacrifice.galaxyPoints.max(10).log10()
 	return ret
+}
+
+function getInfDimPowerUp(tier,toBuy) {
+	let powerUp = Decimal.pow(getInfBuy10Mult(tier), toBuy)
+	return powerUp
 }
 
 function buyManyInfinityDimension(tier) {
@@ -154,10 +166,10 @@ function buyManyInfinityDimension(tier) {
   if (player.eterc8ids == 0) return false
   if (player.infinityPoints.lt(Decimal.pow(10, 1e10))) player.infinityPoints = player.infinityPoints.minus(cost)
   dim.amount = dim.amount.plus(10);
-  dim.cost = Decimal.round(dim.cost.times(getIDCostMult(tier)))
-  dim.power = dim.power.times(getInfBuy10Mult(tier))
   dim.baseAmount += 10
-
+  dim.cost = Decimal.round(dim.cost.times(getIDCostMult(tier)))
+  let powerUp = getInfDimPowerUp(tier,1)
+  dim.power = dim.power.times(powerUp)
   if (player.pSac!=undefined) player.chall2Pow=0
   if (player.currentEternityChall == "eterc8") player.eterc8ids-=1
   document.getElementById("eterc8ids").textContent = "You have "+player.eterc8ids+" purchases left."
@@ -170,14 +182,14 @@ function buyMaxInfDims(tier) {
   var cost = getIDCost(tier)
   if (player.infinityPoints.lt(cost)) return false
   if (!player.infDimensionsUnlocked[tier-1]) return false
-
   var costMult=getIDCostMult(tier)
-  var toBuy = Math.floor(player.infinityPoints.div(cost).log10() / Math.log10(costMult))
+  var toBuy = Math.floor(player.infinityPoints.div(cost).log10() / Decimal.log10(costMult))
   dim.cost = dim.cost.times(Decimal.pow(costMult, toBuy-1))
   if (player.infinityPoints.lt(Decimal.pow(10, 1e10))) player.infinityPoints = player.infinityPoints.minus(getIDCost(tier).min(player.infinityPoints))
   dim.cost = dim.cost.times(costMult)
   dim.amount = dim.amount.plus(10*toBuy);
-  dim.power = dim.power.times(Decimal.pow(getInfBuy10Mult(tier), toBuy))
+  let powerUp = getInfDimPowerUp(tier,toBuy)
+  dim.power = dim.power.times(powerUp)
   dim.baseAmount += 10*toBuy
   buyManyInfinityDimension(tier)
 }
@@ -186,20 +198,30 @@ function getInfinityPowerEffect() {
 	if (player.currentEternityChall == "eterc9") return Decimal.pow(Math.max(player.infinityPower.log2(),1),player.galacticSacrifice==undefined?4:30).max(1)
 	let log = player.infinityPower.max(1).log10()
 	log *= getInfinityPowerEffectPower()
+	if (hasPU(34)) log *= puMults[34]()
 	if (log > 10 && player.pSac !== undefined) log = Math.pow(log * 200 - 1e3, 1/3)
+	if (log > getInfPowSS()) log = Math.sqrt(log)*Math.sqrt(getInfPowSS())
+	if (player.aarexModifications.ngp5V !== undefined) if (inGC(3)) log = 0
 	return Decimal.pow(10, log)
 }
 
+function getInfPowSS() {
+	let ss=1e16
+	if (player.aarexModifications.ngp5V!==undefined) if (currentAnnihilationTier()==0) if (player.ghostify.annihilation.upgrades.includes(22)) ss *= getAnnihilationUpgEff(22)/100+1
+	if (tmp.ngp3) ss *= getNanofieldRewardEffect("7t")+1
+	return ss
+}
+
 function getInfinityPowerEffectPower() {
-	let x=7
 	if (player.galacticSacrifice!=undefined) {
-		x=Math.pow(player.galaxies,0.7)
-		if (player.currentChallenge=="postcngm3_2"||(player.tickspeedBoosts!=undefined&&player.currentChallenge=="postc1")) x=player.galaxies
-		else if (player.challenges.includes("postcngm3_2")) x=Math.pow(player.galaxies+(player.resets+player.tickspeedBoosts)/30,0.7)
-		x=Math.max(x,7)
+		let ret=Math.pow(player.galaxies,0.7)
+		if (player.currentChallenge=="postcngm3_2"||(player.tickspeedBoosts!=undefined&&player.currentChallenge=="postc1")) ret=player.galaxies
+		else if (player.challenges.includes("postcngm3_2")) ret=Math.pow(player.galaxies+(player.resets+player.tickspeedBoosts)/30,0.7)
+		let min=7
+		if (player.pSac!==undefined) min=3
+		return Math.max(ret,7)
 	}
-	if (hasPU(34)) x*=puMults[34]()
-	return x
+	return 7
 }
 
 function switchAutoInf(tier) {
@@ -246,18 +268,14 @@ function getIDReplMult() {
 }
 
 function getEU2Mult() {
-	var e = nMx(getEternitied(), 0)
-	if (typeof(e) == "number" && isNaN(e)) e = 0
+	var e = getEternitied()
 	if (player.boughtDims) return Decimal.pow(e, Decimal.times(e,2).add(1).log(Math.E)/Math.log(4))
-	var cap = nMn(e, 1e5)
-	var soft = 0
-	if (e > 1e5) soft = nS(e, cap)
-	var achReward = 1
-	if (player.achievements.includes("ngpp15")) achReward = Decimal.pow(10, Math.pow(Decimal.log10(e) * tmp.eu2b, 4.75))
-	return Decimal.pow(cap/200 + 1, Math.log(cap*2+1)/Math.log(4)).times(Decimal.div(soft,200).add(1).times(Decimal.times(soft,2).add(1).log(Math.E)/Math.log(4)).max(1)).max(achReward)
+	var cap = nMn(e, 100000)
+	var soft = nS(e, cap)
+	return Decimal.pow(cap/200 + 1, Math.log(cap*2+1)/Math.log(4)).times(Decimal.div(soft,200).add(1).times(Decimal.times(soft,2).add(1).log(Math.E)/Math.log(4)).max(1)).max(player.achievements.includes("ngpp15")?Decimal.pow(10, Math.pow(Decimal.log10(e), 4.75)):1)
 }
 
 function getEU3Mult() {
 	if (player.boughtDims) return player.timeShards.div(1e12).plus(1)
-	return Decimal.pow(2, 300 / Math.max(infchallengeTimes, 6.1))
+	return Decimal.pow(2,300/Math.max(infchallengeTimes, player.achievements.includes("r112") ? 6.1 : 7.5))
 }

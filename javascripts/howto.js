@@ -56,7 +56,7 @@ function showspoilers() {
 function updateSpoilers() {
 	var displayed = spoilers;
 	document.getElementById("ng3pguide").style.display=player.masterystudies||spoilers?"":"none"
-	for (i=37; i>0; i--) {
+	for (i=47; i>0; i--) {
 		if (i != 7) {
 			if (!displayed) {
 				if (i < 5) displayed = 1
@@ -86,7 +86,18 @@ function updateSpoilers() {
 						if (i == 32 && player.quantum) if (player.quantum.breakEternity) if (player.quantum.breakEternity.unlocked) displayed = 1
 						if (i == 36 && player.ghostify) if (player.ghostify.times > 0) displayed = 1
 						if (i == 37 && player.ghostify && player.ghostify.ghostlyPhotons) if (player.ghostify.ghostlyPhotons.unl) displayed = 1
-						if (i == 40 && player.ghostify && player.ghostify.wzb) if (player.ghostify.wzb.unl) displayed = 1
+					}
+					if (player.aarexModifications.ngp5V !== undefined) {
+						if (i == 38 && player.ghostify) if (player.ghostify.ghostlyPhotons) if (player.ghostify.ghostlyPhotons.enpowerments>=3) displayed = 1
+						if (i == 39 && player.ghostify) if (player.ghostify.darkness) if (player.ghostify.darkness.upgrades) if (player.ghostify.darkness.upgrades[2][2] === true) displayed = 1
+						if (i == 40 && player.ghostify) if (player.ghostify.challenges) if (player.ghostify.challenges.tiers) if (player.ghostify.challenges.tiers[3]>1) displayed = 1
+						if (i == 41 && player.ghostify) if (player.ghostify.endlessMirrors) if (player.ghostify.endlessMirrors.amount) if (player.ghostify.endlessMirrors.amount>=25) displayed = 1
+						if (i == 42 && player.ghostify) if (player.ghostify.dimensions) if (player.ghostify.dimensions.bought) if (player.ghostify.dimensions.bought[8]>0) displayed = 1
+						if (i == 43 && player.dilation.br) if (player.dilation.br.upgrades) if (player.dilation.br.upgrades.includes(15)) displayed = 1
+						if (i == 44 && player.ghostify) if (player.ghostify.baryons) if (player.ghostify.baryons.hyperons) if (player.ghostify.baryons.hyperons.unl) displayed = 1
+						if (i == 45 && player.ghostify) if (player.ghostify.baryons) if (player.ghostify.baryons.hyperons) if (player.ghostify.baryons.hyperons.supercharge) if (player.ghostify.baryons.hyperons.supercharge.hyperons) if (player.ghostify.baryons.hyperons.supercharge.hyperons>=5) displayed = 1
+						if (i == 46 && player.ghostify) if (player.ghostify.baryons) if (player.ghostify.baryons.hyperons) if (player.ghostify.baryons.hyperons.supercharge) if (player.ghostify.baryons.hyperons.supercharge.hyperons) if (player.ghostify.baryons.hyperons.supercharge.hyperons>=5) displayed = 1
+						if (i == 47 && player.ghostify) if (player.ghostify.annihilation) if (player.ghostify.annihilation.cascade) if (player.ghostify.annihilation.cascade.times) displayed = 1
 					}
 				}
 			}
