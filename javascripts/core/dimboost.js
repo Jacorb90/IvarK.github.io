@@ -182,8 +182,8 @@ function maxBuyDimBoosts(manual) {
 				sc = 1e6
 				let mi = getHypersonicMultIncrease()
 				var a = mi / 2
-				var b = pointReq.mult + a
-				var skips = (Math.sqrt(b * b + 4 * a * (bought - getShiftRequirement(hypersonicStart - player.resets - 1).amount) / sc) - b) / (2 * a)
+				var b = firstReq.mult + a
+				var skips = (Math.sqrt(b * b + 4 * a * (bought - getShiftRequirement(hypersonicStart - r - 1).amount) / sc) - b) / (2 * a)
 				var setPoint = hypersonicStart + Math.floor(skips) * sc
 				pointReq = getShiftRequirement(setPoint - player.resets)
 				r = (bought - pointReq.amount) / pointReq.mult + setPoint + 1

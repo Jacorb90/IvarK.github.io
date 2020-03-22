@@ -1,5 +1,3 @@
-var menu = "origin"
-
 function resetNGP5V() {
 	if (!player.aarexModifications.ngp5V) player.aarexModifications.ngp5V = true
 	player.ghostify.darkness = {
@@ -2086,6 +2084,19 @@ function getCascadePowerEff4() {
 }
 
 // Menus (v1.0.3)
+
+var menu = "origin"
+var creationMenu = "hadrontab"
+
+function showCreationTab(name) {
+	var tabs = document.getElementsByClassName("creationTab");
+	for (var i = 0; i < tabs.length; i++) {
+		let tab = tabs.item(i);
+		tab.style.display = creationMenu == tab.id ? "block" : "none"
+	}
+}
+
+showCreationTab("hadrontab")
 
 function menubtnUnlocked(name) {
 	if (name=="origin") return true

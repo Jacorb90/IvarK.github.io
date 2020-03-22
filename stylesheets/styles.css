@@ -3132,7 +3132,7 @@ screen and (max-width: 480px) {
 
 @keyframes glow {
 	40% {
-		text-shadow: 0 0 8px #fff;
+		text-shadow: 0 0 8px black;
 	}
 }
 

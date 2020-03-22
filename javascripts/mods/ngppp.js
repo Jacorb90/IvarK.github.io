@@ -1073,6 +1073,7 @@ function updateElectrons(auto=true) {
 	for (u=1;u<5;u++) {
 		var cost=getElectronUpgCost(u)
 		document.getElementById("electronupg"+u).innerHTML="Upgrade multiplier with "+([null,"time theorems","dilated time","meta-antimatter","meta-dimension boosts"])[u]+".<br>Cost: "+(u>3?getFullExpansion(getElectronUpgCost(u)):shortenCosts(getElectronUpgCost(u)))+([null," TT"," DT"," MA"," MDB"])[u]
+		if ((u>3?getFullExpansion(getElectronUpgCost(u)):shortenCosts(getElectronUpgCost(u)))=="Infinite") document.getElementById("electronupg"+u).innerHTML="Upgrade multiplier with "+([null,"time theorems","dilated time","meta-antimatter","meta-dimension boosts"])[u]+".<br>Maxed Out"
 	}
 	document.getElementById("electronsAutoContainer").style.display = "none"
 	if (player.achievements.includes("ng5p37") && player.aarexModifications.ngp5V !== undefined && player.aarexModifications.autoElectrons !== undefined) {
@@ -1285,6 +1286,7 @@ function getQCCost(num) {
 //v1.997895
 function canBuyElectronUpg(id) {
 	if (!inQC(0)) return false
+	if (((id>3?getFullExpansion(getElectronUpgCost(id)):shortenCosts(getElectronUpgCost(id)))=="Infinite")) return false
 	if (id>3) return player.meta.resets>=getElectronUpgCost(4)
 	if (id>2) return player.meta.antimatter.gte(getElectronUpgCost(3))
 	if (id>1) return player.dilation.dilatedTime.gte(getElectronUpgCost(2))
@@ -1837,13 +1839,13 @@ function isLimitUpgAffordable() {
 
 function getLimitMsg() {
 	if (!player.masterystudies.includes("d11")) return tmp.qu.replicants.limit
-	return tmp.qu.replicants.limit+" ED"+tmp.qu.replicants.limitDim+"s"
+	return getFullExpansion(tmp.qu.replicants.limit)+" ED"+tmp.qu.replicants.limitDim+"s"
 }
 
 function getNextLimitMsg() {
 	if (!player.masterystudies.includes("d11")) return tmp.qu.replicants.limit+1
 	if (tmp.qu.replicants.limit > 9 && tmp.qu.replicants.limitDim < 8) return "1 ED"+(tmp.qu.replicants.limitDim+1)+"s"
-	return (tmp.qu.replicants.limit+1)+" ED"+tmp.qu.replicants.limitDim+"s"
+	return getFullExpansion(tmp.qu.replicants.limit+1)+" ED"+tmp.qu.replicants.limitDim+"s"
 }
 
 function getHatchSpeed() {
