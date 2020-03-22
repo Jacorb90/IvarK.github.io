@@ -35,6 +35,12 @@
 <body id="body" style="height: 95vh; " onload="initGame()">
 	<div id='ghostlyNewsTicker'><span id='ghostlyNewsTickerText'></span></div>
 	<div id="container" class="container" style="color:#4F5957; font-family: Typewriter; text-align:center; font-size: 11px; display:none">
+		<div id="creation">
+			<b class="creationTxt">Creation</b>
+			<div id="originbtn" class="creationbtn" onclick="gotoMenu('origin')"><br>Origin</div><br><br><br><br><br><br>
+			New prestige layers to come... :)
+		</div>
+		<div id="origin">
 		<div id='ghostlyNewsTickerBlock'></div>
 		<div id='game' style='display:none'>
 			<div id='news'>.</div>
@@ -60,6 +66,9 @@
 		<div style="position: relative">
 			<div class="EP" id="galaxyPoints2">You have <span class='GPAmount'>0</span> Galaxy points.</div>
 			<span id="sacpos" class="eterpos"><button id="sacrificebtn" class="storebtn" onclick="galacticSacrifice()"></button></span>
+		</div>
+		<div style="position: relative">
+			<div id="creationbtn" class="creationbtn" onclick="gotoMenu('creation')"><br>Creation</div>
 		</div>
 		<div style="position: relative">
 			<div class="QK">

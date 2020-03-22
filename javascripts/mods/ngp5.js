@@ -1,3 +1,5 @@
+var menu = "origin"
+
 function resetNGP5V() {
 	if (!player.aarexModifications.ngp5V) player.aarexModifications.ngp5V = true
 	player.ghostify.darkness = {
@@ -296,7 +298,7 @@ function updateNGP5V(active,diff) {
 			document.getElementById("annihilationLocked").style.display = player.ghostify.baryons.hyperons.supercharge.hyperons>4 ? "none" : ""
 			document.getElementById("annihilationStuff").style.display = player.ghostify.baryons.hyperons.supercharge.hyperons>4 ? "" : "none"
 			if (document.getElementById("annihilationmini").style.display != "none") {
-				document.getElementById("annihilateInfo").innerHTML = "Annihilating your timeline forces you to do a Light Empowerment reset that also resets what Fixing Dilation resets. This also resets your Neutrinos, Light Empowerments, Darkness amount, Endless Mirror progress, and Ghost Dimensions (amounts are reset to bought amounts). Time Studies, Mastery Studies, most Dilation Studies, Dimensional Sacrifice, Quark Multipliers, and Brave Milestones are disabled while Annihilated. Any features unlocked by Dilation Studies that are not disabled (time dilation, meta dimensions, electrons, quantum and paired challenges, and big rip) are severely nerfed."+(player.ghostify.annihilation.maxTier>=2?"<br>Reach "+shorten(Number.MAX_SAFE_INTEGER)+" Exotic Matter to unlock something new... (not quite implemented yet, but will be soon)":"")
+				document.getElementById("annihilateInfo").innerHTML = "Annihilating your timeline forces you to do a Light Empowerment reset that also resets what Fixing Dilation resets. This also resets your Neutrinos, Light Empowerments, Darkness amount, Endless Mirror progress, and Ghost Dimensions (amounts are reset to bought amounts). Time Studies, Mastery Studies, most Dilation Studies, Dimensional Sacrifice, Quark Multipliers, and Brave Milestones are disabled while Annihilated. Any features unlocked by Dilation Studies that are not disabled (time dilation, meta dimensions, electrons, quantum and paired challenges, and big rip) are severely nerfed."+((player.ghostify.annihilation.maxTier>=2&&player.ghostify.annihilation.exoticMatter.lt(Number.MAX_SAFE_INTEGER))?"<br>Reach "+shorten(Number.MAX_SAFE_INTEGER)+" Exotic Matter to unlock something new...":"")
 				document.getElementById("annihilate").textContent = player.ghostify.annihilation.active ? "You are too weak. Attempt to fix your weak timeline to gain " +shortenDimensions(getExoticMatterGain()) +" Exotic Matter." : "Annihilate your timeline at Tier "+getFullExpansion(player.ghostify.annihilation.tier)+"!"
 				document.getElementById("exoticMatter").textContent = shortenDimensions(player.ghostify.annihilation.exoticMatter)
 				document.getElementById("annihilateMaxTier").textContent = getFullExpansion(player.ghostify.annihilation.maxTier)
@@ -311,6 +313,8 @@ function updateNGP5V(active,diff) {
 		}
 		if (!player.ghostify.baryons.hyperons.unl && player.ghostify.baryons.nucleons.sacrificed>=20) player.ghostify.baryons.hyperons.unl = true
 	}
+	let menus = ["origin","creation"]
+	for (i=0;i<menus.length;i++) updateMenu(menus[i])
 }
 
 function getDarknessSacReward() {
@@ -2079,4 +2083,21 @@ function getCascadePowerEff4() {
 	let power = player.ghostify.annihilation.cascade.power
 	let eff = Decimal.pow(power.add(1).log10()+1, 2)
 	return eff
+}
+
+// Menus (v1.0.3)
+
+function menubtnUnlocked(name) {
+	if (name=="origin") return true
+	if (name=="creation") return player.aarexModifications.ngp5V!==undefined ? player.ghostify.annihilation.exoticMatter.gte(Number.MAX_SAFE_INTEGER) : false
+}
+
+function updateMenu(name) {
+	if (document.getElementById(name+"btn")) document.getElementById(name+"btn").style.display = menubtnUnlocked(name)?"":"none"
+	if (document.getElementById(name)) document.getElementById(name).style.display = menu==name?"block":"none"
+}
+
+function gotoMenu(name) {
+	menu = name
+	if (player.options.secrets.ghostlyNews) toggleGhostlyNews()
 }

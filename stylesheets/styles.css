@@ -2672,55 +2672,79 @@ br {
 	cursor: pointer
 }
 
-@keyframes wzb { 
-	0%{
-		background-position: 0% 0%
-	}
-	100%{
-		background-position: 200% 200%
-	}
+.hadron {
+	position: relative;
+	background: transparent;
+	box-shadow: inset 0px 0px 24px 0px black;
+	border: 2px solid black;
+	border-radius: 4px;
+	overflow: hidden;
+	font-family: Typewriter;
+	font-weight: bold;
+	color: rgba(255,255,255,0.8);
+	text-shadow: 0px 0px 3px rgba(0,0,0,0.5);
+	transition-duration: 0.2s;
+	cursor: pointer
 }
 
-@keyframes cascade { 
-	0%{
-		background-position: 0% 0%
-	}
-	10%{
-		background-position: 0% 50%
-	}
-	20%{
-		background-position: 0% 75%
-	}
-	25%{
-		background-position: 0% 100%
-	}
-	35%{
-		background-position: 50% 100%
-	}
-	45%{
-		background-position: 75% 100%
-	}
-	50%{
-		background-position: 100% 100%
-	}
-	60%{
-		background-position: 100% 150%
-	}
-	70%{
-		background-position: 100% 175%
-	}
-	75%{
-		background-position: 100% 200%
-	}
-	85%{
-		background-position: 150% 100%
-	}
-	95%{
-		background-position: 175% 100%
-	}
-	100%{
-		background-position: 200% 200%
-	}
+.hadron:hover {
+	box-shadow: inset 0px 0px 24px 0px white;
+	border-color: #bfbfbf;
+	color: white;
+	text-shadow: 0px 0px 3px white
+}
+
+.hadron.bg {
+	position: absolute;
+	background: conic-gradient(#ff0000, #00ff00, #0000ff, #ff0000);
+	background-size: contain;
+	height: 100vmax;
+	width: 100vmax;
+	top: calc(-50vmax + 50%);
+	left: calc(-50vmax + 50%);
+	z-index: -1;
+	animation: hadronize 5s linear infinite
+}
+
+.creationbtn {
+    color: #C6C832;
+    background: #000000;
+    border: 2px solid #C6C832;
+    font-family: Typewriter;
+    font-weight: bold;
+    border-radius: 4px;
+    transition-duration: 0.2s;
+    cursor: pointer;
+}
+
+.creationbtn:hover {
+    background: #C6C832;
+    color: #000000;
+}
+
+#creationbtn {
+	cursor: pointer;
+	position: absolute;
+	right: 75%;
+	top: 150px;
+	width: 210px;
+	height: 70px;
+	font-size: 16px;
+}
+
+#originbtn {
+	cursor: pointer;
+	position: absolute;
+	right: 43.5%;
+	width: 210px;
+	height: 70px;
+	font-size: 16px;
+}
+
+.creationTxt {
+	font-size: 25px;
+	color: black;
+	animation: reveal 3000ms ease-in-out forwards infinite 200ms, glow 2500ms linear infinite 2000ms;
 }
 
 @media print,
@@ -3016,6 +3040,15 @@ screen and (max-width: 480px) {
 	}
 }
 
+@keyframes wzb { 
+	0%{
+		background-position: 0% 0%
+	}
+	100%{
+		background-position: 200% 200%
+	}
+}
+
 @keyframes radtxt {
 	0%{
 		color: #6b0202;
@@ -3043,5 +3076,71 @@ screen and (max-width: 480px) {
 	100%{
 		color: #ff0000;
 		text-shadow: 0px 0px 3px #ff0000, 0px 0px 6px #ffffff;
+	}
+}
+
+@keyframes cascade { 
+	0%{
+		background-position: 0% 0%
+	}
+	10%{
+		background-position: 0% 50%
+	}
+	20%{
+		background-position: 0% 75%
+	}
+	25%{
+		background-position: 0% 100%
+	}
+	35%{
+		background-position: 50% 100%
+	}
+	45%{
+		background-position: 75% 100%
+	}
+	50%{
+		background-position: 100% 100%
+	}
+	60%{
+		background-position: 100% 150%
+	}
+	70%{
+		background-position: 100% 175%
+	}
+	75%{
+		background-position: 100% 200%
+	}
+	85%{
+		background-position: 150% 100%
+	}
+	95%{
+		background-position: 175% 100%
+	}
+	100%{
+		background-position: 200% 200%
+	}
+}
+
+@keyframes reveal {
+	80%{
+		letter-spacing: 8px;
+	}
+	100% {
+		background-size: 300% 300%;
+    }
+}
+
+@keyframes glow {
+	40% {
+		text-shadow: 0 0 8px #fff;
+	}
+}
+
+@keyframes hadronize { 
+	0%{
+	    transform: none
+	}
+	100%{
+	    transform: rotate(360deg)
 	}
 }
