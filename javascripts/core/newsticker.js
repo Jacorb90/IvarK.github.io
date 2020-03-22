@@ -304,11 +304,32 @@ newsArray = [//always true
 ["Are your ghost particles ghostly? If not, talk to your ghostly boss.", true, "gn14"],
 ["What's a ghostify? -some new person that joined the discord server", true, "gn15"],
 ["BREAKING NEWS: Because of antimatter, someone has been turned into a basketball. The news ticker writers are baffled.", true, "gn16"],
-["If you read 'Congratulations for beating NG+3' message, here is a spoiler: In the next update, there will be W & Z Bosons!", "player.newsArray.includes('am68') && player.totalmoney.gte(Decimal.pow(10, 5e16))", "gn17"],
-["WARNING: Do not interact evil ghosts. They can scare you out.", true, "gn18"],
+["If you read 'Congratulations for beating NG+3' message, here is a spoiler: In the next update, there will be W & Z Bosons! Not! I lied! That only exists in Aarex's mod, which you should totally check out btw...", "player.newsArray.includes('am68') && player.totalmoney.gte(Decimal.pow(10, 5e16))", "gn17"],
+["WARNING: Do not interact with evil ghosts. They can scare you out.", true, "gn18"],
 ["Do you know that ghosts are proved to be undead?", true, "gn19"],
 ["I got Ghost Particles. I got Neutrinos. That makes me a ghost.", true, "gn20"],
-["You cannot complete NG+5 when NG+++ is already impossible, or at least I thought.", "player.aarexModifications.ngp5V !== undefined", "gn21"]
+
+//NG+5 Ghostly Ticker news messages
+["You cannot complete NG+5 when NG+++ is already impossible, or at least I thought.", "ng5", "gn21"],
+["Never gonna give the darkness up, never gonna let the darkness down.", "ng5 ? player.ghostify.ghostlyPhotons.enpowerments>=3 : false", "gn22"],
+["A new layer of challenges, a new layer of hell.", "ng5 ? player.ghostify.darkness.upgrades[2][2] === true : false", "gn23"],
+["The mirrors live forever.", "ng5 ? player.ghostify.endlessMirrors.amount>0 : false", "gn24"],
+["It goes on and on! Normal Dimensions, Infinity Dimensions, Time Dimensions, Meta Dimensions, Emperor Dimensions, and Ghost Dimensions! It's crazy!", "ng5 ? player.ghostify.dimensions.power.gt(0) : false", "gn25"],
+["How much Replicanti can Replicants replicate if replicants boost replicanti?", "player.replicantiBoosts!==undefined ? player.replicantiBoosts.amount>0 : false", "gn26"],
+["First Infinity gets broken, then your computer, then Eternity, and now Dilation? Soon the game will break, and then you can't play anymore. How sad.", "ng5 ? player.dilation.br['break'] : false", "gn27"],
+["Baryons are just this game's Bosons, or at least we think.", "ng5 ? player.ghostify.baryons.nucleons.sacrificed>0 : false", "gn28"],
+["Annihilation is this game's second descension layer, but not really since it boosts progress outside of itself.", "ng5 ? player.ghostify.baryons.hyperons.supercharge.hyperons>=5 : false", "gn29"],
+["Electrons are just untouched at this point.", "ng5 ? player.aarexModifications.autoElectrons : false", "gn30"],
+["People think I'm Jacorb90, but I'm not. I'm a news ticker entry.", "ng5", "gn31"],
+["The world is made up of light and darkness, but not both at the same time. That would cause a xxxxxxx to happen...", "ng5 ? player.ghostify.ghostlyPhotons.enpowerments>=10 : false", "gn32"],
+["You are a witch for causing paradoxes to reach Ghostify, or at least I think so...", "ng5 ? (player.pSac && player.ghostify.times>0) : false", "gn33"]
+["When matter and antimatter coexist, the world gets absorbe into a black hole.", "ng5 && player.matter.gt(Number.MAX_VALUE) && player.money.gt(Number.MAX_VALUE) && player.blackhole.unl", "gn34"],
+["If you kill a ghost, do they die forever? Or do they just get split up into ghost particles?", "ng5", "gn35"],
+["If you revive a ghost, do they just instantly lose their ghost particles? Or do they become a ghostly human?", "ng5", "gn36"],
+["Florida man tries to reach the final achievement of NG+5 without Breaking Infinity, dies in the process.", "ng5 && player.break", "gn37"],
+["Florida man tries to annihilate his timeline without becoming a ghost, turns instantly into darkness.", "ng5 ? (player.ghostify.annihilation.exoticMatter.gte(1) && player.ghostify.times>0) : false", "gn38"],
+["Did you actually finish NG+5??? How in the world??? Well, either way, you still need to wait at least 5 hours for the next version to come out, so don't leave just yet.", "ng5 ? player.ghostify.annihilation.exoticMatter.gte(Number.MAX_SAFE_INTEGER) : false", "gn39"],
+["If you can see this, you should disable the ghostly news ticker and get a life.", "ng5 && player.dilation.tachyonParticles.gte(Decimal.pow(Number.MAX_VALUE, 20))", "gn40"],
 ];}
 
 document.addEventListener("visibilitychange", function() {if (!document.hidden) {scrollNextMessage();}}, false);
@@ -321,8 +342,9 @@ function scrollNextMessage() {
   updateNewsArray();
   //select a message at random
 
+  let ng5 = player.aarexModifications.ngp5V !== undefined
   try {
-    do {nextMsgIndex = Math.floor(Math.random() * newsArray.length)} while (!eval(newsArray[nextMsgIndex][1]) || (newsArray[nextMsgIndex][2].indexOf("am") > -1 && !player.achievements.includes("r22")) || newsArray[nextMsgIndex][2].indexOf("gn") > -1)
+    do {nextMsgIndex = Math.floor(Math.random() * newsArray.length)} while (!eval(newsArray[nextMsgIndex][1]) || (newsArray[nextMsgIndex][2].indexOf("am") > -1 && !player.achievements.includes("r22")) || (newsArray[nextMsgIndex][2].indexOf("gn") > -1))
   } catch(e) {
       console.log("Newsarray doesn't work at idx " + nextMsgIndex)
   }
@@ -377,8 +399,9 @@ function nextGhostlyNewsTickerMsg() {
 	if (ghostlyNewsTickerCache) return
 	ghostlyNewsTickerCache = true
 	updateNewsArray()
+	let ng5 = player.aarexModifications.ngp5V !== undefined
 	try {
-		do {nextMsgIndex = Math.floor(Math.random() * newsArray.length)} while (!eval(newsArray[nextMsgIndex][1]) || newsArray[nextMsgIndex][2].indexOf("gn") < 0)
+		do {nextMsgIndex = Math.floor(Math.random() * newsArray.length)} while (!eval(newsArray[nextMsgIndex][1]) || (newsArray[nextMsgIndex][2].indexOf("gn") < 0))
 	} catch(e) {
 		console.log("Newsarray doesn't work at idx " + nextMsgIndex)
 	}
