@@ -1202,6 +1202,7 @@ function quantumReset(force, auto, challid, bigRip, implode=false) {
 		ghostify: player.ghostify,
 		aarexModifications: player.aarexModifications,
 		replicantiBoosts: player.replicantiBoosts,
+		hadronize: player.hadronize,
 	};
 	if (player.replicantiBoosts !== undefined) player.replicantiBoosts.amount = 0
 	if (player.challenges.includes("challenge1")) player.money = new Decimal(100)

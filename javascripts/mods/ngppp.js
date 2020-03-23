@@ -3938,6 +3938,7 @@ function ghostifyReset(implode, gain, amount, force, annihilate=false) {
 		ghostify: player.ghostify,
 		aarexModifications: player.aarexModifications,
 		replicantiBoosts: player.replicantiBoosts,
+		hadronize: player.hadronize,
 	}
 	if (player.replicantiBoosts !== undefined) player.replicantiBoosts.amount = 0
 	if (player.aarexModifications.ngp5V !== undefined) {
@@ -4159,15 +4160,15 @@ function updateLastTenGhostifies() {
     var tempTime = new Decimal(0)
     var tempGHP = new Decimal(0)
     for (var i=0; i<10; i++) {
-        if (player.ghostify.last10[i][1].gt(0)) {
-            var qkpm = player.ghostify.last10[i][1].dividedBy(player.ghostify.last10[i][0]/600)
+        if (new Decimal(player.ghostify.last10[i][1]).gt(0)) {
+            var qkpm = new Decimal(player.ghostify.last10[i][1]).dividedBy(player.ghostify.last10[i][0]/600)
             var tempstring = shorten(qkpm) + " GHP/min"
             if (qkpm<1) tempstring = shorten(qkpm*60) + " GHP/hour"
             var msg = "The Ghostify " + (i == 0 ? '1 Ghostify' : (i+1) + ' Ghostifies') + " ago took " + timeDisplayShort(player.ghostify.last10[i][0], false, 3) + " and gave " + shortenDimensions(player.ghostify.last10[i][1]) +" GHP. "+ tempstring
             document.getElementById("ghostifyrun"+(i+1)).textContent = msg
             tempTime = tempTime.plus(player.ghostify.last10[i][0])
             tempGHP = tempGHP.plus(player.ghostify.last10[i][1])
-            bestGHP = player.ghostify.last10[i][1].max(bestGHP)
+            bestGHP = Decimal.max(player.ghostify.last10[i][1],bestGHP)
             listed++
         } else document.getElementById("ghostifyrun"+(i+1)).textContent = ""
     }
@@ -4252,7 +4253,7 @@ function updateGhostifyTabs() {
 				else document.getElementById("neutrinoUpg" + u).className = "gluonupgrade unavailablebtn"
 			}
 		}
-		if (player.ghostify.ghostParticles.gte(tmp.nbc[player.ghostify.neutrinos.boosts])) document.getElementById("neutrinoUnlock").className = "gluonupgrade neutrinoupg"
+		if (player.ghostify.ghostParticles.gte(tmp.nbc[player.ghostify.neutrinos.boosts>0?player.ghostify.neutrinos.boosts:1])) document.getElementById("neutrinoUnlock").className = "gluonupgrade neutrinoupg"
 		else document.getElementById("neutrinoUnlock").className = "gluonupgrade unavailablebtn"
 		if (player.ghostify.ghostParticles.gte(Decimal.pow(4,player.ghostify.neutrinos.multPower-1).times(2))) document.getElementById("neutrinoMultUpg").className = "gluonupgrade neutrinoupg"
 		else document.getElementById("neutrinoMultUpg").className = "gluonupgrade unavailablebtn"
@@ -4301,7 +4302,7 @@ function updateGhostifyTabs() {
 
 function onNotationChangeNeutrinos() {
 	if (player.masterystudies == undefined) return
-	document.getElementById("neutrinoUnlockCost").textContent=shortenDimensions(tmp.nbc[player.ghostify.neutrinos.boosts])
+	document.getElementById("neutrinoUnlockCost").textContent=shortenDimensions(tmp.nbc[player.ghostify.neutrinos.boosts>0?player.ghostify.neutrinos.boosts:1])
 	document.getElementById("neutrinoMult").textContent=shortenDimensions(getNeutrinoMultPower())
 	document.getElementById("neutrinoMultUpgCost").textContent=shortenDimensions(Decimal.pow(4,player.ghostify.neutrinos.multPower-1).times(2))
 	document.getElementById("ghpMult").textContent=shortenDimensions(Decimal.pow(2,player.ghostify.multPower-1))
@@ -4341,11 +4342,11 @@ function buyNeutrinoUpg(id) {
 function updateNeutrinoBoosts() {
 	for (var b=2;b<10;b++) document.getElementById("neutrinoBoost"+(b%3==1?"Row"+(b+2)/3:"Cell"+b)).style.display=player.ghostify.neutrinos.boosts>=b?"":"none"
 	document.getElementById("neutrinoUnlock").style.display=player.ghostify.neutrinos.boosts>8?"none":""
-	document.getElementById("neutrinoUnlockCost").textContent=shortenDimensions(tmp.nbc[player.ghostify.neutrinos.boosts])
+	document.getElementById("neutrinoUnlockCost").textContent=shortenDimensions(tmp.nbc[player.ghostify.neutrinos.boosts>0?player.ghostify.neutrinos.boosts:1])
 }
 
 function unlockNeutrinoBoost() {
-	var cost=tmp.nbc[player.ghostify.neutrinos.boosts]
+	var cost=tmp.nbc[player.ghostify.neutrinos.boosts>0?player.ghostify.neutrinos.boosts:1]
 	if (!player.ghostify.ghostParticles.gte(cost)||player.ghostify.neutrinos.boosts>8) return
 	player.ghostify.ghostParticles=player.ghostify.ghostParticles.sub(cost).round()
 	player.ghostify.neutrinos.boosts++

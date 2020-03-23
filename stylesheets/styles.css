@@ -2672,6 +2672,17 @@ br {
 	cursor: pointer
 }
 
+#hadronizebtn {
+	cursor: pointer;
+	position: absolute;
+	left: 12%;
+	top: 40px;
+	width: 210px;
+	height: 70px;
+	border-radius: 4px;
+	font-size: 11px
+}
+
 .hadron {
 	position: relative;
 	background: transparent;

@@ -3404,7 +3404,8 @@ function galaxyReset(bulk) {
         dontWant: player.dontWant,
         ghostify: player.ghostify,
         aarexModifications: player.aarexModifications,
-		replicantiBoosts: player.replicantiBoosts
+		replicantiBoosts: player.replicantiBoosts,
+		hadronize: player.hadronize,
     };
 
     if (inNC(10) || player.currentChallenge == "postc1") {
@@ -5443,7 +5444,8 @@ function bigCrunch(autoed) {
             dontWant: player.dontWant,
             ghostify: player.ghostify,
             aarexModifications: player.aarexModifications,
-			replicantiBoosts: player.replicantiBoosts
+			replicantiBoosts: player.replicantiBoosts,
+			hadronize: player.hadronize,
         };
         if (player.bestInfinityTime <= 0.01) giveAchievement("Less than or equal to 0.001");
 
@@ -5905,6 +5907,7 @@ function eternity(force, auto, presetLoad, dilated, epGain=true) {
             ghostify: player.ghostify,
             aarexModifications: player.aarexModifications,
 			replicantiBoosts: player.replicantiBoosts,
+			hadronize: player.hadronize,
         };
 		if (player.aarexModifications.ngp5V) if (player.replicantiBoosts !== undefined) player.replicantiBoosts.amount = 0;
         if (player.galacticSacrifice && getEternitied() < 2) player.autobuyers[12]=13
@@ -6292,7 +6295,8 @@ function startChallenge(name) {
       dontWant: player.dontWant,
       ghostify: player.ghostify,
       aarexModifications: player.aarexModifications,
-	  replicantiBoosts: player.replicantiBoosts
+	  replicantiBoosts: player.replicantiBoosts,
+	  hadronize: player.hadronize,
     };
 	if (inNC(10) || player.currentChallenge == "postc1") {
         player.thirdCost = new Decimal(100)
@@ -6909,7 +6913,8 @@ function startEternityChallenge(n) {
         dontWant: tmp.ngp3 ? true : undefined,
         ghostify: player.ghostify,
         aarexModifications: player.aarexModifications,
-		replicantiBoosts: player.replicantiBoosts
+		replicantiBoosts: player.replicantiBoosts,
+		hadronize: player.hadronize,
     };
     if (player.galacticSacrifice && getEternitied() < 2) player.autobuyers[12]=13
     if (player.tickspeedBoosts !== undefined && getEternitied() < 2) player.autobuyers[13]=14
@@ -8013,6 +8018,7 @@ function gameLoop(diff) {
     }
 
     player.totalTimePlayed += diffStat
+	if (player.hadronize) player.hadronize.time += diffStat
     if (tmp.ngp3) player.ghostify.time += diffStat
     if (player.meta) tmp.qu.time += diffStat
     if (player.currentEternityChall=="eterc12") diffStat/=1e3

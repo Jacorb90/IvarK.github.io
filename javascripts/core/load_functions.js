@@ -1346,6 +1346,19 @@ if (player.version < 5) {
 			power: new Decimal(0),
 		}
 	  }
+	  if (player.hadronize === undefined) {
+		  player.hadronize = {
+			time: player.totalTimePlayed,
+			best: 9999999999999999,
+			times: 0,
+			hadrons: new Decimal(0),
+			bondPower: new Decimal(0),
+			bonds: {
+				bought: [0,0,0,0,0,0,0,0],
+				amount: [new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0)],
+			},
+		  }
+	  }
   }
   if (player.aarexModifications.newGameMinusMinusVersion === undefined && !player.meta) {
       if (player.exdilation == undefined && player.version == 13) player.version = 12
@@ -1692,7 +1705,7 @@ if (player.version < 5) {
   updateAutoEterMode()
 
   ghostified = false
-  if (player.masterystudies !== undefined) ghostified = player.ghostify.times > 0
+  if (player.masterystudies !== undefined) ghostified = player.ghostify.times > 0 || (player.hadronize?player.hadronize.times>0:false)
   quantumed = ghostified
   if (player.meta !== undefined && !quantumed) quantumed = tmp.qu.times > 0
   document.getElementById("confirmations").style.display = (player.resets > 4 || player.galaxies > 0 || (player.galacticSacrifice ? player.galacticSacrifice.times > 0 : false) || player.infinitied !== 0 || player.eternities !== 0 || quantumed) ? "inline-block" : "none"
@@ -2730,6 +2743,13 @@ function transformSaveToDecimal() {
 		player.ghostify.annihilation.exoticMatter = new Decimal(player.ghostify.annihilation.exoticMatter)
 		if (player.ghostify.annihilation.storage !== undefined) player.ghostify.annihilation.storage.darkness = new Decimal(player.ghostify.annihilation.storage.darkness)
 		if (player.ghostify.annihilation.cascade !== undefined) player.ghostify.annihilation.cascade.power = new Decimal(player.ghostify.annihilation.cascade.power)
+		if (player.hadronize !== undefined) {
+			player.hadronize.hadrons = new Decimal(player.hadronize.hadrons)
+			player.hadronize.bondPower = new Decimal(player.hadronize.bondPower)
+			for (i=0;i<8;i++) {
+				player.hadronize.bonds.amount[i] = new Decimal(player.hadronize.bonds.amount[i])
+			}
+		}
   }
 }
 
