@@ -327,6 +327,7 @@ function updateNGP5V(active,diff) {
 			if (player.hadronize.times>0) flavor += "<br>Gain "+shortenDimensions(getHadronGain())+" Hadrons."
 			document.getElementById("hadronizebtnflavor").innerHTML = flavor
 			updateCreationTabButtons()
+			if (creationMenu == "hadron") updateHadronize()
 		}
 	}
 	let menus = ["origin","creation"]
@@ -2107,12 +2108,12 @@ var menu = "origin"
 var creationMenu = "creationEmptiness"
 
 function showCreationTab(name) {
+	creationMenu = name
 	var tabs = document.getElementsByClassName("creationTab");
 	for (var i = 0; i < tabs.length; i++) {
 		let tab = tabs.item(i);
 		tab.style.display = creationMenu == tab.id.split("tab")[0] ? "block" : "none"
 	}
-	creationMenu = name
 }
 
 showCreationTab("creationEmptiness")
@@ -2149,6 +2150,8 @@ function updateCreationTabButtons() {
 }
 
 // Hadronize (v1.1.0)
+
+var hadronizeTab = "bonds"
 
 function getHadronGain() {
 	let em = player.ghostify.annihilation.exoticMatter
@@ -2988,3 +2991,21 @@ function hadronize(force=false) {
 	showTab("dimensions")
 	showDimTab("antimatterdimensions")
 }
+
+function updateHadronize() {
+	document.getElementById("hadronized").textContent = getFullExpansion(player.hadronize.times)
+	document.getElementById("hadronizeTime").textContent = timeDisplay(player.hadronize.time)
+	document.getElementById("hadronizeBest").textContent = timeDisplay(player.hadronize.best)
+	document.getElementById('hadrons').textContent = shortenDimensions(player.hadronize.hadrons)
+}
+
+function showHadronizeTab(name) {
+	hadronizeTab = name
+	var tabs = document.getElementsByClassName("hadronizetab");
+	for (var i = 0; i < tabs.length; i++) {
+		let tab = tabs.item(i);
+		tab.style.display = hadronizeTab == tab.id.split("tab")[0] ? "block" : "none"
+	}
+}
+
+showHadronizeTab("bonds")

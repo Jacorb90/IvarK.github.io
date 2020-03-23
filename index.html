@@ -46,9 +46,18 @@
 			<div>
 				<button id="hadrontabbtn" style="font-family: Typewriter; font-size: 20px" class="hadron creationtabbtn" onclick="showCreationTab('hadron')">Hadronize<div class="hadron bg"></div></button>
 			</div>
-			<div id="creationEmptiness" class="creationTab"></div>
+			<div id="creationEmptinesstab" class="creationTab"></div>
 			<div id="hadrontab" class="creationTab">
-				Hadronize content...
+				You have hadronized <b><span id='hadronized'></span></b> times.<br>
+				You have been in this hadronize for <b><span id='hadronizeTime'></span></b>.<br>
+				Your best hadronize was in <b><span id='hadronizeBest'></span></b>.<br><br>
+				You have <span id="hadrons" class="hadronizetxt"></span> Hadrons.<br>
+				<tr>
+					<td><button class='secondarytabbtn' onclick='showHadronizeTab("bonds")'>Bonds</button></td>
+				</tr>
+				<div id="bonds" class="hadronizetab">
+					Bonds. James' Bonds.
+				</div>
 			</div>
 		</div>
 		<div id="origin">

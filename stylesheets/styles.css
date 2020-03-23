@@ -2758,6 +2758,17 @@ br {
 	animation: reveal 3000ms ease-in-out forwards infinite 200ms, glow 2500ms linear infinite 2000ms;
 }
 
+.hadronizetxt {
+  background: linear-gradient(to left, violet, indigo, blue, green, yellow, orange, red);
+  background-size: 200% auto;
+  background-clip: text;
+  text-fill-color: transparent;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-size: 25px;
+  animation: hadronizetxt 6s linear infinite;
+}
+
 @media print,
 screen and (max-width: 960px) {
     div.wrapper {
@@ -3154,4 +3165,10 @@ screen and (max-width: 480px) {
 	100%{
 	    transform: rotate(360deg)
 	}
+}
+
+@keyframes hadronizetxt {
+	to {
+      background-position: 200% center;
+    }
 }
