@@ -1356,9 +1356,11 @@ if (player.version < 5) {
 			bonds: {
 				bought: [0,0,0,0,0,0,0,0],
 				amount: [new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0)],
+				upgrades: [],
 			},
 		  }
 	  }
+	  if (player.hadronize.bonds.upgrades === undefined) player.hadronize.bonds.upgrades = []
   }
   if (player.aarexModifications.newGameMinusMinusVersion === undefined && !player.meta) {
       if (player.exdilation == undefined && player.version == 13) player.version = 12
@@ -2020,7 +2022,7 @@ if (player.version < 5) {
   } else if (document.getElementById("ers_timestudies").style.display=="block") showEternityTab("timestudies",true)
   poData=metaSave["presetsOrder"+(player.boughtDims?"_ers":"")]
   setAndMaybeShow('bestTP',player.achievements.includes("ng3p18") || player.achievements.includes("ng3p37"),'"Your best"+(ghostified ? "" : " ever")+" Tachyon particles"+(ghostified ? " in this Ghostify" : "")+" was "+shorten(player.dilation.bestTP)+"."')
-  setAndMaybeShow('bestTPOverGhostifies',(player.achievements.includes("ng3p18") || player.achievements.includes("ng3p37")) && ghostified,'"Your best-ever Tachyon particles was "+shorten(player.dilation.bestTPOverGhostifies)+"."')
+  setAndMaybeShow('bestTPOverGhostifies',ghostified,'"Your '+((player.hadronize?player.hadronize.times:false)?"best-in-this-Hadronize":"best-ever")+' Tachyon particles was "+shorten(player.dilation.bestTPOverGhostifies)+"."')
   document.getElementById('dilationmode').style.display=speedrunMilestonesReached>4?"":"none"
   document.getElementById('rebuyupgmax').style.display=speedrunMilestonesReached<26&&player.masterystudies?"":"none"
   document.getElementById('rebuyupgauto').style.display=speedrunMilestonesReached>6?"":"none"

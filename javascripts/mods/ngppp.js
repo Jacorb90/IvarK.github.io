@@ -1950,6 +1950,7 @@ function startProduceQuarkCharge() {
 function getQuarkLossProduction() {
 	let ret = getQuarkChargeProduction(true).pow(4).times(4e25)
 	if (hasNU(3)) ret = ret.div(10)
+	if (hasBondUpg(2)) ret = ret.sqrt().div(1e7)
 	ret = ret.times(tmp.ns)
 	return ret
 }
@@ -3108,7 +3109,13 @@ function unstoreTT() {
 }
 
 function getSpaceShardsGain() {
-	let ret = Decimal.pow(tmp.qu.bigRip.bestThisRun.add(1).log10()/2000, 1.5).times(player.dilation.dilatedTime.add(1).pow(0.05))
+	let am = tmp.qu.bigRip.bestThisRun
+	let dt = player.dilation.dilatedTime
+	if (hasBondUpg(3) && !tmp.qu.bigRip.active) {
+		am = Decimal.pow(10, Math.sqrt(player.money.max(1).log10()))
+		dt = dt.sqrt()
+	}
+	let ret = Decimal.pow(am.add(1).log10()/2000, 1.5).times(dt.add(1).pow(0.05))
 	if (tmp.be) {
 		if (tmp.qu.breakEternity.upgrades.includes(3)) ret = ret.times(getBreakUpgMult(3))
 		if (tmp.qu.breakEternity.upgrades.includes(6)) ret = ret.times(getBreakUpgMult(6))
@@ -4321,6 +4328,7 @@ function getNeutrinoGain() {
 	}
 	if (hasAnnihilationUpg(5)) ret = ret.times(getAnnihilationUpgEff(5))
 	ret = ret.times(getAntiBaryonEff("antineutrons"))
+	if (hasBondUpg(1)) ret = ret.times(999)
 	return ret
 }
 
@@ -4487,7 +4495,7 @@ function updateAutoGhosts(load) {
 		document.getElementById("autoGhost15a").value=formatValue("Scientific", player.ghostify.automatorGhosts[15].a, 2, 1)
 	}
 	document.getElementById("consumedPower").textContent=powerConsumed.toFixed(1)
-	isAutoGhostsSafe=player.ghostify.automatorGhosts.power>=powerConsumed
+	isAutoGhostsSafe=player.ghostify.automatorGhosts.power>=powerConsumed||hasResearch(1)
 	document.getElementById("tooMuchPowerConsumed").style.display=isAutoGhostsSafe?"none":""
 	document.getElementById('changeAutoGhost15Mode').style.display = player.achievements.includes("ng5p41") ? "" : "none"
 	document.getElementById("autoGhost15mode").textContent = (player.ghostify.automatorGhosts[15].mode == "ghp") ? "Amount of GHP to wait until reset" : (player.ghostify.automatorGhosts[15].mode == "mult") ? "X times last Ghostify" : (player.ghostify.automatorGhosts[15].mode == "time") ? "Time since beginning of Ghostify" : "undefined"

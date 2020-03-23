@@ -2769,6 +2769,46 @@ br {
   animation: hadronizetxt 6s linear infinite;
 }
 
+.gluonupgrade.hadron {
+	position: relative;
+	background: transparent;
+	box-shadow: inset 0px 0px 24px 0px black;
+	border: 2px solid black;
+	border-radius: 4px;
+	overflow: hidden;
+	font-family: Typewriter;
+	font-weight: bold;
+	color: rgba(255,255,255,0.8);
+	text-shadow: 0px 0px 3px rgba(0,0,0,0.5);
+	transition-duration: 0.2s;
+	cursor: pointer
+}
+
+.gluonupgrade.hadron:hover {
+	box-shadow: inset 0px 0px 24px 0px white;
+	border-color: #bfbfbf;
+	color: white;
+	text-shadow: 0px 0px 3px white
+}
+
+.gluonupgradebought.hadron {
+	position: relative;
+	background: green !important;
+	box-shadow: inset 0px 0px 24px 0px black;
+	border: 2px solid black;
+	border-radius: 4px;
+	overflow: hidden;
+	font-family: Typewriter;
+	font-weight: bold;
+	color: rgba(255,255,255,0.8);
+	text-shadow: 0px 0px 3px rgba(0,0,0,0.5);
+	transition-duration: 0.2s;
+}
+
+.gluonupgradebought.hadron:hover {
+	cursor: default;
+}
+
 @media print,
 screen and (max-width: 960px) {
     div.wrapper {

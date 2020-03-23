@@ -54,96 +54,126 @@
 				You have <span id="hadrons" class="hadronizetxt"></span> Hadrons.<br>
 				<tr>
 					<td><button class='secondarytabbtn' onclick='showHadronizeTab("bonds")'>Bonds</button></td>
+					<td><button class='secondarytabbtn' onclick='showHadronizeTab("research")'>Researches</button></td>
 				</tr>
 				<div id="bondstab" class="hadronizetab">
 					You have <span id="bondPower" class="hadronizetxt"></span> Bond Power, translated to <span id='bondsEff' class="hadronizetxt"></span> additional multiplier per 10 dimensions before electrons.<br><br>
-					<table class="table">
-						<tr id="BondRow1" style="font-size: 15px">
-							<td id="BondD1" class="rel">
-								Primary Bond x1
+					<tr>
+						<td><button class='secondarytabbtn' onclick='showBondTab("normBonds")'>Normal Bonds</button></td>
+						<td><button class='secondarytabbtn' onclick='showBondTab("bondUpgs")'>Upgrades</button></td>
+					</tr>
+					<div id="normBondstab" class="bondtab">
+						<table class="table">
+							<tr id="BondRow1" style="font-size: 15px">
+								<td id="BondD1" class="rel">
+									Primary Bond x1
+								</td>
+								<td>
+									<div id="Bond1Amount" align="left">0</div>
+								</td>
+								<td align="right" width="10%">
+									<button id="Bond1" style="color:black; height: 25px; font-size: 10px; width: 135px" class="storebtn" onclick="buyBond(1)">Cost: X Hadrons</button>
+								</td>
+							</tr>
+							<tr id="BondRow2" style="font-size: 15px">
+								<td id="BondD2" class="rel">
+									Secondary Bond x1
+								</td>
+								<td>
+									<div id="Bond2Amount" align="left">0</div>
+								</td>
+								<td align="right" width="10%">
+									<button id="Bond2" style="color:black; height: 25px; font-size: 10px; width: 135px" class="storebtn" onclick="buyBond(2)">Cost: X Hadrons</button>
+								</td>
+							</tr>
+							<tr id="BondRow3" style="font-size: 15px">
+								<td id="BondD3" class="rel">
+									Tertiary Bond x1
+								</td>
+								<td>
+									<div id="Bond3Amount" align="left">0</div>
+								</td>
+								<td align="right" width="10%">
+									<button id="Bond3" style="color:black; height: 25px; font-size: 10px; width: 135px" class="storebtn" onclick="buyBond(3)">Cost: X Hadrons</button>
+								</td>
+							</tr>
+							<tr id="BondRow4" style="font-size: 15px">
+								<td id="BondD4" class="rel">
+									Quaternary Bond x1
+								</td>
+								<td>
+									<div id="Bond4Amount" align="left">0</div>
+								</td>
+								<td align="right" width="10%">
+									<button id="Bond4" style="color:black; height: 25px; font-size: 10px; width: 135px" class="storebtn" onclick="buyBond(4)">Cost: X Hadrons</button>
+								</td>
+							</tr>
+							<tr id="BondRow5" style="font-size: 15px">
+								<td id="BondD5" class="rel">
+									Quinary Bond x1
+								</td>
+								<td>
+									<div id="Bond5Amount" align="left">0</div>
+								</td>
+								<td align="right" width="10%">
+									<button id="Bond5" style="color:black; height: 25px; font-size: 10px; width: 135px" class="storebtn" onclick="buyBond(5)">Cost: X Hadrons</button>
+								</td>
+							</tr>
+							<tr id="BondRow6" style="font-size: 15px">
+								<td id="BondD6" class="rel">
+									Senary Bond x1
+								</td>
+								<td>
+									<div id="Bond6Amount" align="left">0</div>
+								</td>
+								<td align="right" width="10%">
+									<button id="Bond6" style="color:black; height: 25px; font-size: 10px; width: 135px" class="storebtn" onclick="buyBond(6)">Cost: X Hadrons</button>
+								</td>
+							</tr>
+							<tr id="BondRow7" style="font-size: 15px">
+								<td id="BondD7" class="rel">
+									Septenary Bond x1
+								</td>
+								<td>
+									<div id="Bond7Amount" align="left">0</div>
+								</td>
+								<td align="right" width="10%">
+									<button id="Bond7" style="color:black; height: 25px; font-size: 10px; width: 135px" class="storebtn" onclick="buyBond(7)">Cost: X Hadrons</button>
+								</td>
+							</tr>
+							<tr id="BondRow8" style="font-size: 15px">
+								<td id="BondD8" class="rel">
+									Octonary Bond x1
+								</td>
+								<td>
+									<div id="Bond8Amount" align="left">0</div>
+								</td>
+								<td align="right" width="10%">
+									<button id="Bond8" style="color:black; height: 25px; font-size: 10px; width: 135px" class="storebtn" onclick="buyBond(8)">Cost: X Hadrons</button>
+								</td>
+							</tr>
+						</table>
+					</div>
+					<div id="bondUpgstab" class="bondtab">
+						<br><br>
+						<table style="margin: auto">
+							<tr>
+								<td><button id="bondupg1" class="gluonupgrade hadron" onclick="buyBondUpg(1)">Neutrinos are gained 999x faster.<br>Cost: <span id="bondupgcost1"></span> Bond Power<div id="bondupgbg1" class="hadron bg"></div></button></td>
+								<td><button id="bondupg2" class="gluonupgrade hadron" onclick="buyBondUpg(2)">Generating Preon Charge makes you use up less Preons.<br>Cost: <span id="bondupgcost2"></span> Bond Power<div id="bondupgbg2" class="hadron bg"></div></button></td>
+								<td><button id="bondupg3" class="gluonupgrade hadron" onclick="buyBondUpg(3)">Space Shards are gained over time outside of Big Rips at a reduced rate.<br>Cost: <span id="bondupgcost3"></span> Bond Power<div id="bondupgbg3" class="hadron bg"></div></button></td>
+							</tr>
+						</table>
+					</div>
+				</div>
+				<div id="researchtab" class="hadronizetab">
+					Hadronic Research Points: <span id="researchPnts" class="hadronizetxt"></span><br><br>
+					<table style="margin: auto">
+						<tr>
+							<td>
+								<div id="research1" class="achievement achievementlocked" ach-tooltip="Keep the first row of Brave Milestones & all Automator Ghosts, and you cannot consume too much Automator Power.">3 Research Points</div>
 							</td>
-						    <td>
-								<div id="Bond1Amount" align="left">0</div>
-							</td>
-							<td align="right" width="10%">
-								<button id="Bond1" style="color:black; height: 25px; font-size: 10px; width: 135px" class="storebtn" onclick="buyBond(1)">Cost: X Hadrons</button>
-							</td>
-						</tr>
-						<tr id="BondRow2" style="font-size: 15px">
-							<td id="BondD2" class="rel">
-								Secondary Bond x1
-							</td>
-						    <td>
-								<div id="Bond2Amount" align="left">0</div>
-							</td>
-							<td align="right" width="10%">
-								<button id="Bond2" style="color:black; height: 25px; font-size: 10px; width: 135px" class="storebtn" onclick="buyBond(2)">Cost: X Hadrons</button>
-							</td>
-						</tr>
-						<tr id="BondRow3" style="font-size: 15px">
-							<td id="BondD3" class="rel">
-								Tertiary Bond x1
-							</td>
-						    <td>
-								<div id="Bond3Amount" align="left">0</div>
-							</td>
-							<td align="right" width="10%">
-								<button id="Bond3" style="color:black; height: 25px; font-size: 10px; width: 135px" class="storebtn" onclick="buyBond(3)">Cost: X Hadrons</button>
-							</td>
-						</tr>
-						<tr id="BondRow4" style="font-size: 15px">
-							<td id="BondD4" class="rel">
-								Quaternary Bond x1
-							</td>
-						    <td>
-								<div id="Bond4Amount" align="left">0</div>
-							</td>
-							<td align="right" width="10%">
-								<button id="Bond4" style="color:black; height: 25px; font-size: 10px; width: 135px" class="storebtn" onclick="buyBond(4)">Cost: X Hadrons</button>
-							</td>
-						</tr>
-						<tr id="BondRow5" style="font-size: 15px">
-							<td id="BondD5" class="rel">
-								Quinary Bond x1
-							</td>
-						    <td>
-								<div id="Bond5Amount" align="left">0</div>
-							</td>
-							<td align="right" width="10%">
-								<button id="Bond5" style="color:black; height: 25px; font-size: 10px; width: 135px" class="storebtn" onclick="buyBond(5)">Cost: X Hadrons</button>
-							</td>
-						</tr>
-						<tr id="BondRow6" style="font-size: 15px">
-							<td id="BondD6" class="rel">
-								Senary Bond x1
-							</td>
-						    <td>
-								<div id="Bond6Amount" align="left">0</div>
-							</td>
-							<td align="right" width="10%">
-								<button id="Bond6" style="color:black; height: 25px; font-size: 10px; width: 135px" class="storebtn" onclick="buyBond(6)">Cost: X Hadrons</button>
-							</td>
-						</tr>
-						<tr id="BondRow7" style="font-size: 15px">
-							<td id="BondD7" class="rel">
-								Septenary Bond x1
-							</td>
-						    <td>
-								<div id="Bond7Amount" align="left">0</div>
-							</td>
-							<td align="right" width="10%">
-								<button id="Bond7" style="color:black; height: 25px; font-size: 10px; width: 135px" class="storebtn" onclick="buyBond(7)">Cost: X Hadrons</button>
-							</td>
-						</tr>
-						<tr id="BondRow8" style="font-size: 15px">
-							<td id="BondD8" class="rel">
-								Octonary Bond x1
-							</td>
-						    <td>
-								<div id="Bond8Amount" align="left">0</div>
-							</td>
-							<td align="right" width="10%">
-								<button id="Bond8" style="color:black; height: 25px; font-size: 10px; width: 135px" class="storebtn" onclick="buyBond(8)">Cost: X Hadrons</button>
+							<td>
+								<div id="research2" class="achievement achievementlocked" ach-tooltip="Keep the second row of Brave Milestones.">5 Research Points</div>
 							</td>
 						</tr>
 					</table>

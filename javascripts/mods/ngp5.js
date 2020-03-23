@@ -111,6 +111,7 @@ function resetNGP5V() {
 		bonds: {
 			bought: [0,0,0,0,0,0,0,0],
 			amount: [new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0)],
+			upgrades: [],
 		},
 	}
 }
@@ -2172,6 +2173,7 @@ function hadronize(force=false) {
 	}
 	var keepSpeedruns = player.achievements.includes("ng5p51")
 	var keepTS = player.achievements.includes("ng5p51")
+	var bm = hasResearch(2) ? 16 : (hasResearch(1) ? 8 : 0)
 	player = {
 		money: new Decimal(10),
 		tickSpeedCost: new Decimal(1000),
@@ -2249,7 +2251,7 @@ function hadronize(force=false) {
 		lastTenEternities: [[600*60*24*31, new Decimal(0)], [600*60*24*31, new Decimal(0)], [600*60*24*31, new Decimal(0)], [600*60*24*31, new Decimal(0)], [600*60*24*31, new Decimal(0)], [600*60*24*31, new Decimal(0)], [600*60*24*31, new Decimal(0)], [600*60*24*31, new Decimal(0)], [600*60*24*31, new Decimal(0)], [600*60*24*31, new Decimal(0)]],
 		infMult: new Decimal(1),
 		infMultCost: new Decimal(10),
-		tickSpeedMultDecrease: Math.max(player.tickSpeedMultDecrease, 2),
+		tickSpeedMultDecrease: Math.max(player.tickSpeedMultDecrease, bm > 1 ? 1.25 : 2),
 		tickSpeedMultDecreaseCost: player.tickSpeedMultDecreaseCost,
 		dimensionMultDecrease: player.dimensionMultDecrease,
 		dimensionMultDecreaseCost: player.dimensionMultDecreaseCost,
@@ -2566,7 +2568,7 @@ function hadronize(force=false) {
 			electrons: {
 				amount: 0,
 				sacGals: 0,
-				mult: 2,
+				mult: bm ? 6 : 2,
 				rebuyables: [0,0,0,0]
 			},
 			challenge: [],
@@ -2574,9 +2576,9 @@ function hadronize(force=false) {
 			nonMAGoalReached: tmp.qu.nonMAGoalReached,
 			challengeRecords: {},
 			pairedChallenges: {
-				order: {},
+				order: bm ? player.quantum.pairedChallenges.order : {},
 				current: 0,
-				completed:  0,
+				completed:  bm ? 4 : 0,
 				completions: tmp.qu.pairedChallenges.completions,
 				fastest: tmp.qu.pairedChallenges.fastest,
 				pc68best: tmp.qu.pairedChallenges.pc68best,
@@ -2607,7 +2609,7 @@ function hadronize(force=false) {
 				antienergy: new Decimal(0),
 				power: 0,
 				powerThreshold: new Decimal(50),
-				rewards: 0,
+				rewards: bm ? 16 : 0,
 				producingCharge: false,
 				toggles: tmp.qu.nanofield.toggles,
 			},
@@ -2640,13 +2642,13 @@ function hadronize(force=false) {
 				savedAutobuyersNoBR: tmp.qu.bigRip.savedAutobuyersNoBR,
 				savedAutobuyersBR: tmp.qu.bigRip.savedAutobuyersBR,
 				spaceShards: new Decimal(0),
-				upgrades: []
+				upgrades: bm ? tmp.qu.bigRip.upgrades : []
 			},
 			breakEternity: {
-				unlocked: false,
-				break: false,
+				unlocked: bm > 14 ? tmp.qu.breakEternity.unlocked : false,
+				break: bm > 14 ? tmp.qu.breakEternity.break : false,
 				eternalMatter: new Decimal(0),
-				upgrades: [],
+				upgrades: bm > 14 ? tmp.qu.breakEternity.upgrades : [],
 				epMultPower: 0
 			},
 			notrelative: true,
@@ -2667,7 +2669,7 @@ function hadronize(force=false) {
 				1: 0,
 				2: 0
 			},
-			upgrades: [],
+			upgrades: bm ? tmp.qu.upgrades : [],
 			rg4: false
 		},
 		old: false,
@@ -2678,20 +2680,20 @@ function hadronize(force=false) {
                   time: player.totalTimePlayed,
                   best: 9999999999,
                   last10: [[600*60*24*31, 0], [600*60*24*31, 0], [600*60*24*31, 0], [600*60*24*31, 0], [600*60*24*31, 0], [600*60*24*31, 0], [600*60*24*31, 0], [600*60*24*31, 0], [600*60*24*31, 0], [600*60*24*31, 0]],
-                  milestones: 0,
+                  milestones: bm,
                   disabledRewards: {},
                   ghostParticles: new Decimal(0),
-                  multPower: 0,
+                  multPower: 1,
                   neutrinos: {
                       electron: new Decimal(0),
                       mu: new Decimal(0),
                       tau: new Decimal(0),
                       generationGain: 1,
-                      multPower: 0,
+                      multPower: 1,
                       upgrades: [],
 					  boosts: 1,
                   },
-                  automatorGhosts: setupAutomaticGhostsData(),
+                  automatorGhosts: hasResearch(1) ? player.ghostify.automatorGhosts : setupAutomaticGhostsData(),
                   ghostlyPhotons: {
                       unl: false,
                       amount: new Decimal(0),
@@ -3009,6 +3011,14 @@ function updateHadronize() {
 			document.getElementById("Bond"+i).textContent = "Cost: "+shortenCosts(getBondCost(i))+" Hadrons"
 			document.getElementById("Bond"+i).className = player.hadronize.hadrons.gte(getBondCost(i)) ? "storebtn" : "unavailablebtn"
 		}
+		for (i=1;i<bondUpgCosts.length;i++) {
+			document.getElementById("bondupg"+i).className = player.hadronize.bonds.upgrades.includes(i)?"gluonupgradebought hadron":(player.hadronize.bondPower.gte(bondUpgCosts[i])?"gluonupgrade hadron":"gluonupgrade unavailablebtn")
+			document.getElementById("bondupgcost"+i).textContent = shorten(bondUpgCosts[i])
+			document.getElementById("bondupgbg"+i).className = (hasBondUpg(i)||player.hadronize.bondPower.lt(bondUpgCosts[i]))?"":"hadron bg"
+		}
+	}
+	if (hadronizeTab == "research") {
+		document.getElementById("researchPnts").textContent = getFullExpansion(getResearchPoints())
 	}
 }
 
@@ -3023,7 +3033,26 @@ function showHadronizeTab(name) {
 
 showHadronizeTab("bonds")
 
+function hadronizeTick(diff) {
+	for (i=1;i<=7;i++) player.hadronize.bonds.amount[i-1] = player.hadronize.bonds.amount[i-1].add(player.hadronize.bonds.amount[i].times(getBondMult(i)).times(diff/10))
+	player.hadronize.bondPower = player.hadronize.bondPower.add(player.hadronize.bonds.amount[0].times(getBondMult(1)).times(diff/10))
+}
+
 //Bonds
+
+var bondTab = "normBonds"
+var bondUpgCosts = [null, 1e3, 1.5e3, 2.5e3]
+
+function showBondTab(name) {
+	bondTab = name
+	var tabs = document.getElementsByClassName("bondtab");
+	for (var i = 0; i < tabs.length; i++) {
+		let tab = tabs.item(i);
+		tab.style.display = bondTab == tab.id.split("tab")[0] ? "block" : "none"
+	}
+}
+
+showBondTab("normBonds")
 
 function getMPB(x) {
 	let mpb = new Decimal(2)
@@ -3064,8 +3093,31 @@ function getBondEff() {
 	return eff
 }
 
-function hadronizeTick(diff) {
-	for (i=1;i<=7;i++) player.hadronize.bonds.amount[i-1] = player.hadronize.bonds.amount[i-1].add(player.hadronize.bonds.amount[i].times(getBondMult(i)).times(diff/10))
-	player.hadronize.bondPower = player.hadronize.bondPower.add(player.hadronize.bonds.amount[0].times(getBondMult(1)).times(diff/10))
+function buyBondUpg(x) {
+	if (player.hadronize.bonds.upgrades.includes(x)) return
+	if (player.hadronize.bondPower.lt(bondUpgCosts[x])) return
+	player.hadronize.bondPower = player.hadronize.bondPower.sub(bondUpgCosts[x])
+	player.hadronize.bonds.upgrades.push(x)
 }
 
+function hasBondUpg(x) {
+	if (player.hadronize === undefined) return false
+	return player.hadronize.bonds.upgrades.includes(x)
+}
+
+//Hadronic Researches
+
+var researchReqs = [null, 3, 5]
+
+function getResearchPoints() {
+	if (player.hadronize === undefined) return 0
+	let best = player.hadronize.best
+	let times = player.hadronize.times
+	let s1 = 1000/Math.sqrt(best)
+	let s2 = Math.pow(times, 0.1)
+	return Math.floor(s1+s2)
+}
+
+function hasResearch(n) {
+	return getResearchPoints()>=researchReqs[n]
+}

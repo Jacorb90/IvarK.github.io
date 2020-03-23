@@ -4231,7 +4231,7 @@ function onNotationChange() {
 	document.getElementById("achmultlabel").textContent = "Current achievement multiplier on each Dimension: " + shortenMoney(player.achPow) + "x"
 	if (player.achievements.includes("ng3p18") || player.achievements.includes("ng3p37")) {
 		document.getElementById('bestTP').textContent="Your best"+(ghostified ? "" : " ever")+" Tachyon particles"+(ghostified ? " in this Ghostify" : "")+" was "+shorten(player.dilation.bestTP)+"."
-		setAndMaybeShow('bestTPOverGhostifies',ghostified,'"Your best-ever Tachyon particles was "+shorten(player.dilation.bestTPOverGhostifies)+"."')
+		setAndMaybeShow('bestTPOverGhostifies',ghostified,'"Your '+((player.hadronize?player.hadronize.times:false)?"best-in-this-Hadronize":"best-ever")+' Tachyon particles was "+shorten(player.dilation.bestTPOverGhostifies)+"."')
 	}
 }
 
@@ -5659,7 +5659,7 @@ function eternity(force, auto, presetLoad, dilated, epGain=true) {
                 player.dilation.bestTP = player.dilation.bestTP.max(player.dilation.tachyonParticles)
                 player.dilation.bestTPOverGhostifies = player.dilation.bestTPOverGhostifies.max(player.dilation.bestTP)
                 document.getElementById('bestTP').textContent="Your best"+(ghostified ? "" : " ever")+" Tachyon particles"+(ghostified ? " in this Ghostify" : "")+" was "+shorten(player.dilation.bestTP)+"."
-                setAndMaybeShow('bestTPOverGhostifies',ghostified,'"Your best-ever Tachyon particles was "+shorten(player.dilation.bestTPOverGhostifies)+"."')
+                setAndMaybeShow('bestTPOverGhostifies',ghostified,'"Your '+((player.hadronize?player.hadronize.times:false)?"best-in-this-Hadronize":"best-ever")+' Tachyon particles was "+shorten(player.dilation.bestTPOverGhostifies)+"."')
             }
         }
         player.challenges = temp
@@ -8725,9 +8725,13 @@ function gameLoop(diff) {
             player.dilation.bestTP = player.dilation.bestTP.max(player.dilation.tachyonParticles)
             player.dilation.bestTPOverGhostifies = player.dilation.bestTPOverGhostifies.max(player.dilation.bestTP)
             document.getElementById('bestTP').textContent="Your best"+(ghostified ? "" : " ever")+" Tachyon particles"+(ghostified ? " in this Ghostify" : "")+" was "+shorten(player.dilation.bestTP)+"."
-            setAndMaybeShow('bestTPOverGhostifies',ghostified,'"Your best-ever Tachyon particles was "+shorten(player.dilation.bestTPOverGhostifies)+"."')
+            setAndMaybeShow('bestTPOverGhostifies',ghostified,'"Your '+((player.hadronize?player.hadronize.times:false)?"best-in-this-Hadronize":"best-ever")+' Tachyon particles was "+shorten(player.dilation.bestTPOverGhostifies)+"."')
             tmp.qu.notrelative = false
         }
+		if (hasBondUpg(3) && !tmp.qu.bigRip.active) {
+			tmp.qu.bigRip.spaceShards=tmp.qu.bigRip.spaceShards.add(getSpaceShardsGain().times(diff/1e3))
+			document.getElementById("spaceShards").textContent = shortenDimensions(tmp.qu.bigRip.spaceShards)
+		}
         if (player.ghostify.milestones>7&&(!(currentAnnihilationTier()&&!hasAnnihilationUpg(21)))) {
             if (tmp.qu.bigRip.active) {
                 tmp.qu.bigRip.spaceShards=tmp.qu.bigRip.spaceShards.add(getSpaceShardsGain().times(diff/1e3))
@@ -8795,6 +8799,7 @@ function simulateTime(seconds, real) {
 	if (player.aarexModifications.ngp5V) {
 		storage.ss = tmp.qu.bigRip.spaceShards
 		storage.gp = player.ghostify.dimensions.power
+		storage.bndp = player.hadronize.bondPower
 	}
     if (ticks > 1000 && !real) {
         bonusDiff = (ticks - 1000) / 20;
@@ -8821,6 +8826,7 @@ function simulateTime(seconds, real) {
 	if (storage.ss) {
 		if (tmp.qu.bigRip.spaceShards.gt(storage.ss)) popupString += ",<br> space shards increased "+shortenMoney(tmp.qu.bigRip.spaceShards.log10()-storage.ss.max(1).log10())+" orders of magnitude"
 		if (player.ghostify.dimensions.power.gt(storage.gp)) popupString += ",<br> ghost power increased "+shortenMoney(player.ghostify.dimensions.power.log10()-storage.gp.max(1).log10())+" orders of magnitude"
+		if (player.hadronize.bondPower.gt(storage.bndp)) popupString += ",<br> bond power increased "+shortenMoney(player.hadronize.bondPower.log10()-storage.bndp.max(1).log10())+" orders of magnitude"
 	}
     if (player.infinitied > playerStart.infinitied || player.eternities > playerStart.eternities) popupString+= ","
     else popupString+= "."

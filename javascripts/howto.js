@@ -56,7 +56,7 @@ function showspoilers() {
 function updateSpoilers() {
 	var displayed = spoilers;
 	document.getElementById("ng3pguide").style.display=player.masterystudies||spoilers?"":"none"
-	for (i=47; i>0; i--) {
+	for (i=50; i>0; i--) {
 		if (i != 7) {
 			if (!displayed) {
 				if (i < 5) displayed = 1
@@ -98,6 +98,9 @@ function updateSpoilers() {
 						if (i == 45 && player.ghostify) if (player.ghostify.baryons) if (player.ghostify.baryons.hyperons) if (player.ghostify.baryons.hyperons.supercharge) if (player.ghostify.baryons.hyperons.supercharge.hyperons) if (player.ghostify.baryons.hyperons.supercharge.hyperons>=5) displayed = 1
 						if (i == 46 && player.ghostify) if (player.ghostify.baryons) if (player.ghostify.baryons.hyperons) if (player.ghostify.baryons.hyperons.supercharge) if (player.ghostify.baryons.hyperons.supercharge.hyperons) if (player.ghostify.baryons.hyperons.supercharge.hyperons>=5) displayed = 1
 						if (i == 47 && player.ghostify) if (player.ghostify.annihilation) if (player.ghostify.annihilation.cascade) if (player.ghostify.annihilation.cascade.times) displayed = 1
+						if (i == 48 && player.hadronize) if (player.hadronize.times) displayed = 1
+						if (i == 49 && player.hadronize) if (player.hadronize.times) displayed = 1
+						if (i == 50 && player.hadronize) if (player.hadronize.times) displayed = 1
 					}
 				}
 			}
