@@ -200,6 +200,7 @@ function getDimensionPowerMultiplier(nonrandom, focusOn) {
 	if (QCIntensity(5)) dimMult += getQCReward(5)
 	if (player.masterystudies) {
 		if (player.masterystudies.includes("d12")) dimMult += getNanofieldRewardEffect(8)
+		dimMult += getBondEff()
 		if (focusOn != "linear") dimMult = Decimal.pow(dimMult, getMPTPower(undefined, focusOn == "br4"))
 	}
 	return dimMult;

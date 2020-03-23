@@ -1064,7 +1064,7 @@ function disableReward(id) {
 }
 
 function updateElectrons(auto=true) {
-	if (player.masterystudies ? !player.masterystudies.includes("d7") : true) {
+	if (player.masterystudies ? !(player.masterystudies.includes("d7")) : true) {
 		document.getElementById("electronstabbtn").style.display="none"
 		return
 	} else document.getElementById("electronstabbtn").style.display=""
@@ -2406,6 +2406,7 @@ function updateElectronsEffect() {
 	if (!tmp.qu.autoOptions.sacrifice) document.getElementById("electronsAmount2").textContent="You have " + getFullExpansion(Math.round(tmp.qu.electrons.amount)) + " electrons."
 	document.getElementById("electronsTranslation").textContent=getFullExpansion(Math.round(getMPTPower()))
 	document.getElementById("electronsEffect").textContent = shorten(getDimensionPowerMultiplier(true))
+	document.getElementById("mptne").textContent = shorten(getDimensionPowerMultiplier(true,"linear"))
 }
 
 function getAntielectronicGals() {

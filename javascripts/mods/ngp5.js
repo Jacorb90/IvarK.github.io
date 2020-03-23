@@ -330,6 +330,7 @@ function updateNGP5V(active,diff) {
 			if (creationMenu == "hadron") updateHadronize()
 		}
 	}
+	if (player.hadronize !== undefined) hadronizeTick(diff)
 	let menus = ["origin","creation"]
 	for (i=0;i<menus.length;i++) updateMenu(menus[i])
 }
@@ -2169,8 +2170,8 @@ function hadronize(force=false) {
 		player.hadronize.hadrons = player.hadronize.hadrons.plus(getHadronGain())
 		giveAchievement("True Hadronization")
 	}
-	var keepSpeedruns = false
-	var keepTS = false
+	var keepSpeedruns = player.achievements.includes("ng5p51")
+	var keepTS = player.achievements.includes("ng5p51")
 	player = {
 		money: new Decimal(10),
 		tickSpeedCost: new Decimal(1000),
@@ -2523,7 +2524,7 @@ function hadronize(force=false) {
 			reached: true,
 			times: 0,
 			time: 0,
-			best: 9999999999,
+			best: player.achievements.includes("ng5p51") ? 10 : 9999999999999,
 			last10: [[600*60*24*31, new Decimal(0)], [600*60*24*31, new Decimal(0)], [600*60*24*31, new Decimal(0)], [600*60*24*31, new Decimal(0)], [600*60*24*31, new Decimal(0)], [600*60*24*31, new Decimal(0)], [600*60*24*31, new Decimal(0)], [600*60*24*31, new Decimal(0)], [600*60*24*31, new Decimal(0)], [600*60*24*31, new Decimal(0)]],
 			autoEC: tmp.qu.autoEC,
 			disabledRewards: tmp.qu.disabledRewards,
@@ -2680,13 +2681,13 @@ function hadronize(force=false) {
                   milestones: 0,
                   disabledRewards: {},
                   ghostParticles: new Decimal(0),
-                  multPower: new Decimal(1),
+                  multPower: 0,
                   neutrinos: {
                       electron: new Decimal(0),
                       mu: new Decimal(0),
                       tau: new Decimal(0),
                       generationGain: 1,
-                      multPower: new Decimal(1),
+                      multPower: 0,
                       upgrades: [],
 					  boosts: 1,
                   },
@@ -2997,6 +2998,18 @@ function updateHadronize() {
 	document.getElementById("hadronizeTime").textContent = timeDisplay(player.hadronize.time)
 	document.getElementById("hadronizeBest").textContent = timeDisplay(player.hadronize.best)
 	document.getElementById('hadrons').textContent = shortenDimensions(player.hadronize.hadrons)
+	if (hadronizeTab == "bonds") {
+		document.getElementById("bondPower").textContent = shorten(player.hadronize.bondPower)
+		document.getElementById("bondsEff").textContent = getFullExpansion(Math.round(getBondEff()*100)/100)
+		let bondNames = [undefined, "Primary","Secondary","Tertiary","Quaternary","Quinary","Senary","Septenary","Octonary"]
+		for (i=1;i<=8;i++) {
+			document.getElementById("BondRow"+i).style.display = (i>1?player.hadronize.bonds.bought[i-2]>0:true) ? "" : "none"
+			document.getElementById("BondD"+i).textContent = bondNames[i]+" Bond x"+shorten(getBondMult(i))
+			document.getElementById("Bond"+i+"Amount").textContent = shortenDimensions(player.hadronize.bonds.amount[i-1])
+			document.getElementById("Bond"+i).textContent = "Cost: "+shortenCosts(getBondCost(i))+" Hadrons"
+			document.getElementById("Bond"+i).className = player.hadronize.hadrons.gte(getBondCost(i)) ? "storebtn" : "unavailablebtn"
+		}
+	}
 }
 
 function showHadronizeTab(name) {
@@ -3009,3 +3022,50 @@ function showHadronizeTab(name) {
 }
 
 showHadronizeTab("bonds")
+
+//Bonds
+
+function getMPB(x) {
+	let mpb = new Decimal(2)
+	return mpb
+}
+
+function getBondMult(x) {
+	let mult = Decimal.pow(getMPB(x), player.hadronize.bonds.bought[x-1])
+	return mult
+}
+
+function getBondCostInc(x) {
+	let incs = [null, 2, 5, 10, 30, 100, 1e3, 1e5, 1e8]
+	return incs[x]
+}
+
+function getBondCostStart(x) {
+	let starts = [null, 1, 10, 100, 1e3, 1e10, 1e15, 1e25, 1e40]
+	return starts[x]
+}
+
+function getBondCost(x) {
+	let cost = Decimal.pow(getBondCostInc(x), player.hadronize.bonds.bought[x-1]).times(getBondCostStart(x))
+	return cost
+}
+
+function buyBond(x) {
+	if (player.hadronize.hadrons.lt(getBondCost(x))) return false
+	player.hadronize.hadrons = player.hadronize.hadrons.sub(getBondCost(x))
+	player.hadronize.bonds.bought[x-1]++
+	player.hadronize.bonds.amount[x-1] = player.hadronize.bonds.amount[x-1].add(1)
+}
+
+function getBondEff() {
+	if (player.hadronize === undefined) return 0
+	let bp = player.hadronize.bondPower
+	let eff = bp.add(1).log(1.5)
+	return eff
+}
+
+function hadronizeTick(diff) {
+	for (i=1;i<=7;i++) player.hadronize.bonds.amount[i-1] = player.hadronize.bonds.amount[i-1].add(player.hadronize.bonds.amount[i].times(getBondMult(i)).times(diff/10))
+	player.hadronize.bondPower = player.hadronize.bondPower.add(player.hadronize.bonds.amount[0].times(getBondMult(1)).times(diff/10))
+}
+

@@ -4427,7 +4427,8 @@ function calcSacrificeBoost() {
 		ret = firsts.pow(0.05).dividedBy(player.sacrificed.pow(player.aarexModifications.ngmX>3?0.05:0.04).max(1)).max(1);
 	}
 	if (player.boughtDims) ret = ret.pow(1 + Math.log(1 + Math.log(1 + player.timestudy.ers_studies[1] / 5)))
-	if (ret.gte(Decimal.pow(10,1e17))) ret = ret.cbrt().times(Decimal.pow(Decimal.pow(10,1e17),2/3))
+	let ss = 1e17
+	if (ret.gte(Decimal.pow(10,ss))) ret = ret.cbrt().times(Decimal.pow(Decimal.pow(10,ss),2/3))
 	return ret
 }
 
@@ -4449,7 +4450,8 @@ function calcTotalSacrificeBoost(next) {
 		ret = sac.pow(0.05) //this is actually off but like im not sure how youd make it good. not that it matters.
 	}
 	if (player.boughtDims) ret = ret.pow(1 + Math.log(1 + Math.log(1 + (player.timestudy.ers_studies[1] + (next ? 1 : 0))/ 5)))
-	if (ret.gte(Decimal.pow(10,1e17))) ret = ret.cbrt().times(Decimal.pow(Decimal.pow(10,1e17),2/3))
+	let ss = 1e17
+	if (ret.gte(Decimal.pow(10,ss))) ret = ret.cbrt().times(Decimal.pow(Decimal.pow(10,ss),2/3))
 	return ret
 }
 
@@ -8430,7 +8432,7 @@ function gameLoop(diff) {
             }
         }
     }
-    isSmartPeakActivated = tmp.ngp3 && getEternitied() >= 1e13 && player.dilation.upgrades.includes("ngpp6")
+    isSmartPeakActivated = tmp.ngp3 && ((getEternitied() >= 1e13 && player.dilation.upgrades.includes("ngpp6")) || player.achievements.includes("ng5p51"))
     var EPminpeakUnits = isSmartPeakActivated ? (player.dilation.active ? 'TP' : tmp.be ? 'EM' : 'EP') : 'EP'
     var currentEPmin = updateEPminpeak(diff, EPminpeakUnits)
     EPminpeakUnits = (EPminpeakType == 'logarithm' ? ' log(' + EPminpeakUnits + ')' : ' ' + EPminpeakUnits) + '/min'

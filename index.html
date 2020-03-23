@@ -55,8 +55,98 @@
 				<tr>
 					<td><button class='secondarytabbtn' onclick='showHadronizeTab("bonds")'>Bonds</button></td>
 				</tr>
-				<div id="bonds" class="hadronizetab">
-					Bonds. James' Bonds.
+				<div id="bondstab" class="hadronizetab">
+					You have <span id="bondPower" class="hadronizetxt"></span> Bond Power, translated to <span id='bondsEff' class="hadronizetxt"></span> additional multiplier per 10 dimensions before electrons.<br><br>
+					<table class="table">
+						<tr id="BondRow1" style="font-size: 15px">
+							<td id="BondD1" class="rel">
+								Primary Bond x1
+							</td>
+						    <td>
+								<div id="Bond1Amount" align="left">0</div>
+							</td>
+							<td align="right" width="10%">
+								<button id="Bond1" style="color:black; height: 25px; font-size: 10px; width: 135px" class="storebtn" onclick="buyBond(1)">Cost: X Hadrons</button>
+							</td>
+						</tr>
+						<tr id="BondRow2" style="font-size: 15px">
+							<td id="BondD2" class="rel">
+								Secondary Bond x1
+							</td>
+						    <td>
+								<div id="Bond2Amount" align="left">0</div>
+							</td>
+							<td align="right" width="10%">
+								<button id="Bond2" style="color:black; height: 25px; font-size: 10px; width: 135px" class="storebtn" onclick="buyBond(2)">Cost: X Hadrons</button>
+							</td>
+						</tr>
+						<tr id="BondRow3" style="font-size: 15px">
+							<td id="BondD3" class="rel">
+								Tertiary Bond x1
+							</td>
+						    <td>
+								<div id="Bond3Amount" align="left">0</div>
+							</td>
+							<td align="right" width="10%">
+								<button id="Bond3" style="color:black; height: 25px; font-size: 10px; width: 135px" class="storebtn" onclick="buyBond(3)">Cost: X Hadrons</button>
+							</td>
+						</tr>
+						<tr id="BondRow4" style="font-size: 15px">
+							<td id="BondD4" class="rel">
+								Quaternary Bond x1
+							</td>
+						    <td>
+								<div id="Bond4Amount" align="left">0</div>
+							</td>
+							<td align="right" width="10%">
+								<button id="Bond4" style="color:black; height: 25px; font-size: 10px; width: 135px" class="storebtn" onclick="buyBond(4)">Cost: X Hadrons</button>
+							</td>
+						</tr>
+						<tr id="BondRow5" style="font-size: 15px">
+							<td id="BondD5" class="rel">
+								Quinary Bond x1
+							</td>
+						    <td>
+								<div id="Bond5Amount" align="left">0</div>
+							</td>
+							<td align="right" width="10%">
+								<button id="Bond5" style="color:black; height: 25px; font-size: 10px; width: 135px" class="storebtn" onclick="buyBond(5)">Cost: X Hadrons</button>
+							</td>
+						</tr>
+						<tr id="BondRow6" style="font-size: 15px">
+							<td id="BondD6" class="rel">
+								Senary Bond x1
+							</td>
+						    <td>
+								<div id="Bond6Amount" align="left">0</div>
+							</td>
+							<td align="right" width="10%">
+								<button id="Bond6" style="color:black; height: 25px; font-size: 10px; width: 135px" class="storebtn" onclick="buyBond(6)">Cost: X Hadrons</button>
+							</td>
+						</tr>
+						<tr id="BondRow7" style="font-size: 15px">
+							<td id="BondD7" class="rel">
+								Septenary Bond x1
+							</td>
+						    <td>
+								<div id="Bond7Amount" align="left">0</div>
+							</td>
+							<td align="right" width="10%">
+								<button id="Bond7" style="color:black; height: 25px; font-size: 10px; width: 135px" class="storebtn" onclick="buyBond(7)">Cost: X Hadrons</button>
+							</td>
+						</tr>
+						<tr id="BondRow8" style="font-size: 15px">
+							<td id="BondD8" class="rel">
+								Octonary Bond x1
+							</td>
+						    <td>
+								<div id="Bond8Amount" align="left">0</div>
+							</td>
+							<td align="right" width="10%">
+								<button id="Bond8" style="color:black; height: 25px; font-size: 10px; width: 135px" class="storebtn" onclick="buyBond(8)">Cost: X Hadrons</button>
+							</td>
+						</tr>
+					</table>
 				</div>
 			</div>
 		</div>
@@ -2925,7 +3015,7 @@
 						</tr>
 						<tr id="achRowng5p5">
 							<td>
-								<div id="True Hadronization" class="achievement achievementlocked" ach-tooltip='Hadronize your origins. Reward: Start with all Eternity Challenges completed.'></div>
+								<div id="True Hadronization" class="achievement achievementlocked" ach-tooltip='Hadronize your origins. Reward: Start with all Speedrun Milestones.'></div>
 							</td>
 							<td>
 								<div id="ng5p52" class="achievement achievementlocked" ach-tooltip='???'></div>
@@ -5015,7 +5105,7 @@
 				<button class='gluonupgrade storebtn' id='sacrificeGal' onclick='sacrificeGalaxy()' style='width:210px; height:90px'>Sacrifice <span id='sacrificeGals'>0</span> galaxies.<br>You gain <span id='electronsGainMult'>2</span> electrons each galaxy you sacrifice.</button><br>
 				<button class='storebtn' id='sacrificeAuto' onclick='toggleAutoQuantumContent("sacrifice")' style='width:210px'></button><br>
 				You have <span id="electronsAmount" style="font-size:35px">0</span> electrons.<br>
-				Raised to the power of <span id="electronsTranslation" style="font-size:35px">1.00</span>, multiplier per ten dimensions is currently <span id="electronsEffect" style="font-size:35px">2.00</span>x.<br>
+				Raised to the power of <span id="electronsTranslation" style="font-size:35px">1.00</span>, multiplier per ten dimensions is currently <span id="electronsEffect" style="font-size:35px">2.00</span>x (Before: <span id="mptne"></span>x).<br>
 				<table class="table" align="center" style="margin: auto"><tr>
 					<td><button class='gluonupgrade storebtn' id='electronupg1' onclick='buyElectronUpg(1)'></button></td>
 					<td><button class='gluonupgrade storebtn' id='electronupg2' onclick='buyElectronUpg(2)'></button></td>
