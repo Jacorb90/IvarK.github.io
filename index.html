@@ -74,6 +74,9 @@
 								<td align="right" width="10%">
 									<button id="Bond1" style="color:black; height: 25px; font-size: 10px; width: 135px" class="storebtn" onclick="buyBond(1)">Cost: X Hadrons</button>
 								</td>
+								<td align="right" width="10%">
+									<button id="BondB1" style="color:black; height: 25px; font-size: 10px; width: 135px" class="storebtn" onclick="buyBondB(1)">Cost: X Bond Power</button>
+								</td>
 							</tr>
 							<tr id="BondRow2" style="font-size: 15px">
 								<td id="BondD2" class="rel">
@@ -84,6 +87,9 @@
 								</td>
 								<td align="right" width="10%">
 									<button id="Bond2" style="color:black; height: 25px; font-size: 10px; width: 135px" class="storebtn" onclick="buyBond(2)">Cost: X Hadrons</button>
+								</td>
+								<td align="right" width="10%">
+									<button id="BondB2" style="color:black; height: 25px; font-size: 10px; width: 135px" class="storebtn" onclick="buyBondB(2)">Cost: X Bond Power</button>
 								</td>
 							</tr>
 							<tr id="BondRow3" style="font-size: 15px">
@@ -96,6 +102,9 @@
 								<td align="right" width="10%">
 									<button id="Bond3" style="color:black; height: 25px; font-size: 10px; width: 135px" class="storebtn" onclick="buyBond(3)">Cost: X Hadrons</button>
 								</td>
+								<td align="right" width="10%">
+									<button id="BondB3" style="color:black; height: 25px; font-size: 10px; width: 135px" class="storebtn" onclick="buyBondB(3)">Cost: X Bond Power</button>
+								</td>
 							</tr>
 							<tr id="BondRow4" style="font-size: 15px">
 								<td id="BondD4" class="rel">
@@ -106,6 +115,9 @@
 								</td>
 								<td align="right" width="10%">
 									<button id="Bond4" style="color:black; height: 25px; font-size: 10px; width: 135px" class="storebtn" onclick="buyBond(4)">Cost: X Hadrons</button>
+								</td>
+								<td align="right" width="10%">
+									<button id="BondB4" style="color:black; height: 25px; font-size: 10px; width: 135px" class="storebtn" onclick="buyBondB(4)">Cost: X Bond Power</button>
 								</td>
 							</tr>
 							<tr id="BondRow5" style="font-size: 15px">
@@ -118,6 +130,9 @@
 								<td align="right" width="10%">
 									<button id="Bond5" style="color:black; height: 25px; font-size: 10px; width: 135px" class="storebtn" onclick="buyBond(5)">Cost: X Hadrons</button>
 								</td>
+								<td align="right" width="10%">
+									<button id="BondB5" style="color:black; height: 25px; font-size: 10px; width: 135px" class="storebtn" onclick="buyBondB(5)">Cost: X Bond Power</button>
+								</td>
 							</tr>
 							<tr id="BondRow6" style="font-size: 15px">
 								<td id="BondD6" class="rel">
@@ -128,6 +143,9 @@
 								</td>
 								<td align="right" width="10%">
 									<button id="Bond6" style="color:black; height: 25px; font-size: 10px; width: 135px" class="storebtn" onclick="buyBond(6)">Cost: X Hadrons</button>
+								</td>
+								<td align="right" width="10%">
+									<button id="BondB6" style="color:black; height: 25px; font-size: 10px; width: 135px" class="storebtn" onclick="buyBondB(6)">Cost: X Bond Power</button>
 								</td>
 							</tr>
 							<tr id="BondRow7" style="font-size: 15px">
@@ -140,6 +158,9 @@
 								<td align="right" width="10%">
 									<button id="Bond7" style="color:black; height: 25px; font-size: 10px; width: 135px" class="storebtn" onclick="buyBond(7)">Cost: X Hadrons</button>
 								</td>
+								<td align="right" width="10%">
+									<button id="BondB7" style="color:black; height: 25px; font-size: 10px; width: 135px" class="storebtn" onclick="buyBondB(7)">Cost: X Bond Power</button>
+								</td>
 							</tr>
 							<tr id="BondRow8" style="font-size: 15px">
 								<td id="BondD8" class="rel">
@@ -151,6 +172,9 @@
 								<td align="right" width="10%">
 									<button id="Bond8" style="color:black; height: 25px; font-size: 10px; width: 135px" class="storebtn" onclick="buyBond(8)">Cost: X Hadrons</button>
 								</td>
+								<td align="right" width="10%">
+									<button id="BondB8" style="color:black; height: 25px; font-size: 10px; width: 135px" class="storebtn" onclick="buyBondB(8)">Cost: X Bond Power</button>
+								</td>
 							</tr>
 						</table>
 					</div>
@@ -161,13 +185,16 @@
 								<td><button id="bondupg1" class="gluonupgrade hadron" onclick="buyBondUpg(1)">Neutrinos are gained <span id="bondupgeff1"></span>x faster.<br>Cost: <span id="bondupgcost1"></span> Bond Power<div id="bondupgbg1" class="hadron bg"></div></button></td>
 								<td><button id="bondupg2" class="gluonupgrade hadron" onclick="buyBondUpg(2)">Generating Preon Charge makes you use up less Preons.<br>Cost: <span id="bondupgcost2"></span> Bond Power<div id="bondupgbg2" class="hadron bg"></div></button></td>
 								<td><button id="bondupg3" class="gluonupgrade hadron" onclick="buyBondUpg(3)">Space Shards are gained over time outside of Big Rips at a reduced rate.<br>Cost: <span id="bondupgcost3"></span> Bond Power<div id="bondupgbg3" class="hadron bg"></div></button></td>
-								<td><button id="bondupg4" class="gluonupgrade hadron" onclick="buyBondUpg(4)">Preon Charge gain is multiplied by 2 for every OoM of Preons (maxes at <span id='bondupg4cap'></span> Preons).<br>Cost: <span id="bondupgcost4"></span> Bond Power<div id="bondupgbg4" class="hadron bg"></div></button></td>
+								<td><button id="bondupg4" class="gluonupgrade hadron" onclick="buyBondUpg(4)" style="font-size:10px;">Preon Charge gain is multiplied by 2 for every OoM of Preons (maxes at <span id='bondupg4cap'></span> Preons).<br>Cost: <span id="bondupgcost4"></span> Bond Power<div id="bondupgbg4" class="hadron bg"></div></button></td>
+								<td><button id="bondupg5" class="gluonupgrade hadron" onclick="buyBondUpg(5)">Infinities and Ghostifies boost each other.<br>Cost: <span id="bondupgcost5"></span> Bond Power<div id="bondupgbg5" class="hadron bg"></div></button></td>
 							</tr>
 							<tr>
-								<td><button id="bondupg5" class="gluonupgrade hadron" onclick="buyBondUpg(5)">Infinities and Ghostifies boost each other.<br>Cost: <span id="bondupgcost5"></span> Bond Power<div id="bondupgbg5" class="hadron bg"></div></button></td>
 								<td><button id="bondupg6" class="gluonupgrade hadron" onclick="buyBondUpg(6)">The Meta-Antimatter effect exponent is increased by 75.<br>Cost: <span id="bondupgcost6"></span> Bond Power<div id="bondupgbg6" class="hadron bg"></div></button></td>
 								<td><button id="bondupg7" class="gluonupgrade hadron" onclick="buyBondUpg(7)">Eternal Matter is gained over time outside of Big Rips at a reduced rate.<br>Cost: <span id="bondupgcost7"></span> Bond Power<div id="bondupgbg7" class="hadron bg"></div></button></td>
 								<td><button id="bondupg8" class="gluonupgrade hadron" onclick="buyBondUpg(8)">The fifth Break Eternity upgrade is 50% stronger.<br>Cost: <span id="bondupgcost8"></span> Bond Power<div id="bondupgbg8" class="hadron bg"></div></button></td>
+								<td><button id="bondupg9" class="gluonupgrade hadron" onclick="buyBondUpg(9)">The Automator Charge formula is better.<br>Cost: <span id="bondupgcost9"></span> Bond Power<div id="bondupgbg9" class="hadron bg"></div></button></td>
+								<td><button id="bondupg10" class="gluonupgrade hadron" onclick="buyBondUpg(10)">Ghostifies boost Space Shard & Eternal Matter gain while outside Big Rips.<br>Cost: <span id="bondupgcost10"></span> Bond Power<div id="bondupgbg10" class="hadron bg"></div></button></td>
+								<td></td>
 							</tr>
 						</table>
 					</div>
@@ -177,7 +204,7 @@
 					<table style="margin: auto">
 						<tr>
 							<td>
-								<div id="research1" class="achievement achievementlocked" ach-tooltip="Keep the first row of Brave Milestones & all Automator Ghosts, and you cannot consume too much Automator Power.">3 Research Points</div>
+								<div id="research1" class="achievement achievementlocked" ach-tooltip="Keep the first row of Brave Milestones & all Automator Ghosts.">3 Research Points</div>
 							</td>
 							<td>
 								<div id="research2" class="achievement achievementlocked" ach-tooltip="Keep the second row of Brave Milestones.">5 Research Points</div>

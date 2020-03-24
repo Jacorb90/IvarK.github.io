@@ -2362,7 +2362,8 @@ function updateQuantumWorth(mode) {
 	if (mode != "notation") {
 		if (mode != "display") quantumWorth = tmp.qu.quarks.add(tmp.qu.usedQuarks.r).add(tmp.qu.usedQuarks.g).add(tmp.qu.usedQuarks.b).add(tmp.qu.gluons.rg).add(tmp.qu.gluons.gb).add(tmp.qu.gluons.br).round()
 		if (player.ghostify.times) {
-			var automaticCharge = Math.max(Math.log10(quantumWorth.add(1).log10()/150)/Math.log10(2),0)+Math.max(tmp.qu.bigRip.spaceShards.add(1).log10()/20-0.5,0)
+			let mod = hasBondUpg(9) ? 1.6 : 1
+			var automaticCharge = mod*(Math.max(Math.log10(quantumWorth.add(1).log10()/150)/Math.log10(2),0)+Math.max(tmp.qu.bigRip.spaceShards.add(1).log10()/20-0.5,0))
 			player.ghostify.automatorGhosts.power = Math.max(automaticCharge, player.ghostify.automatorGhosts.power)
 			if (mode != "quick") {
 				document.getElementById("automaticCharge").textContent = automaticCharge.toFixed(1)
@@ -3122,6 +3123,11 @@ function getSpaceShardsGain() {
 		if (tmp.qu.breakEternity.upgrades.includes(6)) ret = ret.times(getBreakUpgMult(6))
 	}
 	if (hasNU(9)) ret = ret.times(Decimal.max(getEternitied(), 1).pow(0.1))
+	if (hasBondUpg(10) && !tmp.qu.bigRip.active) {
+		let ghostifies = Decimal.max(player.ghostify.times, 1)
+		if (ghostifies.gte(1e3)) ghostifies = ghostifies.pow(0.2)
+		ret = ret.times(ghostifies.pow(20))
+	}
 	ret = ret.floor()
 	if (isNaN(ret.e)) return new Decimal(0)
 	return ret
@@ -3243,7 +3249,13 @@ function getEMGain() {
 	if (hasBondUpg(7) && !tmp.qu.bigRip.active) ts = ts.pow(0.000036)
 	let log=ts.div(1e9).log10()*0.25
 	if (log>15) log=Math.sqrt(log*15)
-	return Decimal.pow(10,log).floor()
+	let ret = Decimal.pow(10,log)
+	if (hasBondUpg(10) && !tmp.qu.bigRip.active) {
+		let ghostifies = Decimal.max(player.ghostify.times, 1)
+		if (ghostifies.gte(1e3)) ghostifies = ghostifies.pow(0.2)
+		ret = ret.times(ghostifies.pow(20))
+	}
+	return ret.floor()
 }
 
 var breakUpgCosts = [1, 1e3, 1e6, 2e11, 8e17, 1e48, null, 1e290, new Decimal("1e350"), new Decimal("1e375"),new Decimal('1e700'),new Decimal('1e800'),new Decimal('1e1000')]
@@ -4508,7 +4520,7 @@ function updateAutoGhosts(load) {
 		document.getElementById("autoGhost15a").value=formatValue("Scientific", player.ghostify.automatorGhosts[15].a, 2, 1)
 	}
 	document.getElementById("consumedPower").textContent=powerConsumed.toFixed(1)
-	isAutoGhostsSafe=player.ghostify.automatorGhosts.power>=powerConsumed||hasResearch(1)
+	isAutoGhostsSafe=player.ghostify.automatorGhosts.power>=powerConsumed
 	document.getElementById("tooMuchPowerConsumed").style.display=isAutoGhostsSafe?"none":""
 	document.getElementById('changeAutoGhost15Mode').style.display = player.achievements.includes("ng5p41") ? "" : "none"
 	document.getElementById("autoGhost15mode").textContent = (player.ghostify.automatorGhosts[15].mode == "ghp") ? "Amount of GHP to wait until reset" : (player.ghostify.automatorGhosts[15].mode == "mult") ? "X times last Ghostify" : (player.ghostify.automatorGhosts[15].mode == "time") ? "Time since beginning of Ghostify" : "undefined"

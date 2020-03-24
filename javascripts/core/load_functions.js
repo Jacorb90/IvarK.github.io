@@ -1357,10 +1357,12 @@ if (player.version < 5) {
 				bought: [0,0,0,0,0,0,0,0],
 				amount: [new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0)],
 				upgrades: [],
+				bondBought: [0,0,0,0,0,0,0,0],
 			},
 		  }
 	  }
 	  if (player.hadronize.bonds.upgrades === undefined) player.hadronize.bonds.upgrades = []
+	  if (player.hadronize.bonds.bondBought === undefined) player.hadronize.bonds.bondBought = [0,0,0,0,0,0,0,0]
   }
   if (player.aarexModifications.newGameMinusMinusVersion === undefined && !player.meta) {
       if (player.exdilation == undefined && player.version == 13) player.version = 12
@@ -2753,7 +2755,7 @@ function transformSaveToDecimal() {
 			}
 		}
   }
-  player.ghostify.times = nP(player.ghostify.times)
+  if (player.ghostify) player.ghostify.times = nP(player.ghostify.times)
 }
 
 

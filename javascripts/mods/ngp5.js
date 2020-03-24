@@ -112,6 +112,7 @@ function resetNGP5V() {
 			bought: [0,0,0,0,0,0,0,0],
 			amount: [new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0)],
 			upgrades: [],
+			bondBought: [0,0,0,0,0,0,0,0],
 		},
 	}
 }
@@ -3010,6 +3011,8 @@ function updateHadronize() {
 			document.getElementById("Bond"+i+"Amount").textContent = shortenDimensions(player.hadronize.bonds.amount[i-1])
 			document.getElementById("Bond"+i).textContent = "Cost: "+shortenCosts(getBondCost(i))+" Hadrons"
 			document.getElementById("Bond"+i).className = player.hadronize.hadrons.gte(getBondCost(i)) ? "storebtn" : "unavailablebtn"
+			document.getElementById("BondB"+i).textContent = "Cost: "+shortenCosts(getBondBCost(i))+" Bond Power"
+			document.getElementById("BondB"+i).className = player.hadronize.bondPower.gte(getBondBCost(i)) ? "storebtn" : "unavailablebtn"
 		}
 		for (i=1;i<bondUpgCosts.length;i++) {
 			document.getElementById("bondupg"+i).className = player.hadronize.bonds.upgrades.includes(i)?"gluonupgradebought hadron":(player.hadronize.bondPower.gte(bondUpgCosts[i])?"gluonupgrade hadron":"gluonupgrade unavailablebtn")
@@ -3043,7 +3046,7 @@ function hadronizeTick(diff) {
 //Bonds
 
 var bondTab = "normBonds"
-var bondUpgCosts = [null, 1e3, 1.5e3, 2.5e3, 5e3, 7.5e3, 1.2e4, 2e4, 3.2e4]
+var bondUpgCosts = [null, 1e3, 1.5e3, 2.5e3, 5e3, 7.5e3, 1.2e4, 2e4, 3.2e4, 4e4, 7.5e4]
 
 function showBondTab(name) {
 	bondTab = name
@@ -3062,7 +3065,7 @@ function getMPB(x) {
 }
 
 function getBondMult(x) {
-	let mult = Decimal.pow(getMPB(x), player.hadronize.bonds.bought[x-1])
+	let mult = Decimal.pow(getMPB(x), player.hadronize.bonds.bought[x-1]+player.hadronize.bonds.bondBought[x-1])
 	return mult
 }
 
@@ -3105,6 +3108,28 @@ function buyBondUpg(x) {
 function hasBondUpg(x) {
 	if (player.hadronize === undefined) return false
 	return player.hadronize.bonds.upgrades.includes(x)
+}
+
+function getBondBCostInc(x) {
+	let incs = [null, 2, 100, 1e4, 1e6, 1e10, 1e25, 1e50, 1e75]
+	return incs[x]
+}
+
+function getBondBCostStart(x) {
+	let starts = [null, 1e3, 1e10, 1e20, 1e30, 1e100, 1e150, 1e250, new Decimal("1e400")]
+	return starts[x]
+}
+
+function getBondBCost(x) {
+	let cost = Decimal.pow(getBondBCostInc(x), Decimal.pow(player.hadronize.bonds.bondBought[x-1], 1.1)).times(getBondBCostStart(x))
+	return cost
+}
+
+function buyBondB(x) {
+	if (player.hadronize.bondPower.lt(getBondBCost(x))) return false
+	player.hadronize.bondPower = player.hadronize.bondPower.sub(getBondBCost(x))
+	player.hadronize.bonds.bondBought[x-1]++
+	player.hadronize.bonds.amount[x-1] = player.hadronize.bonds.amount[x-1].add(1)
 }
 
 //Hadronic Researches
