@@ -4,6 +4,7 @@ function nP(a) {
 }
 
 function nN(a) {
+	a = new Decimal(a)
 	if (a.lt(Number.MAX_VALUE)) return Math.floor(a.toNumber())
 	return a
 }

@@ -2753,6 +2753,7 @@ function transformSaveToDecimal() {
 			}
 		}
   }
+  player.ghostify.times = nP(player.ghostify.times)
 }
 
 

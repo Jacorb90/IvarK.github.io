@@ -1240,6 +1240,7 @@ function getInfinitiedGain() {
 	if (player.achievements.includes("r133") && player.meta) infGain=nM(player.dilation.dilatedTime.pow(.25).max(1),infGain)
 	if (player.aarexModifications.ngp5V !== undefined) {
 		if (player.ghostify.darkness.upgrades[0][5] === true) infGain = nM(getDarknessUpgReward(0,5)['reward'],infGain)
+		if (hasBondUpg(5)) infGain = nM(infGain, nM(Decimal.pow(nA(player.ghostify.times, 1), 4.8), 1e50))
 	}
 	return infGain
 }
@@ -3573,6 +3574,12 @@ function changeSaveDesc(saveId, placement) {
 		}
 		var isSaveGhostified=temp.ghostify?temp.ghostify.times>0:false
 		var isSaveQuantumed=temp.quantum?temp.quantum.times>0:false
+		if (temp.hadronize) {
+			if (temp.hadronize.times>0) {
+				var data = temp.hadronize
+				message+="Bond Power: "+shorten(new Decimal(data.bondPower))+", "
+			} 
+		}
 		if (isSaveGhostified) {
 			if (temp.aarexModifications.ngp5V!==undefined && temp.ghostify.ghostlyPhotons.enpowerments>2) {
 				if (temp.ghostify.baryons.hyperons.supercharge.hyperons>=5) {
@@ -8731,6 +8738,10 @@ function gameLoop(diff) {
 		if (hasBondUpg(3) && !tmp.qu.bigRip.active) {
 			tmp.qu.bigRip.spaceShards=tmp.qu.bigRip.spaceShards.add(getSpaceShardsGain().times(diff/1e3))
 			document.getElementById("spaceShards").textContent = shortenDimensions(tmp.qu.bigRip.spaceShards)
+		}
+		if (hasBondUpg(7) && !tmp.qu.bigRip.active && tmp.qu.breakEternity.break) {
+			tmp.qu.breakEternity.eternalMatter=tmp.qu.breakEternity.eternalMatter.add(getEMGain().times(diff/1e3))
+			document.getElementById("eternalMatter").textContent = shortenDimensions(tmp.qu.breakEternity.eternalMatter)
 		}
         if (player.ghostify.milestones>7&&(!(currentAnnihilationTier()&&!hasAnnihilationUpg(21)))) {
             if (tmp.qu.bigRip.active) {

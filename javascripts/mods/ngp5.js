@@ -2617,17 +2617,17 @@ function hadronize(force=false) {
 			tod: {
 				r: {
 					quarks: new Decimal(0),
-					spin: new Decimal(0),
+					spin: new Decimal(1e25),
 					upgrades: {}
 				},
 				g: {
 					quarks: new Decimal(0),
-					spin: new Decimal(0),
+					spin: new Decimal(1e25),
 					upgrades: {}
 				},
 				b: {
 					quarks: new Decimal(0),
-					spin: new Decimal(0),
+					spin: new Decimal(1e25),
 					upgrades: {}
 				},
 				upgrades: {}
@@ -3016,6 +3016,8 @@ function updateHadronize() {
 			document.getElementById("bondupgcost"+i).textContent = shorten(bondUpgCosts[i])
 			document.getElementById("bondupgbg"+i).className = (hasBondUpg(i)||player.hadronize.bondPower.lt(bondUpgCosts[i]))?"":"hadron bg"
 		}
+		document.getElementById("bondupgeff1").textContent = shortenDimensions(999)
+		document.getElementById("bondupg4cap").textContent = shorten(Number.MAX_VALUE)
 	}
 	if (hadronizeTab == "research") {
 		document.getElementById("researchPnts").textContent = getFullExpansion(getResearchPoints())
@@ -3041,7 +3043,7 @@ function hadronizeTick(diff) {
 //Bonds
 
 var bondTab = "normBonds"
-var bondUpgCosts = [null, 1e3, 1.5e3, 2.5e3]
+var bondUpgCosts = [null, 1e3, 1.5e3, 2.5e3, 5e3, 7.5e3, 1.2e4, 2e4, 3.2e4]
 
 function showBondTab(name) {
 	bondTab = name

@@ -332,6 +332,7 @@ function getExtraDimensionBoostPowerExponent() {
 		if (player.masterystudies.includes("d12")) power += getNanofieldRewardEffect(2)
 		if (player.masterystudies.includes("d13")) power += getTreeUpgradeEffect(8)
 	}
+	if (hasBondUpg(6)) power += 75
 	if (player.aarexModifications.ngp5V !== undefined) if (inGC(3)) power = 0
 	if (currentAnnihilationTier()>0) power /= currentAnnihilationTier()+1
 	return power
