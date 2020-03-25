@@ -3019,8 +3019,9 @@ function updateHadronize() {
 			document.getElementById("bondupgcost"+i).textContent = shorten(bondUpgCosts[i])
 			document.getElementById("bondupgbg"+i).className = (hasBondUpg(i)||player.hadronize.bondPower.lt(bondUpgCosts[i]))?"":"hadron bg"
 		}
-		document.getElementById("bondupgeff1").textContent = shortenDimensions(999)
-		document.getElementById("bondupg4cap").textContent = shorten(Number.MAX_VALUE)
+		document.getElementById("bondupgeff1").textContent = shortenDimensions(999*(hasBondUpg(11)?tmp.qu.bigRip.spaceShards.add(1).log10()+1:1))
+		document.getElementById("bondupg4cap").textContent = shorten(Decimal.pow(Number.MAX_VALUE, hasBondUpg(14)?(Math.log2(player.ghostify.ghostlyPhotons.enpowerments+1)+1):1))
+		document.getElementById("bondupg16cap").textContent = shorten(hasBondUpg(18)?new Decimal("1e6400"):new Decimal("1e6250"))
 	}
 	if (hadronizeTab == "research") {
 		document.getElementById("researchPnts").textContent = getFullExpansion(getResearchPoints())
@@ -3046,7 +3047,7 @@ function hadronizeTick(diff) {
 //Bonds
 
 var bondTab = "normBonds"
-var bondUpgCosts = [null, 1e3, 1.5e3, 2.5e3, 5e3, 7.5e3, 1.2e4, 2e4, 3.2e4, 4e4, 7.5e4]
+var bondUpgCosts = [null, 1e3, 1.5e3, 2.5e3, 5e3, 7.5e3, 1.2e4, 2e4, 3.2e4, 4e4, 7.5e4, 1.44e7, 2.67e8, 4.096e9, 3.2e10, 7.5e11, 5e4, 8e4, 1e13]
 
 function showBondTab(name) {
 	bondTab = name
@@ -3121,7 +3122,7 @@ function getBondBCostStart(x) {
 }
 
 function getBondBCost(x) {
-	let cost = Decimal.pow(getBondBCostInc(x), Decimal.pow(player.hadronize.bonds.bondBought[x-1], 1.1)).times(getBondBCostStart(x))
+	let cost = Decimal.pow(getBondBCostInc(x), Decimal.pow(player.hadronize.bonds.bondBought[x-1], 2)).times(getBondBCostStart(x))
 	return cost
 }
 

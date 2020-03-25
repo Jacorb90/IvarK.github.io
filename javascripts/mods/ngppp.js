@@ -1938,7 +1938,7 @@ function getQuarkChargeProduction(noSpeed) {
 	if (hasNU(3)) ret = ret.times(tmp.nu[1])
 	if (hasNU(7)) ret = ret.times(tmp.nu[3])
 	if (player.aarexModifications.ngp5V !== undefined) if (player.ghostify.darkness.upgrades[0][0] === true) ret = ret.times(getDarknessUpgReward(0,0)['reward'])
-	if (hasBondUpg(4)) ret = ret.times(Decimal.pow(2, player.quantum.replicants.quarks.min(Number.MAX_VALUE).add(1).log10()))
+	if (hasBondUpg(4)) ret = ret.times(Decimal.pow(2, player.quantum.replicants.quarks.min(Decimal.pow(Number.MAX_VALUE, hasBondUpg(14)?(Math.log2(player.ghostify.ghostlyPhotons.enpowerments+1)+1):1)).add(1).log10()))
 	if (!noSpeed) ret = ret.times(tmp.ns)
 	return ret
 }
@@ -1951,7 +1951,7 @@ function startProduceQuarkCharge() {
 function getQuarkLossProduction() {
 	let ret = getQuarkChargeProduction(true).pow(4).times(4e25)
 	if (hasNU(3)) ret = ret.div(10)
-	if (hasBondUpg(2)) ret = ret.sqrt().div(1e7)
+	if (hasBondUpg(2)) ret = ret.pow(hasBondUpg(12)?0.45:0.5).div(hasBondUpg(12)?1e8:1e7)
 	ret = ret.times(tmp.ns)
 	return ret
 }
@@ -3114,7 +3114,7 @@ function getSpaceShardsGain() {
 	let am = tmp.qu.bigRip.bestThisRun
 	let dt = player.dilation.dilatedTime
 	if (hasBondUpg(3) && !tmp.qu.bigRip.active) {
-		am = Decimal.pow(10, Math.sqrt(player.money.max(1).log10()))
+		am = Decimal.pow(hasBondUpg(13)?(10*(player.hadronize.bondPower.add(1).log(1e8)+1)):10, Math.sqrt(player.money.max(1).log10()))
 		dt = dt.sqrt()
 	}
 	let ret = Decimal.pow(am.add(1).log10()/2000, 1.5).times(dt.add(1).pow(0.05))
@@ -3124,7 +3124,7 @@ function getSpaceShardsGain() {
 	}
 	if (hasNU(9)) ret = ret.times(Decimal.max(getEternitied(), 1).pow(0.1))
 	if (hasBondUpg(10) && !tmp.qu.bigRip.active) {
-		let ghostifies = Decimal.max(player.ghostify.times, 1)
+		let ghostifies = Decimal.max(getGhostifies(), 1)
 		if (ghostifies.gte(1e3)) ghostifies = ghostifies.pow(0.2)
 		ret = ret.times(ghostifies.pow(20))
 	}
@@ -3251,7 +3251,7 @@ function getEMGain() {
 	if (log>15) log=Math.sqrt(log*15)
 	let ret = Decimal.pow(10,log)
 	if (hasBondUpg(10) && !tmp.qu.bigRip.active) {
-		let ghostifies = Decimal.max(player.ghostify.times, 1)
+		let ghostifies = Decimal.max(getGhostifies(), 1)
 		if (ghostifies.gte(1e3)) ghostifies = ghostifies.pow(0.2)
 		ret = ret.times(ghostifies.pow(20))
 	}
@@ -3366,8 +3366,9 @@ function getGHPGain() {
 	if (player.aarexModifications.ngp5V !== undefined) {
 		if (player.ghostify.darkness.upgrades[2][5] === true) log += getDarknessUpgReward(2,5)['reward'].log10()
 		if (player.ghostify.darkness.upgrades[5][2] === true) log += getDarknessUpgReward(5,2)['reward'].log10()
-	}
-	if (log>=6250) log = Math.sqrt(6250*log)
+	}	
+	let ss = hasBondUpg(18)?6400:6250
+	if (log>=ss || hasBondUpg(16)) log = Math.sqrt(ss*log)
 	if (log>=1e4) log = Math.cbrt(log)*Math.pow(1e4,2/3)
 	return Decimal.pow(10, log).times(Decimal.pow(2,player.ghostify.multPower-1)).floor()
 }
@@ -4353,7 +4354,7 @@ function getNeutrinoGain() {
 	}
 	if (hasAnnihilationUpg(5)) ret = ret.times(getAnnihilationUpgEff(5))
 	ret = ret.times(getAntiBaryonEff("antineutrons"))
-	if (hasBondUpg(1)) ret = ret.times(999)
+	if (hasBondUpg(1)) ret = ret.times(999*(hasBondUpg(11)?tmp.qu.bigRip.spaceShards.add(1).log10()+1:1))
 	return ret
 }
 
@@ -4683,7 +4684,9 @@ function getGPHProduction() {
 }
 
 function getGHRProduction() {
-	let prod = player.ghostify.ghostlyPhotons.amount.sqrt().div(2)
+	let exp = 0.5
+	if (hasBondUpg(17)) exp *= 1.3
+	let prod = player.ghostify.ghostlyPhotons.amount.pow(exp).div(2)
 	if (prod.gte(1e15)) prod = Decimal.sqrt(prod).times(Decimal.sqrt(1e15))
 	if (prod.gte(1e25)) prod = Decimal.cbrt(prod).times(Decimal.pow(1e25,2/3))
 	if (prod.gte(1e50)) prod = Decimal.pow(prod,0.1).times(Decimal.pow(1e50,0.1))
@@ -4691,7 +4694,9 @@ function getGHRProduction() {
 }
 
 function getGHRCap() {
-	let cap = player.ghostify.ghostlyPhotons.darkMatter.pow(0.4).times(1e3)
+	let exp = 0.4
+	if (hasBondUpg(17)) exp *= 1.3
+	let cap = player.ghostify.ghostlyPhotons.darkMatter.pow(exp).times(1e3)
 	if (cap.gte(1e16)) cap = Decimal.sqrt(cap).times(Decimal.sqrt(1e16))
 	if (cap.gte(1e28)) cap = Decimal.cbrt(cap).times(Decimal.pow(1e28,2/3))
 	if (cap.gte(1e60)) cap = Decimal.pow(cap,0.1).times(Decimal.pow(1e60,0.1))
@@ -4785,6 +4790,11 @@ function getBranchUpgSS(n) {
 
 function getGhostifiedGain() {
 	let gain = 1
-	if (hasBondUpg(5)) gain = nM(gain, nM(Decimal.pow(nA(getInfinitied(), 1), 0.004), 2))
+	if (hasBondUpg(5)) gain = nM(gain, nM(Decimal.pow(nA(getInfinitied(), 1), 0.004*Math.pow(tmp.bnd15, 0.67)), 2))
 	return gain
+}
+
+function getGhostifies() {
+	let ghostifies = player.ghostify.times
+	return nP(ghostifies)
 }

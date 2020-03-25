@@ -1034,6 +1034,9 @@ function updateTemp() {
 	tmp.ri=player.money.gte(getLimit()) && ((player.currentChallenge != "" && player.money.gte(player.challengeTarget)) || !onPostBreak())
 	tmp.nrm=player.replicanti.amount.max(1)
 	tmp.rg4=false
+	if (player.aarexModifications.ngp5V) {
+		tmp.bnd15 = hasBondUpg(15)?(Decimal.add(getEternitied(), 1).pow(0.01).log10()*0.01+1):1
+	}
 	if (tmp.ngp3) {
 		tmp.ns=new Decimal(nanospeed)
 		tmp.ppti=1
@@ -1240,7 +1243,7 @@ function getInfinitiedGain() {
 	if (player.achievements.includes("r133") && player.meta) infGain=nM(player.dilation.dilatedTime.pow(.25).max(1),infGain)
 	if (player.aarexModifications.ngp5V !== undefined) {
 		if (player.ghostify.darkness.upgrades[0][5] === true) infGain = nM(getDarknessUpgReward(0,5)['reward'],infGain)
-		if (hasBondUpg(5)) infGain = nM(infGain, nM(Decimal.pow(nA(player.ghostify.times, 1), 4.8), 1e50))
+		if (hasBondUpg(5)) infGain = nM(infGain, nM(Decimal.pow(nA(getGhostifies(), 1), 4.8*tmp.bnd15), 1e50))
 	}
 	return infGain
 }
