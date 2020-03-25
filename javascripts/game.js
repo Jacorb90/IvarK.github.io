@@ -1023,7 +1023,7 @@ let tmp = {
 	nb: [],
 	nbc: [null,3,4,6,15,50,1e3,1e14,1e40],
 	nu: [],
-	nuc: [null,1e6,1e7,1e8,2e8,5e8,2e9,5e9,75e8,1e10,7e12,1e18,1e60,1e125,1e160,1e280, new Decimal('1e2500'),new Decimal('1e3000'),new Decimal('1e3500'),new Decimal('1e2900'),new Decimal('1e3500'),new Decimal('1e3750'),new Decimal('1e3800'),new Decimal('1e4000'),new Decimal('1e4200')],
+	nuc: [null,1e6,1e7,1e8,2e8,5e8,2e9,5e9,75e8,1e10,7e12,1e18,1e60,1e125,1e160,1e280, new Decimal('1e2500'),new Decimal('1e3000'),new Decimal('1e3400'),new Decimal('1e2900'),new Decimal('1e3500'),new Decimal('1e3700'),new Decimal('1e3800'),new Decimal('1e4000'),new Decimal('1e4200')],
 	lt: [12800,16e4,48e4,16e5,6e6,5e7,24e7,125e7],
 	lti: [2,4,1.5,10,4,1e3,2.5,3],
 	ls: [0,0,0,0,0,0,0],
@@ -1040,6 +1040,14 @@ function updateTemp() {
 	if (tmp.ngp3) {
 		tmp.ns=new Decimal(nanospeed)
 		tmp.ppti=1
+		tmp.bru[4]=Math.sqrt(player.timeShards.add(1).log10())<40?new Decimal(1):Decimal.pow(10,Math.sqrt(player.timeShards.add(1).log10())/80) //BRU19
+		tmp.bru[5]=Math.log10(quantumWorth.add(1).log10()+1) //BRU20
+		tmp.bru[3]=tmp.qu.bigRip.spaceShards.lt(1e140)?(new Decimal(1)):(Decimal.pow(tmp.qu.bigRip.spaceShards.div(1e140).add(1).log10()+1,Math.max(tmp.qu.bigRip.spaceShards.div(1e140).add(1).log10()/10,1))) //BRU18
+		tmp.nu[4]=Decimal.pow(player.ghostify.ghostParticles.add(1).log10(),Math.pow(tmp.qu.colorPowers.r.add(tmp.qu.colorPowers.g).add(tmp.qu.colorPowers.b).add(1).log10(),1/3)*0.8+1).max(1) //NU14
+		if (tmp.nu[4].gte(1e140)) tmp.nu[4] = Decimal.pow(tmp.nu[4],0.25).times(Decimal.pow(1e140,0.75))
+		if (tmp.nu[4].gte(Number.MAX_VALUE)) tmp.nu[4] = new Decimal(Decimal.log10(tmp.nu[4])).times(Number.MAX_VALUE/Decimal.log10(Number.MAX_VALUE))
+		tmp.nu[5]=Decimal.pow(2,tmp.qu.nanofield.rewards/2.5) //NU15
+		if (hasNU(15)) tmp.ns=tmp.ns.times(tmp.nu[5])
 		if (player.ghostify.ghostlyPhotons.unl) {
 			for (var c=6;c>-1;c--) {
 				var x=player.ghostify.ghostlyPhotons.lights[c]
@@ -1079,14 +1087,6 @@ function updateTemp() {
 				tmp.le[9]=Math.pow(tmp.ls[7]+1,.1)*2-1 //Red light (LE#3)
 				if (tmp.le[9]>10) tmp.le[9] = Math.log10(ls7)+9
 			}
-			tmp.bru[3]=Decimal.pow(tmp.qu.bigRip.spaceShards.div(1e140).add(1).log10()+1,Math.max(tmp.qu.bigRip.spaceShards.div(1e140).add(1).log10()/10,1)) //BRU18
-			tmp.bru[4]=Decimal.pow(10,Math.sqrt(player.timeShards.add(1).log10())/80) //BRU19
-			tmp.bru[5]=Math.log10(quantumWorth.add(1).log10()+1) //BRU20
-			tmp.nu[4]=Decimal.pow(player.ghostify.ghostParticles.add(1).log10(),Math.pow(tmp.qu.colorPowers.r.add(tmp.qu.colorPowers.g).add(tmp.qu.colorPowers.b).add(1).log10(),1/3)*0.8+1).max(1) //NU14
-			if (tmp.nu[4].gte(1e140)) tmp.nu[4] = Decimal.pow(tmp.nu[4],0.25).times(Decimal.pow(1e140,0.75))
-			if (tmp.nu[4].gte(Number.MAX_VALUE)) tmp.nu[4] = new Decimal(Decimal.log10(tmp.nu[4])).times(Number.MAX_VALUE/Decimal.log10(Number.MAX_VALUE))
-			tmp.nu[5]=Decimal.pow(2,tmp.qu.nanofield.rewards/2.5) //NU15
-			if (hasNU(15)) tmp.ns=tmp.ns.times(tmp.nu[5])
 			tmp.ppti/=tmp.le[1]
 		}
 		if (ghostified) {
@@ -1243,7 +1243,7 @@ function getInfinitiedGain() {
 	if (player.achievements.includes("r133") && player.meta) infGain=nM(player.dilation.dilatedTime.pow(.25).max(1),infGain)
 	if (player.aarexModifications.ngp5V !== undefined) {
 		if (player.ghostify.darkness.upgrades[0][5] === true) infGain = nM(getDarknessUpgReward(0,5)['reward'],infGain)
-		if (hasBondUpg(5)) infGain = nM(infGain, nM(Decimal.pow(nA(getGhostifies(), 1), 4.8*tmp.bnd15), 1e50))
+		if (hasBondUpg(5)) infGain = nP(Decimal.mul(infGain, Decimal.mul(Decimal.pow(Decimal.add(getGhostifies(), 1), 4.8*tmp.bnd15), 1e50)))
 	}
 	return infGain
 }
@@ -2929,6 +2929,7 @@ function updateExtraReplGalaxies() {
 	if (hasAnnihilationUpg(19)) extraReplGalaxies += getAnnihilationUpgEff(19)
 	if (tmp.ngp3) {
 		gatheredQuarksBoost = Math.pow(tmp.qu.replicants.quarks.add(1).log10(),player.masterystudies.includes("t362")?0.35:0.25)*0.67*(player.masterystudies.includes("t412")?1.25:1)*(player.ghostify.ghostlyPhotons.unl?tmp.le[3]:1)
+		if (tmp.qu.bigRip.active && gatheredQuarksBoost>111.11) gatheredQuarksBoost = Math.pow(10, Math.log10(gatheredQuarksBoost)*0.9)*1.6017
 		extraReplGalaxies *= colorBoosts.g + gatheredQuarksBoost
 	}
 	extraReplGalaxies = Math.floor(extraReplGalaxies)
@@ -7793,6 +7794,8 @@ function updatePerSec() {
             feedReplicant(d, true)
             break
         }
+		if (isAutoGhostActive(16)) maxNeutrinoMult()
+		if (isAutoGhostActive(17)) maxGHPMult()
         if (currentAnnihilationTier()==0) if (isAutoGhostActive(8)) buyMaxQuantumFood()
         if (isAutoGhostActive(7)) maxQuarkMult()
         var chall=getCurrentQCData()

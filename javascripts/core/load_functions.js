@@ -1206,6 +1206,7 @@ if (player.version < 5) {
   }
   if (tmp.ngp3) if (player.ghostify.automatorGhosts) if (player.ghostify.automatorGhosts[15].mode === undefined) player.ghostify.automatorGhosts[15].mode = 'ghp'
   if (tmp.ngp3) if (player.ghostify.automatorGhosts) if (player.ghostify.automatorGhosts[15].current === undefined) player.ghostify.automatorGhosts[15].current = new Decimal(1)
+  if (tmp.ngp3) if (player.ghostify.automatorGhosts) if (player.ghostify.automatorGhosts[powerConsumptions.length-1] === undefined) for (var i=Object.keys(player.ghostify.automatorGhosts.length).length-1;i<powerConsumptions.length;i++) player.ghostify.automatorGhosts[i] = {on: false};
   if (player.aarexModifications.newGame3PlusVersion < 2.101) {
 	  var newAchievements=[]
       for (var a=0;a<player.achievements.length;a++) if (player.achievements[a]!="ng3p67") newAchievements.push(player.achievements[a])

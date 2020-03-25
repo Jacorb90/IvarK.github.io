@@ -2211,7 +2211,11 @@ function getDecayRate(branch) {
 		if (isBigRipUpgradeActive(19)) ret = ret.times(tmp.bru[4])
 		if (isBigRipUpgradeActive(20)) ret = ret.div(tmp.bru[5])
 	}
-	return ret.min(Math.pow(2,40)).times(todspeed)
+	ret = ret.min(Math.pow(2,40)).times(todspeed)
+	
+	// Bug fix :)
+	if (shorten(ret)=="Infinite") ret = new Decimal(1)
+	return ret
 }
 
 function getQuarkSpinProduction(branch) {
@@ -2369,10 +2373,10 @@ function updateQuantumWorth(mode) {
 				document.getElementById("automaticCharge").textContent = automaticCharge.toFixed(1)
 				document.getElementById("automaticPower").textContent = player.ghostify.automatorGhosts.power.toFixed(1)
 			}
-			while (player.ghostify.automatorGhosts.power>=autoGhostRequirements[player.ghostify.automatorGhosts.ghosts-3]) {
+			while (player.ghostify.automatorGhosts.power>=autoGhostRequirements[player.ghostify.automatorGhosts.ghosts-3]&&isAutoGhostUnl(player.ghostify.automatorGhosts.ghosts+1)) {
 				player.ghostify.automatorGhosts.ghosts++
 				document.getElementById("autoGhost"+player.ghostify.automatorGhosts.ghosts).style.display=""
-				if (player.ghostify.automatorGhosts.ghosts>14) document.getElementById("nextAutomatorGhost").parentElement.style.display="none"
+				if (player.ghostify.automatorGhosts.ghosts>powerConsumptions.length-2 || !isAutoGhostUnl(player.ghostify.automatorGhosts.ghosts+1)) document.getElementById("nextAutomatorGhost").parentElement.style.display="none"
 				else {
 					document.getElementById("automatorGhostsAmount").textContent=player.ghostify.automatorGhosts.ghosts
 					document.getElementById("nextAutomatorGhost").parentElement.style.display=""
@@ -2837,7 +2841,7 @@ function removeAP(id) {
 
 function bigRip(auto) {
 	if (!player.masterystudies.includes("d14")||tmp.qu.electrons.amount<62500||!inQC(0)) return
-	if (player.ghostify.milestones>1&&!currentAnnihilationTier()) {
+	if (player.ghostify.milestones>1&&!currentAnnihilationTier()&&!(player.hadronize?player.hadronize.times:false)) {
 		tmp.qu.pairedChallenges.order={1:[1,2],2:[3,4],3:[5,7],4:[6,8]}
 		tmp.qu.pairedChallenges.completed=4
 		for (var c=1;c<9;c++) {
@@ -3125,8 +3129,7 @@ function getSpaceShardsGain() {
 	if (hasNU(9)) ret = ret.times(Decimal.max(getEternitied(), 1).pow(0.1))
 	if (hasBondUpg(10) && !tmp.qu.bigRip.active) {
 		let ghostifies = Decimal.max(getGhostifies(), 1)
-		if (ghostifies.gte(1e3)) ghostifies = ghostifies.pow(0.2)
-		ret = ret.times(ghostifies.pow(20))
+		ret = ret.times(ghostifies.pow(48))
 	}
 	ret = ret.floor()
 	if (isNaN(ret.e)) return new Decimal(0)
@@ -4354,7 +4357,7 @@ function getNeutrinoGain() {
 	}
 	if (hasAnnihilationUpg(5)) ret = ret.times(getAnnihilationUpgEff(5))
 	ret = ret.times(getAntiBaryonEff("antineutrons"))
-	if (hasBondUpg(1)) ret = ret.times(999*(hasBondUpg(11)?tmp.qu.bigRip.spaceShards.add(1).log10()+1:1))
+	if (hasBondUpg(1)) ret = ret.times(999*(hasBondUpg(11)?tmp.qu.bigRip.spaceShards.add(1).log(1.1)+1:1))
 	return ret
 }
 
@@ -4474,7 +4477,7 @@ function maxGHPMult() {
 
 function setupAutomaticGhostsData() {
 	var data = {power: 0, ghosts: 3}
-	for (var ghost=1; ghost<16; ghost++) data[ghost] = {on: false}
+	for (var ghost=1; ghost<powerConsumptions.length; ghost++) data[ghost] = {on: false}
 	data[4].mode = "q"
 	data[4].rotate = "r"
 	data[11].pw = 1
@@ -4486,12 +4489,18 @@ function setupAutomaticGhostsData() {
 	return data
 }
 
-var autoGhostRequirements=[2,4,4,4.5,5,5,6,6.5,7,7,7.5,8,1/0]
+var autoGhostRequirements=[2,4,4,4.5,5,5,6,6.5,7,7,7.5,8,40,75]
 var powerConsumed
-var powerConsumptions=[0,1,1,1,1,2,2,0.5,0.5,0.5,1,0.5,0.5,0.5,0.5,0.5]
+var powerConsumptions=[0,1,1,1,1,2,2,0.5,0.5,0.5,1,0.5,0.5,0.5,0.5,0.5,25,30]
+function isAutoGhostUnl(n) {
+	if (n<=15) return true
+	else if (n<=17) return hasResearch(3)
+	else return false
+}
+
 function updateAutoGhosts(load) {
 	if (load) {
-		if (player.ghostify.automatorGhosts.ghosts>14) document.getElementById("nextAutomatorGhost").parentElement.style.display="none"
+		if (player.ghostify.automatorGhosts.ghosts>powerConsumptions.length-2 || !isAutoGhostUnl(player.ghostify.automatorGhosts.ghosts+1)) document.getElementById("nextAutomatorGhost").parentElement.style.display="none"
 		else {
 			document.getElementById("automatorGhostsAmount").textContent=player.ghostify.automatorGhosts.ghosts
 			document.getElementById("nextAutomatorGhost").parentElement.style.display=""
@@ -4499,11 +4508,11 @@ function updateAutoGhosts(load) {
 		}
 	}
 	powerConsumed=0
-	for (var ghost=1;ghost<16;ghost++) {
+	for (var ghost=1;ghost<powerConsumptions.length;ghost++) {
 		if (ghost>player.ghostify.automatorGhosts.ghosts) {
 			if (load) document.getElementById("autoGhost"+ghost).style.display="none"
 		} else {
-			if (load) {
+			if (load && isAutoGhostUnl(ghost)) {
 				document.getElementById("autoGhost"+ghost).style.display=""
 				document.getElementById("isAutoGhostOn"+ghost).checked=player.ghostify.automatorGhosts[ghost].on
 			}
@@ -4613,8 +4622,10 @@ function updateColorPowers() {
 	colorBoosts.g=Math.sqrt(getCPPower('g')*2+1)
 	if (colorBoosts.r>1.3) colorBoosts.r=Math.sqrt(colorBoosts.r*1.3)
 	if (colorBoosts.r>2.3&&(!player.dilation.active||getTreeUpgradeLevel(2)>7||ghostified)) colorBoosts.r=Math.pow(colorBoosts.r/2.3,0.5*(ghostified&&player.ghostify.neutrinos.boosts>4?1+tmp.nb[4]:1))*2.3
+	if (colorBoosts.r>55.55) colorBoosts.r = Math.pow(10, Math.log10(colorBoosts.r)*0.9)*1.49443
 	if (colorBoosts.g>4.5) colorBoosts.g=Math.sqrt(colorBoosts.g*4.5)
 	if (player.aarexModifications.ngudpV&&!player.aarexModifications.nguepV) colorBoosts.g=(colorBoosts.g+1)/2
+	if (colorBoosts.g>400) colorBoosts.g = Math.pow(10, Math.log10(colorBoosts.g)*0.9)*1.821
 	let l=Math.sqrt(getCPPower('b'))
 	if (l>Math.log10(1300)) {
 		l=Decimal.pow(l/Math.log10(1300),player.ghostify.ghostlyPhotons.unl?.5+tmp.le[4]/2:.5).times(Math.log10(1300))

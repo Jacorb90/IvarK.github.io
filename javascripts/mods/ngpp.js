@@ -592,7 +592,7 @@ let quarkGain = function () {
 	}
 	if (currentAnnihilationTier()>0) multPower = 0
 	if (player.masterystudies) {
-		if (!tmp.qu.times&&!player.ghostify.milestones) return new Decimal(1)
+		if (!tmp.qu.times&&!player.ghostify.milestones&&!(player.hadronize?player.hadronize.times:false)) return new Decimal(1)
 		if (player.ghostify.milestones) ma = player.meta.bestAntimatter
 		var log = (ma.max(1).log10() - 379.4) / (player.achievements.includes("ng3p63") ? 279.8 : 280)
 		if (log > 1.2) log = log*log/1.2

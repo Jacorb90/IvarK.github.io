@@ -206,7 +206,7 @@ const allAchievements = {
   ng5p47 : "So Close!",
   ng5p48 : "Death on another plane of existence",
   ng5p51 : "True Hadronization",
-  ng5p52 : "ng5p52",
+  ng5p52 : "Meta-Bonds",
   ng5p53 : "ng5p53",
   ng5p54 : "ng5p54",
   ng5p55 : "ng5p55",

@@ -816,6 +816,10 @@ function getEndlessMirrorData() {
 		let cost = new Decimal(20)
 		let base = new Decimal(5)
 		if (player.quantum.breakEternity.upgrades.includes(12)) base = new Decimal(4)
+		if (hasBondUpg(19)) {
+			base = base.sub(1)
+			if (hasBondUpg(21)) base = base.sub(Math.min(player.ghostify.annihilation.exoticMatter.add(1).log10()/30, 0.5))
+		}
 		if (currentAnnihilationTier()>0) base = base.pow(currentAnnihilationTier()+1)
 		cost = cost.times(Decimal.pow(base,em.amount))
 		return cost
@@ -974,7 +978,9 @@ function ghostDimData(d) {
 		}
 		var start = function(){
 			let s = [null,new Decimal('1e4000'),new Decimal('1e4500'),new Decimal('1e5000'),new Decimal('1e6000'),new Decimal('1e7600'),new Decimal('1e8200'),new Decimal('1e9000'),new Decimal('1e9500')]
-			return s[d].div('1e500')
+			let start = s[d].div('1e500')
+			if (hasBondUpg(20)) start = start.div(player.hadronize.bondPower.add(1).pow(210))
+			return start
 		}
 		var ss = function(){
 			let ss = [null,new Decimal('1e14000'),new Decimal('1e15000'),new Decimal('1e16000'),new Decimal('1e17000'),new Decimal('1e18000'),new Decimal('1e20000'),new Decimal('1e22500'),new Decimal('1e25000')]
@@ -1416,6 +1422,8 @@ function updateNGP5VAchs() {
 	if (player.ghostify.annihilation.maxTier > 1 && !player.achievements.includes("ng5p46")) giveAchievement("Level Up!")
 	if (player.ghostify.annihilation.exoticMatter.gte(5e14) && !player.achievements.includes("ng5p47")) giveAchievement("So Close!")
 	// ng5p48: In game.js (approx line 7583)
+	// ng5p51: In hadronize()
+	if (player.hadronize.bondPower.gte(Number.MAX_SAFE_INTEGER) && !player.achievements.includes("ng5p52")) giveAchievement("Meta-Bonds")
 }
 
 function setNGP5VAchTooltips() {
@@ -1432,6 +1440,7 @@ function setNGP5VAchTooltips() {
 	document.getElementById("This Achievement doesn't exist 5").setAttribute("ach-tooltip", "Reach " +shorten(999.99e9) +" Exotic Matter.")
 	document.getElementById("So Close!").setAttribute("ach-tooltip", "Reach " +shorten(5e14) +" Exotic Matter.")
 	document.getElementById("Death on another plane of existence").setAttribute("ach-tooltip", "Reach "+shortenDimensions(Decimal.pow(10, 26.1e6))+" IP while dilated, big ripped, and while your timeline is Annihilated.")
+	document.getElementById("Meta-Bonds").setAttribute("ach-tooltip", "Reach "+shorten(Number.MAX_SAFE_INTEGER)+" Bond Power.")
 }
 
 // Scaling Data
@@ -1468,6 +1477,7 @@ function getExoticMatterGain() {
 	if (hasAnnihilationUpg(29)) gain = gain.times(getAnnihilationUpgEff(29))
 	if (hasAnnihilationUpg(33)) gain = gain.times(getAnnihilationUpgEff(33))
 	gain = gain.times(getCascadePowerEff4())
+	if (hasBondUpg(22)&&currentAnnihilationTier()==1) gain = gain.times(10*Math.log10(tmp.qu.bigRip.spaceShards.add(1).log10()+1)+1)
 	return Decimal.round(gain)
 }
 
@@ -2670,7 +2680,7 @@ function hadronize(force=false) {
 				1: 0,
 				2: 0
 			},
-			upgrades: bm ? tmp.qu.upgrades : [],
+			upgrades: bm > 1 ? tmp.qu.upgrades : [],
 			rg4: false
 		},
 		old: false,
@@ -2691,8 +2701,8 @@ function hadronize(force=false) {
                       tau: new Decimal(0),
                       generationGain: 1,
                       multPower: 1,
-                      upgrades: [],
-					  boosts: 1,
+                      upgrades: hasResearch(3) ? player.ghostify.neutrinos.upgrades : [],
+					  boosts: hasResearch(2) ? player.ghostify.neutrinos.boosts : 1,
                   },
                   automatorGhosts: hasResearch(1) ? player.ghostify.automatorGhosts : setupAutomaticGhostsData(),
                   ghostlyPhotons: {
@@ -2808,7 +2818,7 @@ function hadronize(force=false) {
 	}
 	player.replicantiBoosts = {
 		amount: 0,
-		auto: false,
+		auto: player.hadronize.times==1?false:player.replicantiBoosts.auto,
 	}
 	tmp.qu=player.quantum
 	//Pre-infinity
@@ -2988,7 +2998,15 @@ function hadronize(force=false) {
 	for (i=1;i<=4;i++) updateGC(i)
 		
 	//Extra updating just to be safe :)
-	onLoad(true)
+	updateTemp()
+	updateGPHUnlocks()
+	updateGhostifyTabs()
+	document.getElementById("neutrinoMult").textContent=shortenDimensions(getNeutrinoMultPower())
+	document.getElementById("neutrinoMultUpgCost").textContent=shortenDimensions(Decimal.pow(4,player.ghostify.neutrinos.multPower-1).times(2))
+	document.getElementById("autoGhost15a").value=formatValue("Scientific", player.ghostify.automatorGhosts[15].a, 2, 1)
+	document.getElementById("ghpMult").textContent=shortenDimensions(Decimal.pow(2,player.ghostify.multPower-1))
+	document.getElementById("ghpMultUpgCost").textContent=shortenDimensions(getGHPMultCost())
+	updateAutoGhosts(true)
 	
 	//Tabs
 	gotoMenu("origin")
@@ -3006,7 +3024,7 @@ function updateHadronize() {
 		document.getElementById("bondsEff").textContent = getFullExpansion(Math.round(getBondEff()*100)/100)
 		let bondNames = [undefined, "Primary","Secondary","Tertiary","Quaternary","Quinary","Senary","Septenary","Octonary"]
 		for (i=1;i<=8;i++) {
-			document.getElementById("BondRow"+i).style.display = (i>1?player.hadronize.bonds.bought[i-2]>0:true) ? "" : "none"
+			document.getElementById("BondRow"+i).style.display = (i>1?player.hadronize.bonds.bought[i-2]+player.hadronize.bonds.bondBought[i-2]>0:true) ? "" : "none"
 			document.getElementById("BondD"+i).textContent = bondNames[i]+" Bond x"+shorten(getBondMult(i))
 			document.getElementById("Bond"+i+"Amount").textContent = shortenDimensions(player.hadronize.bonds.amount[i-1])
 			document.getElementById("Bond"+i).textContent = "Cost: "+shortenCosts(getBondCost(i))+" Hadrons"
@@ -3019,12 +3037,15 @@ function updateHadronize() {
 			document.getElementById("bondupgcost"+i).textContent = shorten(bondUpgCosts[i])
 			document.getElementById("bondupgbg"+i).className = (hasBondUpg(i)||player.hadronize.bondPower.lt(bondUpgCosts[i]))?"":"hadron bg"
 		}
-		document.getElementById("bondupgeff1").textContent = shortenDimensions(999*(hasBondUpg(11)?tmp.qu.bigRip.spaceShards.add(1).log10()+1:1))
+		document.getElementById("bondupgeff1").textContent = shortenDimensions(999*(hasBondUpg(11)?tmp.qu.bigRip.spaceShards.add(1).log(1.1)+1:1))
 		document.getElementById("bondupg4cap").textContent = shorten(Decimal.pow(Number.MAX_VALUE, hasBondUpg(14)?(Math.log2(player.ghostify.ghostlyPhotons.enpowerments+1)+1):1))
 		document.getElementById("bondupg16cap").textContent = shorten(hasBondUpg(18)?new Decimal("1e6400"):new Decimal("1e6250"))
 	}
 	if (hadronizeTab == "research") {
 		document.getElementById("researchPnts").textContent = getFullExpansion(getResearchPoints())
+		for (i=1;i<researchReqs.length;i++) {
+			document.getElementById("research"+i).className = "achievement achievement"+(hasResearch(i)?"unlocked":"locked")
+		}
 	}
 }
 
@@ -3047,7 +3068,7 @@ function hadronizeTick(diff) {
 //Bonds
 
 var bondTab = "normBonds"
-var bondUpgCosts = [null, 1e3, 1.5e3, 2.5e3, 5e3, 7.5e3, 1.2e4, 2e4, 3.2e4, 4e4, 7.5e4, 1.44e7, 2.67e8, 4.096e9, 3.2e10, 7.5e11, 5e4, 8e4, 1e13]
+var bondUpgCosts = [null, 1e3, 1.5e3, 2.5e3, 5e3, 7.5e3, 1.2e4, 2e4, 3.2e4, 4e4, 7.5e4, 1.44e7, 2.67e8, 4.096e9, 3.2e10, 7.5e11, 5e4, 8e4, 1e13, 3e5, 3.2e5, 1e15, 1.5e11]
 
 function showBondTab(name) {
 	bondTab = name
@@ -3112,12 +3133,12 @@ function hasBondUpg(x) {
 }
 
 function getBondBCostInc(x) {
-	let incs = [null, 2, 100, 1e4, 1e6, 1e10, 1e25, 1e50, 1e75]
+	let incs = [null, 2, 10, 1e4, 1e6, 1e10, 1e25, 1e50, 1e75]
 	return incs[x]
 }
 
 function getBondBCostStart(x) {
-	let starts = [null, 1e3, 1e10, 1e20, 1e30, 1e100, 1e150, 1e250, new Decimal("1e400")]
+	let starts = [null, 1e3, 1e6, 1e20, 1e30, 1e100, 1e150, 1e250, new Decimal("1e400")]
 	return starts[x]
 }
 
@@ -3135,14 +3156,14 @@ function buyBondB(x) {
 
 //Hadronic Researches
 
-var researchReqs = [null, 3, 5]
+var researchReqs = [null, 2, 5]
 
 function getResearchPoints() {
 	if (player.hadronize === undefined) return 0
 	let best = player.hadronize.best
 	let times = player.hadronize.times
 	let s1 = 1000/Math.sqrt(best)
-	let s2 = Math.pow(times, 0.1)
+	let s2 = Math.pow(times, 0.8)
 	return Math.floor(s1+s2)
 }
 
