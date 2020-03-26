@@ -205,6 +205,14 @@ const allAchievements = {
   ng5p46 : "Level Up!",
   ng5p47 : "So Close!",
   ng5p48 : "Death on another plane of existence",
+  ng5p51 : "True Hadronization",
+  ng5p52 : "Meta-Bonds",
+  ng5p53 : "Human to Ghost to Hadron?",
+  ng5p54 : "All your knowledge is mine!",
+  ng5p55 : "ng5p55",
+  ng5p56 : "ng5p56",
+  ng5p57 : "ng5p57",
+  ng5p58 : "ng5p58",
   s11 : "The first one's always free",
   s12 : "Just in case",
   s13 : "It pays to have respect",
@@ -346,7 +354,7 @@ function giveAchievement(name) {
 function updateAchievements() {
 	var amount = 0
 	var rowsShown = 0
-	for (var i=1; i<27; i++) {
+	for (var i=1; i<28; i++) {
 		var shown=true
 		var rowid=i
 		if (i>22) {

@@ -31,7 +31,7 @@ function softReset(bulk, tier=1) {
 		giveAchievement("Boosting to the max");
 	}
 	if (inNC(14)&&player.tickspeedBoosts==undefined) player.tickBoughtThisInf.pastResets.push({resets:player.resets,bought:player.tickBoughtThisInf.current})
-	if (player.dilation.upgrades.includes("ngpp3") && player.eternities >= 1e9 && player.masterystudies && player.aarexModifications.switch === undefined && tier < 2) {
+	if (((player.dilation.upgrades.includes("ngpp3") && player.eternities >= 1e9) || player.achievements.includes("ng5p51")) && player.masterystudies && player.aarexModifications.switch === undefined && tier < 2) {
 		skipResets()
 		player.matter=new Decimal(0)
 		player.postC8Mult=new Decimal(1)
@@ -114,7 +114,7 @@ function setInitialMoney() {
 
 function setInitialDimensionPower() {
 	var dimensionBoostPower = getDimensionBoostPower()
-	if (player.eternities>=1e9&&player.dilation.upgrades.includes("ngpp6")&&player.masterystudies!=undefined) player.dbPower=dimensionBoostPower
+	if (((player.eternities>=1e9&&player.dilation.upgrades.includes("ngpp6"))||player.achievements.includes("ng5p51"))&&player.masterystudies!=undefined) player.dbPower=dimensionBoostPower
 
 	if (!player.achievements.includes("ng5p24")) for (tier = 1; tier < 9; tier++) player[TIER_NAMES[tier] + 'Pow'] = player.currentEternityChall=='eterc13' ? new Decimal(1) : dimensionBoostPower.pow(player.resets + 1 - tier).max(1)
 

@@ -2672,6 +2672,17 @@ br {
 	cursor: pointer
 }
 
+#hadronizebtn {
+	cursor: pointer;
+	position: absolute;
+	left: 12%;
+	top: 40px;
+	width: 210px;
+	height: 70px;
+	border-radius: 4px;
+	font-size: 11px
+}
+
 .hadron {
 	position: relative;
 	background: transparent;
@@ -2745,6 +2756,57 @@ br {
 	font-size: 25px;
 	color: black;
 	animation: reveal 3000ms ease-in-out forwards infinite 200ms, glow 2500ms linear infinite 2000ms;
+}
+
+.hadronizetxt {
+  background: linear-gradient(to left, violet, indigo, blue, green, yellow, orange, red);
+  background-size: 200% auto;
+  background-clip: text;
+  text-fill-color: transparent;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-size: 25px;
+  animation: hadronizetxt 6s linear infinite;
+}
+
+.gluonupgrade.hadron {
+	position: relative;
+	background: transparent;
+	box-shadow: inset 0px 0px 24px 0px black;
+	border: 2px solid black;
+	border-radius: 4px;
+	overflow: hidden;
+	font-family: Typewriter;
+	font-weight: bold;
+	color: rgba(255,255,255,0.8);
+	text-shadow: 0px 0px 3px rgba(0,0,0,0.5);
+	transition-duration: 0.2s;
+	cursor: pointer
+}
+
+.gluonupgrade.hadron:hover {
+	box-shadow: inset 0px 0px 24px 0px white;
+	border-color: #bfbfbf;
+	color: white;
+	text-shadow: 0px 0px 3px white
+}
+
+.gluonupgradebought.hadron {
+	position: relative;
+	background: green !important;
+	box-shadow: inset 0px 0px 24px 0px black;
+	border: 2px solid black;
+	border-radius: 4px;
+	overflow: hidden;
+	font-family: Typewriter;
+	font-weight: bold;
+	color: rgba(255,255,255,0.8);
+	text-shadow: 0px 0px 3px rgba(0,0,0,0.5);
+	transition-duration: 0.2s;
+}
+
+.gluonupgradebought.hadron:hover {
+	cursor: default;
 }
 
 @media print,
@@ -3143,4 +3205,10 @@ screen and (max-width: 480px) {
 	100%{
 	    transform: rotate(360deg)
 	}
+}
+
+@keyframes hadronizetxt {
+	to {
+      background-position: 200% center;
+    }
 }

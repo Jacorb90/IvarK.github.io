@@ -1206,6 +1206,7 @@ if (player.version < 5) {
   }
   if (tmp.ngp3) if (player.ghostify.automatorGhosts) if (player.ghostify.automatorGhosts[15].mode === undefined) player.ghostify.automatorGhosts[15].mode = 'ghp'
   if (tmp.ngp3) if (player.ghostify.automatorGhosts) if (player.ghostify.automatorGhosts[15].current === undefined) player.ghostify.automatorGhosts[15].current = new Decimal(1)
+  if (tmp.ngp3) if (player.ghostify.automatorGhosts) if (player.ghostify.automatorGhosts[powerConsumptions.length-1] === undefined) for (var i=Object.keys(player.ghostify.automatorGhosts).length-1;i<powerConsumptions.length;i++) player.ghostify.automatorGhosts[i] = {on: false};
   if (player.aarexModifications.newGame3PlusVersion < 2.101) {
 	  var newAchievements=[]
       for (var a=0;a<player.achievements.length;a++) if (player.achievements[a]!="ng3p67") newAchievements.push(player.achievements[a])
@@ -1346,6 +1347,25 @@ if (player.version < 5) {
 			power: new Decimal(0),
 		}
 	  }
+	  if (player.hadronize === undefined) {
+		  player.hadronize = {
+			time: player.totalTimePlayed,
+			best: 9999999999999999,
+			times: 0,
+			hadrons: new Decimal(0),
+			bondPower: new Decimal(0),
+			bonds: {
+				bought: [0,0,0,0,0,0,0,0],
+				amount: [new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0)],
+				upgrades: [],
+				bondBought: [0,0,0,0,0,0,0,0],
+			},
+		  }
+	  }
+	  if (player.hadronize.bonds.upgrades === undefined) player.hadronize.bonds.upgrades = []
+	  if (player.hadronize.bonds.bondBought === undefined) player.hadronize.bonds.bondBought = [0,0,0,0,0,0,0,0]
+	  if (player.ghostify.banked === undefined) player.ghostify.banked = 0
+	  player.ghostify.banked = nP(player.ghostify.banked)
   }
   if (player.aarexModifications.newGameMinusMinusVersion === undefined && !player.meta) {
       if (player.exdilation == undefined && player.version == 13) player.version = 12
@@ -1692,7 +1712,7 @@ if (player.version < 5) {
   updateAutoEterMode()
 
   ghostified = false
-  if (player.masterystudies !== undefined) ghostified = player.ghostify.times > 0
+  if (player.masterystudies !== undefined) ghostified = player.ghostify.times > 0 || (player.hadronize?player.hadronize.times>0:false)
   quantumed = ghostified
   if (player.meta !== undefined && !quantumed) quantumed = tmp.qu.times > 0
   document.getElementById("confirmations").style.display = (player.resets > 4 || player.galaxies > 0 || (player.galacticSacrifice ? player.galacticSacrifice.times > 0 : false) || player.infinitied !== 0 || player.eternities !== 0 || quantumed) ? "inline-block" : "none"
@@ -1769,7 +1789,7 @@ if (player.version < 5) {
   document.getElementById("hideSecretAchs").textContent=(player.aarexModifications.hideSecretAchs?"Show":"Hide")+" secret achievements"
   document.getElementById("hideFooter").textContent=(player.aarexModifications.hideFooter?"Show":"Hide")+" footer"
 
-  document.getElementById("hotkeysDesc").innerHTML = "Hotkeys: 1-8 for buy 10 dimension, shift+1-8 for buy 1 dimension, T to buy max tickspeed, shift+T to buy one tickspeed, M for max all<br>S for sacrifice, D for "+(player.dilation.studies.includes(1)?"dilate time":"dimension boost")+","+(player.tickspeedBoosts==undefined||tmp.ngp3?"":" B for tickspeed boost,")+" G for "+(player.achievements.includes("ng3p51")?"become a ghost":"galaxy")+", C for crunch, A for "+((player.aarexModifications.ngp5V?player.ghostify.baryons.hyperons.supercharge.hyperons>=5:false)?"annihilate your timeline":"toggle autobuyers")+", R for replicanti galaxies, E for eternity"+(player.meta?", Q for quantum":"")+(quantumed?", U for unstabilize all quarks":"")+(tmp.ngp3&&player.masterystudies.includes("d14")?", B for big rip":"")+(player.boughtDims?".":".<br>You can hold shift while buying time studies to buy all up until that point, see each study's number, and save study trees.<br>Hotkeys do not work while holding control.")
+  document.getElementById("hotkeysDesc").innerHTML = "Hotkeys: 1-8 for buy 10 dimension, shift+1-8 for buy 1 dimension, T to buy max tickspeed, shift+T to buy one tickspeed, M for max all<br>S for sacrifice, D to "+(player.dilation.studies.includes(1)?"dilate time":"dimension boost")+","+(player.tickspeedBoosts==undefined||tmp.ngp3?"":" B for tickspeed boost,")+" G to "+(player.achievements.includes("ng3p51")?"become a ghost":"galaxy")+", C for crunch, A for "+((player.aarexModifications.ngp5V?player.ghostify.baryons.hyperons.supercharge.hyperons>=5:false)?"annihilate your timeline":"toggle autobuyers")+", R for replicanti galaxies, E for eternity"+(player.meta?", Q for quantum":"")+(quantumed?", U for unstabilize all quarks":"")+(tmp.ngp3&&player.masterystudies.includes("d14")?", B for big rip":"")+(player.hadronize?(player.hadronize.times?", H to hadronize":""):"")+(player.boughtDims?".":".<br>You can hold shift while buying time studies to buy all up until that point, see each study's number, and save study trees.<br>Hotkeys do not work while holding control.")
 
   document.getElementById("secretstudy").style.opacity = 0
   document.getElementById("secretstudy").style.cursor = "pointer"
@@ -2007,7 +2027,7 @@ if (player.version < 5) {
   } else if (document.getElementById("ers_timestudies").style.display=="block") showEternityTab("timestudies",true)
   poData=metaSave["presetsOrder"+(player.boughtDims?"_ers":"")]
   setAndMaybeShow('bestTP',player.achievements.includes("ng3p18") || player.achievements.includes("ng3p37"),'"Your best"+(ghostified ? "" : " ever")+" Tachyon particles"+(ghostified ? " in this Ghostify" : "")+" was "+shorten(player.dilation.bestTP)+"."')
-  setAndMaybeShow('bestTPOverGhostifies',(player.achievements.includes("ng3p18") || player.achievements.includes("ng3p37")) && ghostified,'"Your best-ever Tachyon particles was "+shorten(player.dilation.bestTPOverGhostifies)+"."')
+  setAndMaybeShow('bestTPOverGhostifies',ghostified,'"Your '+((player.hadronize?player.hadronize.times:false)?"best-in-this-Hadronize":"best-ever")+' Tachyon particles was "+shorten(player.dilation.bestTPOverGhostifies)+"."')
   document.getElementById('dilationmode').style.display=speedrunMilestonesReached>4?"":"none"
   document.getElementById('rebuyupgmax').style.display=speedrunMilestonesReached<26&&player.masterystudies?"":"none"
   document.getElementById('rebuyupgauto').style.display=speedrunMilestonesReached>6?"":"none"
@@ -2730,7 +2750,15 @@ function transformSaveToDecimal() {
 		player.ghostify.annihilation.exoticMatter = new Decimal(player.ghostify.annihilation.exoticMatter)
 		if (player.ghostify.annihilation.storage !== undefined) player.ghostify.annihilation.storage.darkness = new Decimal(player.ghostify.annihilation.storage.darkness)
 		if (player.ghostify.annihilation.cascade !== undefined) player.ghostify.annihilation.cascade.power = new Decimal(player.ghostify.annihilation.cascade.power)
+		if (player.hadronize !== undefined) {
+			player.hadronize.hadrons = new Decimal(player.hadronize.hadrons)
+			player.hadronize.bondPower = new Decimal(player.hadronize.bondPower)
+			for (i=0;i<8;i++) {
+				player.hadronize.bonds.amount[i] = new Decimal(player.hadronize.bonds.amount[i])
+			}
+		}
   }
+  if (player.ghostify) player.ghostify.times = nP(player.ghostify.times)
 }
 
 

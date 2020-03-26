@@ -332,6 +332,7 @@ function getExtraDimensionBoostPowerExponent() {
 		if (player.masterystudies.includes("d12")) power += getNanofieldRewardEffect(2)
 		if (player.masterystudies.includes("d13")) power += getTreeUpgradeEffect(8)
 	}
+	if (hasBondUpg(6)) power += 75
 	if (player.aarexModifications.ngp5V !== undefined) if (inGC(3)) power = 0
 	if (currentAnnihilationTier()>0) power /= currentAnnihilationTier()+1
 	return power
@@ -350,7 +351,7 @@ function updateMetaDimensions () {
 	document.getElementById("metaAntimatterBest").textContent = shortenMoney(player.meta.bestAntimatter)
 	document.getElementById("bestAntimatterQuantum").textContent = player.masterystudies && quantumed ? "Your best" + (ghostified ? "" : "-ever") + " meta-antimatter" + (ghostified ? " in this Ghostify" : "") + " was " + shortenMoney(player.meta.bestOverQuantums) + "." : ""
 	document.getElementById("bestAntimatterTranslation").innerHTML = (player.masterystudies ? tmp.qu.nanofield.rewards > 1 && player.currentEternityChall != "eterc14" && !inQC(3) && !inQC(4) : false) ? 'Raised to the power of <span id="metaAntimatterPower" style="font-size:35px; color: black">'+getFullExpansion(Math.round(getExtraDimensionBoostPowerExponent()*10)/10)+'</span>, t' : "T"
-	setAndMaybeShow("bestMAOverGhostifies", ghostified, '"Your best-ever meta-antimatter was " + shortenMoney(player.meta.bestOverGhostifies) + "."')
+	setAndMaybeShow("bestMAOverGhostifies", ghostified, '"Your '+((player.hadronize?player.hadronize.times:false)?"best-in-this-Hadronize":"best-ever")+' meta-antimatter was " + shortenMoney(player.meta.bestOverGhostifies) + "."')
 	document.getElementById("metaAntimatterEffect").textContent = shortenMoney(getExtraDimensionBoostPower())
 	document.getElementById("metaAntimatterPerSec").textContent = 'You are getting ' + shortenDimensions(getMetaDimensionProduction(1)) + ' meta-antimatter per second.'
 	let showDim = false
@@ -591,7 +592,7 @@ let quarkGain = function () {
 	}
 	if (currentAnnihilationTier()>0) multPower = 0
 	if (player.masterystudies) {
-		if (!tmp.qu.times&&!player.ghostify.milestones) return new Decimal(1)
+		if (!tmp.qu.times&&!player.ghostify.milestones&&!(player.hadronize?player.hadronize.times:false)) return new Decimal(1)
 		if (player.ghostify.milestones) ma = player.meta.bestAntimatter
 		var log = (ma.max(1).log10() - 379.4) / (player.achievements.includes("ng3p63") ? 279.8 : 280)
 		if (log > 1.2) log = log*log/1.2
@@ -1202,6 +1203,7 @@ function quantumReset(force, auto, challid, bigRip, implode=false) {
 		ghostify: player.ghostify,
 		aarexModifications: player.aarexModifications,
 		replicantiBoosts: player.replicantiBoosts,
+		hadronize: player.hadronize,
 	};
 	if (player.replicantiBoosts !== undefined) player.replicantiBoosts.amount = 0
 	if (player.challenges.includes("challenge1")) player.money = new Decimal(100)

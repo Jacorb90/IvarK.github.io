@@ -37,9 +37,234 @@
 	<div id="container" class="container" style="color:#4F5957; font-family: Typewriter; text-align:center; font-size: 11px; display:none">
 		<div id="creation">
 			<b class="creationTxt">Creation</b>
-			<div id="originbtn" class="creationbtn" onclick="gotoMenu('origin')"><br>Origin</div><br><br><br><br><br><br>
+			<div><button id="hadronizebtn" class="hadron" onclick="hadronize()">
+				<span id="hadronizebtnflavor">Hadronize your origins.</span>
+				<div class="hadron bg"></div>
+			</button></div>
+			<div id="originbtn" class="creationbtn" onclick="gotoMenu('origin')"><br>Origin</div>
+			<br><br><br><br><br><br>
+			<div>
+				<button id="hadrontabbtn" style="font-family: Typewriter; font-size: 20px" class="hadron creationtabbtn" onclick="showCreationTab('hadron')">Hadronize<div class="hadron bg"></div></button>
+			</div>
+			<div id="creationEmptinesstab" class="creationTab"></div>
 			<div id="hadrontab" class="creationTab">
-				New prestige layers to come... :)
+				You have hadronized <b><span id='hadronized'></span></b> times.<br>
+				You have been in this hadronize for <b><span id='hadronizeTime'></span></b>.<br>
+				Your best hadronize was in <b><span id='hadronizeBest'></span></b>.<br><br>
+				You have <span id="hadrons" class="hadronizetxt"></span> Hadrons.<br>
+				<tr>
+					<td><button class='secondarytabbtn' onclick='showHadronizeTab("bonds")'>Bonds</button></td>
+					<td><button class='secondarytabbtn' onclick='showHadronizeTab("research")'>Researches</button></td>
+				</tr>
+				<div id="bondstab" class="hadronizetab">
+					You have <span id="bondPower" class="hadronizetxt"></span> Bond Power, translated to <span id='bondsEff' class="hadronizetxt"></span> additional multiplier per 10 dimensions before electrons.<br><br>
+					<tr>
+						<td><button class='secondarytabbtn' onclick='showBondTab("normBonds")'>Normal Bonds</button></td>
+						<td><button class='secondarytabbtn' onclick='showBondTab("bondUpgs")'>Upgrades</button></td>
+					</tr>
+					<div id="normBondstab" class="bondtab">
+						<table class="table">
+							<tr id="BondRow1" style="font-size: 15px">
+								<td id="BondD1" class="rel">
+									Primary Bond x1
+								</td>
+								<td>
+									<div id="Bond1Amount" align="left">0</div>
+								</td>
+								<td align="right" width="10%">
+									<button id="Bond1" style="color:black; height: 25px; font-size: 10px; width: 135px" class="storebtn" onclick="buyBond(1)">Cost: X Hadrons</button>
+								</td>
+								<td align="right" width="10%">
+									<button id="BondB1" style="color:black; height: 25px; font-size: 10px; width: 135px" class="storebtn" onclick="buyBondB(1)">Cost: X Bond Power</button>
+								</td>
+							</tr>
+							<tr id="BondRow2" style="font-size: 15px">
+								<td id="BondD2" class="rel">
+									Secondary Bond x1
+								</td>
+								<td>
+									<div id="Bond2Amount" align="left">0</div>
+								</td>
+								<td align="right" width="10%">
+									<button id="Bond2" style="color:black; height: 25px; font-size: 10px; width: 135px" class="storebtn" onclick="buyBond(2)">Cost: X Hadrons</button>
+								</td>
+								<td align="right" width="10%">
+									<button id="BondB2" style="color:black; height: 25px; font-size: 10px; width: 135px" class="storebtn" onclick="buyBondB(2)">Cost: X Bond Power</button>
+								</td>
+							</tr>
+							<tr id="BondRow3" style="font-size: 15px">
+								<td id="BondD3" class="rel">
+									Tertiary Bond x1
+								</td>
+								<td>
+									<div id="Bond3Amount" align="left">0</div>
+								</td>
+								<td align="right" width="10%">
+									<button id="Bond3" style="color:black; height: 25px; font-size: 10px; width: 135px" class="storebtn" onclick="buyBond(3)">Cost: X Hadrons</button>
+								</td>
+								<td align="right" width="10%">
+									<button id="BondB3" style="color:black; height: 25px; font-size: 10px; width: 135px" class="storebtn" onclick="buyBondB(3)">Cost: X Bond Power</button>
+								</td>
+							</tr>
+							<tr id="BondRow4" style="font-size: 15px">
+								<td id="BondD4" class="rel">
+									Quaternary Bond x1
+								</td>
+								<td>
+									<div id="Bond4Amount" align="left">0</div>
+								</td>
+								<td align="right" width="10%">
+									<button id="Bond4" style="color:black; height: 25px; font-size: 10px; width: 135px" class="storebtn" onclick="buyBond(4)">Cost: X Hadrons</button>
+								</td>
+								<td align="right" width="10%">
+									<button id="BondB4" style="color:black; height: 25px; font-size: 10px; width: 135px" class="storebtn" onclick="buyBondB(4)">Cost: X Bond Power</button>
+								</td>
+							</tr>
+							<tr id="BondRow5" style="font-size: 15px">
+								<td id="BondD5" class="rel">
+									Quinary Bond x1
+								</td>
+								<td>
+									<div id="Bond5Amount" align="left">0</div>
+								</td>
+								<td align="right" width="10%">
+									<button id="Bond5" style="color:black; height: 25px; font-size: 10px; width: 135px" class="storebtn" onclick="buyBond(5)">Cost: X Hadrons</button>
+								</td>
+								<td align="right" width="10%">
+									<button id="BondB5" style="color:black; height: 25px; font-size: 10px; width: 135px" class="storebtn" onclick="buyBondB(5)">Cost: X Bond Power</button>
+								</td>
+							</tr>
+							<tr id="BondRow6" style="font-size: 15px">
+								<td id="BondD6" class="rel">
+									Senary Bond x1
+								</td>
+								<td>
+									<div id="Bond6Amount" align="left">0</div>
+								</td>
+								<td align="right" width="10%">
+									<button id="Bond6" style="color:black; height: 25px; font-size: 10px; width: 135px" class="storebtn" onclick="buyBond(6)">Cost: X Hadrons</button>
+								</td>
+								<td align="right" width="10%">
+									<button id="BondB6" style="color:black; height: 25px; font-size: 10px; width: 135px" class="storebtn" onclick="buyBondB(6)">Cost: X Bond Power</button>
+								</td>
+							</tr>
+							<tr id="BondRow7" style="font-size: 15px">
+								<td id="BondD7" class="rel">
+									Septenary Bond x1
+								</td>
+								<td>
+									<div id="Bond7Amount" align="left">0</div>
+								</td>
+								<td align="right" width="10%">
+									<button id="Bond7" style="color:black; height: 25px; font-size: 10px; width: 135px" class="storebtn" onclick="buyBond(7)">Cost: X Hadrons</button>
+								</td>
+								<td align="right" width="10%">
+									<button id="BondB7" style="color:black; height: 25px; font-size: 10px; width: 135px" class="storebtn" onclick="buyBondB(7)">Cost: X Bond Power</button>
+								</td>
+							</tr>
+							<tr id="BondRow8" style="font-size: 15px">
+								<td id="BondD8" class="rel">
+									Octonary Bond x1
+								</td>
+								<td>
+									<div id="Bond8Amount" align="left">0</div>
+								</td>
+								<td align="right" width="10%">
+									<button id="Bond8" style="color:black; height: 25px; font-size: 10px; width: 135px" class="storebtn" onclick="buyBond(8)">Cost: X Hadrons</button>
+								</td>
+								<td align="right" width="10%">
+									<button id="BondB8" style="color:black; height: 25px; font-size: 10px; width: 135px" class="storebtn" onclick="buyBondB(8)">Cost: X Bond Power</button>
+								</td>
+							</tr>
+						</table>
+					</div>
+					<div id="bondUpgstab" class="bondtab">
+						<br><br>
+						<table style="margin: auto">
+							<tr>
+								<td><button id="bondupg1" class="gluonupgrade hadron" onclick="buyBondUpg(1)">Neutrinos are gained <span id="bondupgeff1"></span>x faster.<br>Cost: <span id="bondupgcost1"></span> Bond Power<div id="bondupgbg1" class="hadron bg"></div></button></td>
+								<td><button id="bondupg2" class="gluonupgrade hadron" onclick="buyBondUpg(2)">Generating Preon Charge makes you use up less Preons.<br>Cost: <span id="bondupgcost2"></span> Bond Power<div id="bondupgbg2" class="hadron bg"></div></button></td>
+								<td><button id="bondupg3" class="gluonupgrade hadron" onclick="buyBondUpg(3)">Space Shards are gained over time outside of Big Rips at a reduced rate.<br>Cost: <span id="bondupgcost3"></span> Bond Power<div id="bondupgbg3" class="hadron bg"></div></button></td>
+								<td><button id="bondupg4" class="gluonupgrade hadron" onclick="buyBondUpg(4)" style="font-size:10px;">Preon Charge gain is multiplied by 2 for every OoM of Preons (maxes at <span id='bondupg4cap'></span> Preons).<br>Cost: <span id="bondupgcost4"></span> Bond Power<div id="bondupgbg4" class="hadron bg"></div></button></td>
+								<td><button id="bondupg5" class="gluonupgrade hadron" onclick="buyBondUpg(5)">Infinities and Ghostifies boost each other.<br>Cost: <span id="bondupgcost5"></span> Bond Power<div id="bondupgbg5" class="hadron bg"></div></button></td>
+								<td><button id="bondupg16" class="gluonupgrade hadron" onclick="buyBondUpg(16)">The GHP formula is much better under <span id="bondupg16cap"></span>.<br>Cost: <span id="bondupgcost16"></span> Bond Power<div id="bondupgbg16" class="hadron bg"></div></button></td>
+								<td><button id="bondupg19" class="gluonupgrade hadron" onclick="buyBondUpg(19)">The Endless Mirror cost scales slower.<br>Cost: <span id="bondupgcost19"></span> Bond Power<div id="bondupgbg19" class="hadron bg"></div></button></td>
+							</tr>
+							<tr>
+								<td><button id="bondupg6" class="gluonupgrade hadron" onclick="buyBondUpg(6)">The Meta-Antimatter effect exponent is increased by 75.<br>Cost: <span id="bondupgcost6"></span> Bond Power<div id="bondupgbg6" class="hadron bg"></div></button></td>
+								<td><button id="bondupg7" class="gluonupgrade hadron" onclick="buyBondUpg(7)">Eternal Matter is gained over time outside of Big Rips at a reduced rate.<br>Cost: <span id="bondupgcost7"></span> Bond Power<div id="bondupgbg7" class="hadron bg"></div></button></td>
+								<td><button id="bondupg8" class="gluonupgrade hadron" onclick="buyBondUpg(8)">The fifth Break Eternity upgrade is 50% stronger.<br>Cost: <span id="bondupgcost8"></span> Bond Power<div id="bondupgbg8" class="hadron bg"></div></button></td>
+								<td><button id="bondupg9" class="gluonupgrade hadron" onclick="buyBondUpg(9)">The Automator Charge formula is better.<br>Cost: <span id="bondupgcost9"></span> Bond Power<div id="bondupgbg9" class="hadron bg"></div></button></td>
+								<td><button id="bondupg10" class="gluonupgrade hadron" onclick="buyBondUpg(10)">Ghostifies boost Space Shard & Eternal Matter gain while outside Big Rips.<br>Cost: <span id="bondupgcost10"></span> Bond Power<div id="bondupgbg10" class="hadron bg"></div></button></td>
+								<td><button id="bondupg17" class="gluonupgrade hadron" onclick="buyBondUpg(17)">The Ghostly Photon and Dark Matter formulas are better.<br>Cost: <span id="bondupgcost17"></span> Bond Power<div id="bondupgbg17" class="hadron bg"></div></button></td>
+								<td><button id="bondupg20" class="gluonupgrade hadron" onclick="buyBondUpg(20)">Ghost Dimensions cost less based on your Bond Power.<br>Cost: <span id="bondupgcost20"></span> Bond Power<div id="bondupgbg20" class="hadron bg"></div></button></td>
+							</tr>
+							<tr>
+								<td><button id="bondupg11" class="gluonupgrade hadron" onclick="buyBondUpg(11)">The upgrade two above is stronger based on your Space Shards.<br>Cost: <span id="bondupgcost11"></span> Bond Power<div id="bondupgbg11" class="hadron bg"></div></button></td>
+								<td><button id="bondupg12" class="gluonupgrade hadron" onclick="buyBondUpg(12)">The upgrade two above is slightly stronger.<br>Cost: <span id="bondupgcost12"></span> Bond Power<div id="bondupgbg12" class="hadron bg"></div></button></td>
+								<td><button id="bondupg13" class="gluonupgrade hadron" onclick="buyBondUpg(13)">The upgrade two above is stronger based on your Bond Power.<br>Cost: <span id="bondupgcost13"></span> Bond Power<div id="bondupgbg13" class="hadron bg"></div></button></td>
+								<td><button id="bondupg14" class="gluonupgrade hadron" onclick="buyBondUpg(14)">The upgrade two above caps out later based on your Light Empowerments.<br>Cost: <span id="bondupgcost14"></span> Bond Power<div id="bondupgbg14" class="hadron bg"></div></button></td>
+								<td><button id="bondupg15" class="gluonupgrade hadron" onclick="buyBondUpg(15)">The upgrade two above is stronger based on your Eternities.<br>Cost: <span id="bondupgcost15"></span> Bond Power<div id="bondupgbg15" class="hadron bg"></div></button></td>
+								<td><button id="bondupg18" class="gluonupgrade hadron" onclick="buyBondUpg(18)">The upgrade two above caps out slightly later.<br>Cost: <span id="bondupgcost18"></span> Bond Power<div id="bondupgbg18" class="hadron bg"></div></button></td>
+								<td><button id="bondupg21" class="gluonupgrade hadron" onclick="buyBondUpg(21)">The upgrade two above is stronger based on your Exotic Matter.<br>Cost: <span id="bondupgcost21"></span> Bond Power<div id="bondupgbg21" class="hadron bg"></div></button></td>
+							</tr>
+							<tr>
+								<td><button id="bondupg22" class="gluonupgrade hadron" onclick="buyBondUpg(22)" style="font-size:10px;">While Annihilated, Space Shards boost Exotic Matter gain (while in Annihilation Tier I).<br>Cost: <span id="bondupgcost22"></span> Bond Power<div id="bondupgbg22" class="hadron bg"></div></button></td>
+								<td><button id="bondupg23" class="gluonupgrade hadron" onclick="buyBondUpg(23)" style="font-size:9px;">You always gain both Dark Matter & Ghostly Photons at the same time, and while not Big Ripped, you gain more of them.<br>Cost: <span id="bondupgcost23"></span> Bond Power<div id="bondupgbg23" class="hadron bg"></div></button></td>
+								<td><button id="bondupg24" class="gluonupgrade hadron" onclick="buyBondUpg(24)">You can buy max Light Empowerments (finally!).<br>Cost: <span id="bondupgcost24"></span> Bond Power<div id="bondupgbg24" class="hadron bg"></div></button></td>
+								<td><button id="bondupg25" class="gluonupgrade hadron" onclick="buyBondUpg(25)">Tickspeed boosts your Hadron gain.<br>Currently: <span id="bondupgeff25"></span>x<br>Cost: <span id="bondupgcost25"></span> Bond Power<div id="bondupgbg25" class="hadron bg"></div></button></td>
+								<td><button id="bondupg26" class="gluonupgrade hadron" onclick="buyBondUpg(26)">The Automator Charge formula is better.<br>Cost: <span id="bondupgcost26"></span> Bond Power<div id="bondupgbg26" class="hadron bg"></div></button></td>
+								<td><button id="bondupg27" class="gluonupgrade hadron" onclick="buyBondUpg(27)">Light Empowerments are 20% stronger for every Spirit (additive).<br>Cost: <span id="bondupgcost27"></span> Bond Power<div id="bondupgbg27" class="hadron bg"></div></button></td>
+								<td><button id="bondupg28" class="gluonupgrade hadron" onclick="buyBondUpg(28)">Automator Ghosts work 33.33% faster.<br>Cost: <span id="bondupgcost28"></span> Bond Power<div id="bondupgbg28" class="hadron bg"></div></button></td>
+							</tr>
+						</table>
+					</div>
+				</div>
+				<div id="researchtab" class="hadronizetab">
+					Hadronic Research Points: <span id="researchPnts" class="hadronizetxt"></span><br><br>
+					<table style="margin: auto">
+						<tr>
+							<td>
+								<div id="research1" class="achievement achievementlocked" ach-tooltip="Keep the first row of Brave Milestones & all Automator Ghosts.">2 Research Points</div>
+							</td>
+							<td>
+								<div id="research2" class="achievement achievementlocked" ach-tooltip="Keep the second row of Brave Milestones, all Neutrino Boosts, & all Ghostly Challenge completions.">5 Research Points</div>
+							</td>
+							<td>
+								<div id="research3" class="achievement achievementlocked" ach-tooltip="Keep all Neutrino Upgrades, and unlock two new Automator Ghosts.">7 Research Points</div>
+							</td>
+							<td>
+								<div id="research4" class="achievement achievementlocked" ach-tooltip="Start with 3 Light Empowerments, keep all Darkness Upgrades, unlock a new Automator Ghost, and gain Darkness Generators automatically.">9 Research Points</div>
+							</td>
+							<td>
+								<div id="research5" class="achievement achievementlocked" ach-tooltip="Start with 25 Endless Mirrors, and unlock two new Automator Ghosts.">13 Research Points</div>
+							</td>
+							<td>
+								<div id="research6" class="achievement achievementlocked" ach-tooltip="Start with 1 of each Ghost Dimension bought, and unlock two new Automator Ghosts.">15 Research Points</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div id="research7" class="achievement achievementlocked" ach-tooltip="Keep all Break Dilation upgrades, Break Dilation starts active, and unlock a new Automator Ghost.">18 Research Points</div>
+							</td>
+							<td>
+								<div id="research8" class="achievement achievementlocked" ach-tooltip="Unlock two new Automator Ghosts.">20 Research Points</div>
+							</td>
+							<td>
+								<div id="research9" class="achievement achievementlocked" ach-tooltip="Start with Hyperons unlocked, activating or deactivating a Hyperon does not cause a Ghostify reset, keep Supercharged Hyperons, and unlock a new Automator Ghost.">24 Research Points</div>
+							</td>
+							<td>
+								<div id="research10" class="achievement achievementlocked" ach-tooltip="Keep Annihilation Tier unlocks, keep Annihilation Upgrades, and unlock a new Automator Ghost.">32 Research Points</div>
+							</td>
+							<td>
+								<div id="research11" class="achievement achievementlocked" ach-tooltip="Cascading does not reset anything, and you gain 75% of Cascade gain every second.">80 Research Points</div>
+							</td>
+							<td>
+								<div id="research12" class="achievement achievementlocked" ach-tooltip="Gain 1% of GHP gain and 1% of Exotic Matter gain every second, and keep 5% of Ghostifies on Hadronize.">150 Research Points</div>
+							</td>
+						</tr>
+					</table>
+				</div>
 			</div>
 		</div>
 		<div id="origin">
@@ -1952,6 +2177,7 @@
 				<br>
 				<div id="ghostifyStatistics">
 					<div id="ghostified"></div>
+					<div id="ghostifiedBank"></div>
 					<div id="bestGhostify"></div>
 					<div id="thisGhostify"></div>
 					<br>
@@ -2903,6 +3129,32 @@
 							</td>
 							<td>
 								<div id="Death on another plane of existence" class="achievement achievementlocked"></div>
+							</td>
+						</tr>
+						<tr id="achRowng5p5">
+							<td>
+								<div id="True Hadronization" class="achievement achievementlocked" ach-tooltip='Hadronize your origins. Reward: Start with all Speedrun Milestones.'></div>
+							</td>
+							<td>
+								<div id="Meta-Bonds" class="achievement achievementlocked"></div>
+							</td>
+							<td>
+								<div id="Human to Ghost to Hadron?" class="achievement achievementlocked" ach-tooltip='Hadronize in under 30 seconds.'></div>
+							</td>
+							<td>
+								<div id="All your knowledge is mine!" class="achievement achievementlocked" ach-tooltip='Obtain all the Hadronic Researches. Reward: Gain ^0.5 of Ghostifies every second.'></div>
+							</td>
+							<td>
+								<div id="ng5p55" class="achievement achievementlocked" ach-tooltip='???'></div>
+							</td>
+							<td>
+								<div id="ng5p56" class="achievement achievementlocked" ach-tooltip='???'></div>
+							</td>
+							<td>
+								<div id="ng5p57" class="achievement achievementlocked" ach-tooltip='???'></div>
+							</td>
+							<td>
+								<div id="ng5p58" class="achievement achievementlocked" ach-tooltip='???'></div>
 							</td>
 						</tr>
 				</table>
@@ -4971,7 +5223,7 @@
 				<button class='gluonupgrade storebtn' id='sacrificeGal' onclick='sacrificeGalaxy()' style='width:210px; height:90px'>Sacrifice <span id='sacrificeGals'>0</span> galaxies.<br>You gain <span id='electronsGainMult'>2</span> electrons each galaxy you sacrifice.</button><br>
 				<button class='storebtn' id='sacrificeAuto' onclick='toggleAutoQuantumContent("sacrifice")' style='width:210px'></button><br>
 				You have <span id="electronsAmount" style="font-size:35px">0</span> electrons.<br>
-				Raised to the power of <span id="electronsTranslation" style="font-size:35px">1.00</span>, multiplier per ten dimensions is currently <span id="electronsEffect" style="font-size:35px">2.00</span>x.<br>
+				Raised to the power of <span id="electronsTranslation" style="font-size:35px">1.00</span>, multiplier per ten dimensions is currently <span id="electronsEffect" style="font-size:35px">2.00</span>x (Before: <span id="mptne"></span>x).<br>
 				<table class="table" align="center" style="margin: auto"><tr>
 					<td><button class='gluonupgrade storebtn' id='electronupg1' onclick='buyElectronUpg(1)'></button></td>
 					<td><button class='gluonupgrade storebtn' id='electronupg2' onclick='buyElectronUpg(2)'></button></td>
@@ -5355,6 +5607,75 @@
 							<button id='changeAutoGhost15Mode' class='storebtn' onclick='changeAutoGhost("15mode")'>Change Mode</button><br>
 							<span id='autoGhost15mode'>Amount of GHP to wait until reset</span>: <input id="autoGhost15a" onchange="changeAutoGhost('15a')"></input><br>
 							Is active: <input id="isAutoGhostOn15" type="checkbox" onchange="toggleAutoGhost(15)"></input>
+						</div></td>
+					</tr>
+					<tr>
+						<td id="autoGhost16"><div class="autoBuyerDiv" style="display:block">
+							<b>Auto-Neutrino Multi Upgrade Ghost</b><br>
+							Power consumption: 25<br>
+							Is active: <input id="isAutoGhostOn16" type="checkbox" onchange="toggleAutoGhost(16)"></input>
+						</div></td>
+						<td id="autoGhost17"><div class="autoBuyerDiv" style="display:block">
+							<b>Auto-GHP Multi Upgrade Ghost</b><br>
+							Power consumption: 30<br>
+							Is active: <input id="isAutoGhostOn17" type="checkbox" onchange="toggleAutoGhost(17)"></input>
+						</div></td>
+						<td id="autoGhost18"><div class="autoBuyerDiv" style="display:block">
+							<b>Auto-Light Empowerment Ghost (No Ghostify Reset)</b><br>
+							Power consumption: 120<br>
+							Is active: <input id="isAutoGhostOn18" type="checkbox" onchange="toggleAutoGhost(18)"></input>
+						</div></td>
+					</tr>
+					<tr>
+						<td id="autoGhost19"><div class="autoBuyerDiv" style="display:block">
+							<b>Auto-Endless Mirror Ghost</b><br>
+							Power consumption: 90<br>
+							Is active: <input id="isAutoGhostOn19" type="checkbox" onchange="toggleAutoGhost(19)"></input>
+						</div></td>
+						<td id="autoGhost20"><div class="autoBuyerDiv" style="display:block">
+							<b>Auto-Refraction Rebuyable Upgrade Ghost</b><br>
+							Power consumption: 110<br>
+							Is active: <input id="isAutoGhostOn20" type="checkbox" onchange="toggleAutoGhost(20)"></input>
+						</div></td>
+						<td id="autoGhost21"><div class="autoBuyerDiv" style="display:block">
+							<b>Auto-Ghost Dimension Ghost</b><br>
+							Power consumption: 60<br>
+							Is active: <input id="isAutoGhostOn21" type="checkbox" onchange="toggleAutoGhost(21)"></input>
+						</div></td>
+					</tr>
+					<tr>
+						<td id="autoGhost22"><div class="autoBuyerDiv" style="display:block">
+							<b>Auto-Spirit Ghost</b><br>
+							Power consumption: 30<br>
+							Is active: <input id="isAutoGhostOn22" type="checkbox" onchange="toggleAutoGhost(22)"></input>
+						</div></td>
+						<td id="autoGhost23"><div class="autoBuyerDiv" style="display:block">
+							<b>Auto-Break Dilation Rebuyable Ghost</b><br>
+							Power consumption: 18<br>
+							Is active: <input id="isAutoGhostOn23" type="checkbox" onchange="toggleAutoGhost(23)"></input>
+						</div></td>
+						<td id="autoGhost24"><div class="autoBuyerDiv" style="display:block">
+							<b>Auto-Nucleon Ghost</b><br>
+							Power consumption: 40<br>
+							Is active: <input id="isAutoGhostOn24" type="checkbox" onchange="toggleAutoGhost(24)"></input>
+						</div></td>
+					</tr>
+					<tr>
+						<td id="autoGhost25"><div class="autoBuyerDiv" style="display:block">
+							<b>Auto-Nucleon Sacrifice Ghost</b><br>
+							Power consumption: 32<br>
+							Is active: <input id="isAutoGhostOn25" type="checkbox" onchange="toggleAutoGhost(25)"></input>
+						</div></td>
+						<td id="autoGhost26"><div class="autoBuyerDiv" style="display:block">
+							<b>Auto-Hyperon Ghost</b><br>
+							Hyperon #: <input id="autoGhost26t" onchange="changeAutoGhost('26t')"></input><br>
+							Power consumption: 60<br>
+							Is active: <input id="isAutoGhostOn26" type="checkbox" onchange="toggleAutoGhost(26)"></input>
+						</div></td>
+						<td id="autoGhost27"><div class="autoBuyerDiv" style="display:block">
+							<b>Auto-Annihilation Rebuyable Upgrade Ghost</b><br>
+							Power consumption: 90<br>
+							Is active: <input id="isAutoGhostOn27" type="checkbox" onchange="toggleAutoGhost(27)"></input>
 						</div></td>
 					</tr>
 				</table>

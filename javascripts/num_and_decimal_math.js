@@ -4,6 +4,7 @@ function nP(a) {
 }
 
 function nN(a) {
+	a = new Decimal(a)
 	if (a.lt(Number.MAX_VALUE)) return Math.floor(a.toNumber())
 	return a
 }
@@ -58,4 +59,9 @@ function nG(a,b) {
 function nPw(a,b) {
 	if (typeof(a)=="number"&&typeof(b)=="number") return Math.pow(a,b)
 	return nN(Decimal.pow(a,b))
+}
+
+function nF(a) {
+	if (typeof(a)=="number") return Math.floor(a)
+	return Decimal.floor(a)
 }
