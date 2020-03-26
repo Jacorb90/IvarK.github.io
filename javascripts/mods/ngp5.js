@@ -811,9 +811,20 @@ function getLightEnergyGen() {
 	return gen
 }
 
-function getEndlessMirrorData() {
+function getEndlessMirrorData(adj=0) {
 	var em = player.ghostify.endlessMirrors
-	var cost = function() {
+	var costData = function() {
+		let start = new Decimal(20)
+		let base = new Decimal(5)
+		if (player.quantum.breakEternity.upgrades.includes(12)) base = new Decimal(4)
+		if (hasBondUpg(19)) {
+			base = base.sub(1)
+			if (hasBondUpg(21)) base = base.sub(Math.min(player.ghostify.annihilation.exoticMatter.add(1).log10()/30, 0.5))
+		}
+		if (currentAnnihilationTier()>0) base = base.pow(currentAnnihilationTier()+1)
+		return {start: start, inc: base}
+	}
+	var cost = function(adj=0) {
 		let cost = new Decimal(20)
 		let base = new Decimal(5)
 		if (player.quantum.breakEternity.upgrades.includes(12)) base = new Decimal(4)
@@ -822,17 +833,17 @@ function getEndlessMirrorData() {
 			if (hasBondUpg(21)) base = base.sub(Math.min(player.ghostify.annihilation.exoticMatter.add(1).log10()/30, 0.5))
 		}
 		if (currentAnnihilationTier()>0) base = base.pow(currentAnnihilationTier()+1)
-		cost = cost.times(Decimal.pow(base,em.amount))
+		cost = cost.times(Decimal.pow(base,em.amount+adj))
 		return cost
 	}
-	var prod = function() {
-		let a = em.amount
+	var prod = function(adj=0) {
+		let a = em.amount+adj
 		if (player.quantum.bigRip.upgrades.includes(12)) a *= 2
 		if (currentAnnihilationTier()>0) a /= currentAnnihilationTier()*2+1
 		let prod = Decimal.pow(1.5,a).minus(1)
 		return prod
 	}
-	return {cost: cost(), prod: prod()}
+	return {cost: cost(adj), prod: prod(adj), costData: costData()}
 }
 
 function buyEndlessMirror() {
@@ -840,6 +851,17 @@ function buyEndlessMirror() {
 	if (player.ghostify.endlessMirrors.lightEnergy.lt(cost)) return 
 	player.ghostify.endlessMirrors.lightEnergy = player.ghostify.endlessMirrors.lightEnergy.minus(cost)
 	player.ghostify.endlessMirrors.amount += 1
+}
+
+function maxEndlessMirror() {
+	let cost = getEndlessMirrorData().cost
+	let data = getEndlessMirrorData().costData
+	if (player.ghostify.endlessMirrors.lightEnergy.lt(cost)) return
+	let target = Math.floor(player.ghostify.endlessMirrors.lightEnergy.div(data.start).max(1).log(data.inc)+1)
+	let bulk = target - player.ghostify.endlessMirrors.amount
+	if (bulk<1) bulk = 1 // Bug fix :)
+	player.ghostify.endlessMirrors.lightEnergy = player.ghostify.endlessMirrors.lightEnergy.minus(getEndlessMirrorData(bulk-1).cost)
+	player.ghostify.endlessMirrors.amount += bulk
 }
 
 function getRefractionFactor() {
@@ -874,15 +896,26 @@ function getLightEnergyMult() {
 	return m
 }
 
-function getRefractionRebuyableCost() {
-	let amount = player.ghostify.endlessMirrors.refraction.rebuyable
-	if (player.quantum.breakEternity.upgrades.includes(13)) amount = amount*0.78
-	if (player.ghostify.endlessMirrors.refraction.rebuyable>=10) amount = Math.pow(amount,2)/10
-	let amount2 = 0
-	if (player.ghostify.endlessMirrors.refraction.rebuyable>=100) amount2 = Math.pow(player.ghostify.endlessMirrors.refraction.rebuyable-100,1+Math.log10(player.ghostify.endlessMirrors.refraction.rebuyable-99))
+function getRefractionRebuyableCost(adj=0) {
+	let r = player.ghostify.endlessMirrors.refraction.rebuyable+adj
+	let amount = getRefractionRebuyableAmt(r)
+	let amount2 = getRefractionRebuyableExtra(r)
 	amount += amount2
 	let cost = Decimal.pow(1.2,amount).times(500)
 	return cost
+}
+
+function getRefractionRebuyableAmt(amt=0) {
+	let amount=amt
+	if (player.quantum.breakEternity.upgrades.includes(13)) amount = amount*0.78
+	if (amount>=10) amount = Math.pow(amount,2)/10
+	return amount
+}
+
+function getRefractionRebuyableExtra(amt=0) {
+	let extra = 0
+	if (amt>=100) extra = Math.pow(amt-100,1+Math.log10(amt-99))
+	return extra
 }
 
 function getRefractionRebuyableMult() {
@@ -895,6 +928,23 @@ function buyRefractionRebuyable() {
 	if (player.ghostify.endlessMirrors.refraction.energy.lt(cost)) return 
 	player.ghostify.endlessMirrors.refraction.energy = player.ghostify.endlessMirrors.refraction.energy.minus(cost)
 	player.ghostify.endlessMirrors.refraction.rebuyable += 1
+}
+
+function maxRefractionRebuyable() {
+	let cost = getRefractionRebuyableCost()
+	let amount = player.ghostify.endlessMirrors.refraction.energy
+	if (amount.lt(cost)) return 
+	let increment = 0.5
+	let toSkip = 0
+	let check = 0
+	while (amount.gte(getRefractionRebuyableCost(increment*2))) increment*=2
+	while (increment>=1) {
+		check=toSkip+increment
+		if (amount.gte(getRefractionRebuyableCost(check))) toSkip+=increment
+		increment/=2
+	}
+	player.ghostify.endlessMirrors.refraction.energy = player.ghostify.endlessMirrors.refraction.energy.minus(getRefractionRebuyableCost(toSkip))
+	player.ghostify.endlessMirrors.refraction.rebuyable += toSkip+1
 }
 
 function getGhostPowerEff() {
@@ -2739,7 +2789,7 @@ function hadronize(force=false) {
 		tiers: hasResearch(2) ? player.ghostify.challenges.tiers : [0,0,0,0],
 	}
 	player.ghostify.endlessMirrors = {
-		amount: 0,
+		amount: hasResearch(5) ? 25 : 0,
 		lightEnergy: new Decimal(0),
 		refraction: {
 			energy: new Decimal(0),
@@ -3076,7 +3126,7 @@ function hadronizeTick(diff) {
 //Bonds
 
 var bondTab = "normBonds"
-var bondUpgCosts = [null, 1e3, 1.5e3, 2.5e3, 5e3, 7.5e3, 1.2e4, 2e4, 3.2e4, 4e4, 7.5e4, 1.44e7, 2.67e8, 4.096e9, 3.2e10, 7.5e11, 5e4, 8e4, 1e13, 3e5, 3.2e5, 1e15, 1.5e11, 2.7e13]
+var bondUpgCosts = [null, 1e3, 1.5e3, 2.5e3, 5e3, 7.5e3, 1.2e4, 2e4, 3.2e4, 4e4, 7.5e4, 1.44e7, 2.67e8, 4.096e9, 3.2e10, 7.5e11, 5e4, 8e4, 1e13, 3e5, 3.2e5, 1e15, 1.5e11, 2.7e13, 9e15]
 
 function showBondTab(name) {
 	bondTab = name
@@ -3164,7 +3214,7 @@ function buyBondB(x) {
 
 //Hadronic Researches
 
-var researchReqs = [null, 2, 5, 7, 9]
+var researchReqs = [null, 2, 5, 7, 9, 13]
 
 function getResearchPoints() {
 	if (player.hadronize === undefined) return 0

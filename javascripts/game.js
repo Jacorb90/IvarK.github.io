@@ -7797,6 +7797,9 @@ function updatePerSec() {
 		if (isAutoGhostActive(16)) maxNeutrinoMult()
 		if (isAutoGhostActive(17)) maxGHPMult()
 		if (isAutoGhostActive(18)) lightEmpowerment(true)
+		if (isAutoGhostActive(19)) maxEndlessMirror()
+		if (isAutoGhostActive(20)) maxRefractionRebuyable()
+	
         if (currentAnnihilationTier()==0) if (isAutoGhostActive(8)) buyMaxQuantumFood()
         if (isAutoGhostActive(7)) maxQuarkMult()
         var chall=getCurrentQCData()

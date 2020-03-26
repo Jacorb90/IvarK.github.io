@@ -211,6 +211,7 @@
 							<tr>
 								<td><button id="bondupg22" class="gluonupgrade hadron" onclick="buyBondUpg(22)" style="font-size:10px;">While Annihilated, Space Shards boost Exotic Matter gain (while in Annihilation Tier I).<br>Cost: <span id="bondupgcost22"></span> Bond Power<div id="bondupgbg22" class="hadron bg"></div></button></td>
 								<td><button id="bondupg23" class="gluonupgrade hadron" onclick="buyBondUpg(23)" style="font-size:9px;">You always gain both Dark Matter & Ghostly Photons at the same time, and while not Big Ripped, you gain more of them.<br>Cost: <span id="bondupgcost23"></span> Bond Power<div id="bondupgbg23" class="hadron bg"></div></button></td>
+								<td><button id="bondupg24" class="gluonupgrade hadron" onclick="buyBondUpg(24)">You can buy max Light Empowerments (finally!).<br>Cost: <span id="bondupgcost24"></span> Bond Power<div id="bondupgbg24" class="hadron bg"></div></button></td>
 							</tr>
 						</table>
 					</div>
@@ -230,6 +231,9 @@
 							</td>
 							<td>
 								<div id="research4" class="achievement achievementlocked" ach-tooltip="Start with 3 Light Empowerments, keep all Darkness Upgrades, unlock a new Automator Ghost, and gain Darkness Generators automatically.">9 Research Points</div>
+							</td>
+							<td>
+								<div id="research5" class="achievement achievementlocked" ach-tooltip="Start with 25 Endless Mirrors, and unlock two new Automator Ghosts.">13 Research Points</div>
 							</td>
 						</tr>
 					</table>
@@ -5592,6 +5596,18 @@
 							<b>Auto-Light Empowerment Ghost (No Ghostify Reset)</b><br>
 							Power consumption: 120<br>
 							Is active: <input id="isAutoGhostOn18" type="checkbox" onchange="toggleAutoGhost(18)"></input>
+						</div></td>
+					</tr>
+					<tr>
+						<td id="autoGhost19"><div class="autoBuyerDiv" style="display:block">
+							<b>Auto-Endless Mirror Ghost</b><br>
+							Power consumption: 90<br>
+							Is active: <input id="isAutoGhostOn19" type="checkbox" onchange="toggleAutoGhost(19)"></input>
+						</div></td>
+						<td id="autoGhost20"><div class="autoBuyerDiv" style="display:block">
+							<b>Auto-Refraction Rebuyable Upgrade Ghost</b><br>
+							Power consumption: 110<br>
+							Is active: <input id="isAutoGhostOn20" type="checkbox" onchange="toggleAutoGhost(20)"></input>
 						</div></td>
 					</tr>
 				</table>

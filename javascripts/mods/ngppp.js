@@ -4489,13 +4489,14 @@ function setupAutomaticGhostsData() {
 	return data
 }
 
-var autoGhostRequirements=[2,4,4,4.5,5,5,6,6.5,7,7,7.5,8,40,75,200]
+var autoGhostRequirements=[2,4,4,4.5,5,5,6,6.5,7,7,7.5,8,40,75,200,300,400]
 var powerConsumed
-var powerConsumptions=[0,1,1,1,1,2,2,0.5,0.5,0.5,1,0.5,0.5,0.5,0.5,0.5,25,30,120]
+var powerConsumptions=[0,1,1,1,1,2,2,0.5,0.5,0.5,1,0.5,0.5,0.5,0.5,0.5,25,30,120,90,110]
 function isAutoGhostUnl(n) {
 	if (n<=15) return true
 	else if (n<=17) return hasResearch(3)
 	else if (n==18) return hasResearch(4)
+	else if (n<=20) return hasResearch(5)
 	else return false
 }
 
@@ -4725,8 +4726,17 @@ function getLightEmpowermentReq() {
 	return Math.floor(req)
 }
 
+function getLightEmpowermentBulk() {
+	let target = player.ghostify.ghostlyPhotons.enpowerments+1
+	if (target<5) target = Math.max(Math.min(Math.ceil((player.ghostify.ghostlyPhotons.lights[7]-1)/2.4+1),5),0)
+	if (target>=5) target = Math.max(Math.ceil(Math.sqrt(player.ghostify.ghostlyPhotons.lights[7]*13)-7),5)
+	let bulk = target - player.ghostify.ghostlyPhotons.enpowerments
+	return bulk
+}
+
 function lightEmpowerment(qm=false) {
 	if (!(player.ghostify.ghostlyPhotons.lights[7]>=getLightEmpowermentReq())) return
+	let bulk = hasBondUpg(24)?getLightEmpowermentBulk():1
 	let hads = (player.hadronize?player.hadronize.times:0)
 	if (!qm) if (player.ghostify.ghostlyPhotons.enpowerments<Math.max(3-hads, 0)) if (!confirm((currentAnnihilationTier()>0?"You will go quantum, but ":"You will become a ghost, but ") +"Ghostly Photons will be reset. You will gain 1 Light Empowerment from this. Are you sure you want to proceed?")) return
 	if (currentAnnihilationTier()==0 && !qm) ghostify(false, true)
@@ -4735,7 +4745,7 @@ function lightEmpowerment(qm=false) {
 	player.ghostify.ghostlyPhotons.darkMatter=new Decimal(0)
 	player.ghostify.ghostlyPhotons.ghostlyRays=new Decimal(0)
 	player.ghostify.ghostlyPhotons.lights=[0,0,0,0,0,0,0,0]
-	player.ghostify.ghostlyPhotons.enpowerments++
+	player.ghostify.ghostlyPhotons.enpowerments+=bulk
 	if (player.ghostify.ghostlyPhotons.enpowerments==3 && !qm) {
 		if (player.aarexModifications.ngp5V === undefined) {
 			if (confirm("You have reached the end of NG+++. Would you like to convert to a NG+5 save?")) {
