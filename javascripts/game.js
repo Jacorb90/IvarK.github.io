@@ -1694,10 +1694,11 @@ function updateDimensions() {
             document.getElementById("bestQuantum").textContent = "Your fastest quantum is in "+timeDisplay(tmp.qu.best)+"."
         }
 
-        if (tmp.ngp3 ? player.ghostify.times < 1 : true) document.getElementById("ghostifyStatistics").style.display = "none"
+        if (tmp.ngp3 ? !ghostified : true) document.getElementById("ghostifyStatistics").style.display = "none"
         else {
             document.getElementById("ghostifyStatistics").style.display = ""
             document.getElementById("ghostified").textContent = "You have became a ghost and passed big ripped universes "+getFullExpansion(player.ghostify.times)+" times."
+			document.getElementById("ghostifiedBank").textContent = hasResearch(12)?("You have "+getFullExpansion(player.ghostify.banked)+" banked ghostifies."):""
             document.getElementById("thisGhostify").textContent = "You have spent "+timeDisplay(player.ghostify.time)+" in this Ghostify."
             document.getElementById("bestGhostify").textContent = "Your fastest Ghostify is in "+timeDisplay(player.ghostify.best)+"."
         }
@@ -7802,6 +7803,14 @@ function updatePerSec() {
 		if (isAutoGhostActive(21)) maxAllGhostDims(true)
 		if (isAutoGhostActive(22)) spiritReset(true)
 		if (isAutoGhostActive(23)) buyBreakDilationUpg(0, true)
+		if (isAutoGhostActive(24)) for (i=0;i<2;i++) buyNucleon(["protons","neutrons"][i], true)
+		if (isAutoGhostActive(25)) sacrificeNucleons()
+		if (isAutoGhostActive(26)) {
+			let num = player.ghostify.automatorGhosts[26]["t"]?player.ghostify.automatorGhosts[26]["t"]:1
+			let hyperon = [null, 'lambda','sigma','xi','omega'][num]
+			if (player.ghostify.baryons.hyperons[hyperon] < getHyperonGain(true)) activateHyperon(hyperon, true)
+		}
+		if (isAutoGhostActive(27)) buyAnnihilationRebuyable(true)
 	
         if (currentAnnihilationTier()==0) if (isAutoGhostActive(8)) buyMaxQuantumFood()
         if (isAutoGhostActive(7)) maxQuarkMult()
@@ -7853,7 +7862,13 @@ function updatePerSec() {
 
 setInterval(function() {
 	updatePerSec()
-}, 1000)
+}, getUPSRate())
+
+function getUPSRate() {
+	let rate = 1000
+	if (hasBondUpg(28)) rate = 333
+	return rate
+}
 
 function fact(v) {
     let ret=1;

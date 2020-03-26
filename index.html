@@ -213,6 +213,9 @@
 								<td><button id="bondupg23" class="gluonupgrade hadron" onclick="buyBondUpg(23)" style="font-size:9px;">You always gain both Dark Matter & Ghostly Photons at the same time, and while not Big Ripped, you gain more of them.<br>Cost: <span id="bondupgcost23"></span> Bond Power<div id="bondupgbg23" class="hadron bg"></div></button></td>
 								<td><button id="bondupg24" class="gluonupgrade hadron" onclick="buyBondUpg(24)">You can buy max Light Empowerments (finally!).<br>Cost: <span id="bondupgcost24"></span> Bond Power<div id="bondupgbg24" class="hadron bg"></div></button></td>
 								<td><button id="bondupg25" class="gluonupgrade hadron" onclick="buyBondUpg(25)">Tickspeed boosts your Hadron gain.<br>Currently: <span id="bondupgeff25"></span>x<br>Cost: <span id="bondupgcost25"></span> Bond Power<div id="bondupgbg25" class="hadron bg"></div></button></td>
+								<td><button id="bondupg26" class="gluonupgrade hadron" onclick="buyBondUpg(26)">The Automator Charge formula is better.<br>Cost: <span id="bondupgcost26"></span> Bond Power<div id="bondupgbg26" class="hadron bg"></div></button></td>
+								<td><button id="bondupg27" class="gluonupgrade hadron" onclick="buyBondUpg(27)">Light Empowerments are 20% stronger for every Spirit (additive).<br>Cost: <span id="bondupgcost27"></span> Bond Power<div id="bondupgbg27" class="hadron bg"></div></button></td>
+								<td><button id="bondupg28" class="gluonupgrade hadron" onclick="buyBondUpg(28)">Automator Ghosts work 33.33% faster.<br>Cost: <span id="bondupgcost28"></span> Bond Power<div id="bondupgbg28" class="hadron bg"></div></button></td>
 							</tr>
 						</table>
 					</div>
@@ -236,13 +239,28 @@
 							<td>
 								<div id="research5" class="achievement achievementlocked" ach-tooltip="Start with 25 Endless Mirrors, and unlock two new Automator Ghosts.">13 Research Points</div>
 							</td>
-						</tr>
-						<tr>
 							<td>
 								<div id="research6" class="achievement achievementlocked" ach-tooltip="Start with 1 of each Ghost Dimension bought, and unlock two new Automator Ghosts.">15 Research Points</div>
 							</td>
+						</tr>
+						<tr>
 							<td>
-								<div id="research7" class="achievement achievementlocked" ach-tooltip="Keep all Break Dilation upgrades, Break Dilation starts active, and unlock one new Automator Ghost.">18 Research Points</div>
+								<div id="research7" class="achievement achievementlocked" ach-tooltip="Keep all Break Dilation upgrades, Break Dilation starts active, and unlock a new Automator Ghost.">18 Research Points</div>
+							</td>
+							<td>
+								<div id="research8" class="achievement achievementlocked" ach-tooltip="Unlock two new Automator Ghosts.">20 Research Points</div>
+							</td>
+							<td>
+								<div id="research9" class="achievement achievementlocked" ach-tooltip="Start with Hyperons unlocked, activating or deactivating a Hyperon does not cause a Ghostify reset, keep Supercharged Hyperons, and unlock a new Automator Ghost.">24 Research Points</div>
+							</td>
+							<td>
+								<div id="research10" class="achievement achievementlocked" ach-tooltip="Keep Annihilation Tier unlocks, keep Annihilation Upgrades, and unlock a new Automator Ghost.">32 Research Points</div>
+							</td>
+							<td>
+								<div id="research11" class="achievement achievementlocked" ach-tooltip="Cascading does not reset anything, and you gain 75% of Cascade gain every second.">80 Research Points</div>
+							</td>
+							<td>
+								<div id="research12" class="achievement achievementlocked" ach-tooltip="Gain 1% of GHP gain and 1% of Exotic Matter gain every second, and keep 5% of Ghostifies on Hadronize.">150 Research Points</div>
 							</td>
 						</tr>
 					</table>
@@ -2159,6 +2177,7 @@
 				<br>
 				<div id="ghostifyStatistics">
 					<div id="ghostified"></div>
+					<div id="ghostifiedBank"></div>
 					<div id="bestGhostify"></div>
 					<div id="thisGhostify"></div>
 					<br>
@@ -3120,10 +3139,10 @@
 								<div id="Meta-Bonds" class="achievement achievementlocked"></div>
 							</td>
 							<td>
-								<div id="ng5p53" class="achievement achievementlocked" ach-tooltip='???'></div>
+								<div id="Human to Ghost to Hadron?" class="achievement achievementlocked" ach-tooltip='Hadronize in under 30 seconds.'></div>
 							</td>
 							<td>
-								<div id="ng5p54" class="achievement achievementlocked" ach-tooltip='???'></div>
+								<div id="All your knowledge is mine!" class="achievement achievementlocked" ach-tooltip='Obtain all the Hadronic Researches. Reward: Gain ^0.5 of Ghostifies every second.'></div>
 							</td>
 							<td>
 								<div id="ng5p55" class="achievement achievementlocked" ach-tooltip='???'></div>
@@ -5634,6 +5653,29 @@
 							<b>Auto-Break Dilation Rebuyable Ghost</b><br>
 							Power consumption: 18<br>
 							Is active: <input id="isAutoGhostOn23" type="checkbox" onchange="toggleAutoGhost(23)"></input>
+						</div></td>
+						<td id="autoGhost24"><div class="autoBuyerDiv" style="display:block">
+							<b>Auto-Nucleon Ghost</b><br>
+							Power consumption: 40<br>
+							Is active: <input id="isAutoGhostOn24" type="checkbox" onchange="toggleAutoGhost(24)"></input>
+						</div></td>
+					</tr>
+					<tr>
+						<td id="autoGhost25"><div class="autoBuyerDiv" style="display:block">
+							<b>Auto-Nucleon Sacrifice Ghost</b><br>
+							Power consumption: 32<br>
+							Is active: <input id="isAutoGhostOn25" type="checkbox" onchange="toggleAutoGhost(25)"></input>
+						</div></td>
+						<td id="autoGhost26"><div class="autoBuyerDiv" style="display:block">
+							<b>Auto-Hyperon Ghost</b><br>
+							Hyperon #: <input id="autoGhost26t" onchange="changeAutoGhost('26t')"></input><br>
+							Power consumption: 60<br>
+							Is active: <input id="isAutoGhostOn26" type="checkbox" onchange="toggleAutoGhost(26)"></input>
+						</div></td>
+						<td id="autoGhost27"><div class="autoBuyerDiv" style="display:block">
+							<b>Auto-Annihilation Rebuyable Upgrade Ghost</b><br>
+							Power consumption: 90<br>
+							Is active: <input id="isAutoGhostOn27" type="checkbox" onchange="toggleAutoGhost(27)"></input>
 						</div></td>
 					</tr>
 				</table>

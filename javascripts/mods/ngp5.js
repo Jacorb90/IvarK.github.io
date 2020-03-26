@@ -115,6 +115,7 @@ function resetNGP5V() {
 			bondBought: [0,0,0,0,0,0,0,0],
 		},
 	}
+	player.ghostify.banked = 0
 }
 
 function updateNGP5V(active,diff) {
@@ -325,7 +326,7 @@ function updateNGP5V(active,diff) {
 		player.ghostify.annihilation.cascade.power = player.ghostify.annihilation.cascade.power.plus(getCascadePowerGain().times(diff/10))
 		if (!player.ghostify.baryons.hyperons.unl && player.ghostify.baryons.nucleons.sacrificed>=20) player.ghostify.baryons.hyperons.unl = true
 		if (menu == "creation") {
-			document.getElementById('hadronizebtn').style.display = player.ghostify.annihilation.exoticMatter.gte(Number.MAX_SAFE_INTEGER) ? "" : "none"
+			document.getElementById('hadronizebtn').style.display = getHadronGain().gte(1) ? "" : "none"
 			let flavor = "Hadronize your origins."
 			if (player.hadronize.times>0) flavor += "<br>Gain "+shortenDimensions(getHadronGain())+" Hadrons."
 			document.getElementById("hadronizebtnflavor").innerHTML = flavor
@@ -1101,7 +1102,7 @@ function spiritReset(bulk=false) {
 		player.ghostify.dimensions.spirits += 1
 	}
 	player.ghostify.dimensions = {
-		amount: [null,new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0)],
+		amount: hasResearch(6) ? [null,new Decimal(1),new Decimal(1),new Decimal(1),new Decimal(1),new Decimal(1),new Decimal(1),new Decimal(1),new Decimal(1)] : [null,new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0)],
 		bought: hasResearch(6) ? [null,1,1,1,1,1,1,1,1] : [null,0,0,0,0,0,0,0,0],
 		power: new Decimal(0),
 		spirits: player.ghostify.dimensions.spirits,
@@ -1293,15 +1294,15 @@ function getSacNucEff() {
 	return eff
 }
 
-function activateHyperon(type) {
+function activateHyperon(type, noTarget=false) {
 	if (currentAnnihilationTier()>0) return
 	startAmount = player.ghostify.baryons.hyperons[type]
-	if (getHyperonGain()<1) return
+	if (getHyperonGain(noTarget)<1) return
 	hyperonsList = ['lambda','sigma','xi','omega']
 	for (i=0;i<4;i++) if (player.ghostify.baryons.hyperons[hyperonsList[i]]>0) player.ghostify.baryons.hyperons[hyperonsList[i]] = 0
-	if (startAmount==0) player.ghostify.baryons.hyperons[type] = Math.max(player.ghostify.baryons.hyperons[type],getHyperonGain())
+	if (startAmount==0) player.ghostify.baryons.hyperons[type] = Math.max(player.ghostify.baryons.hyperons[type],getHyperonGain(noTarget))
 	player.ghostify.baryons.nucleons.sacrificed = 0
-	ghostifyReset(false,0,0,true)
+	if (!hasResearch(9)) ghostifyReset(false,0,0,true)
 }
 
 function getHyperonGain(noTarget=false) {
@@ -1476,6 +1477,8 @@ function updateNGP5VAchs() {
 	// ng5p48: In game.js (approx line 7583)
 	// ng5p51: In hadronize()
 	if (player.hadronize.bondPower.gte(Number.MAX_SAFE_INTEGER) && !player.achievements.includes("ng5p52")) giveAchievement("Meta-Bonds")
+	// ng5p53: In hadronize()
+	if (hasResearch(12) && !player.achievements.includes("ng5p54")) giveAchievement("All your knowledge is mine!")
 }
 
 function setNGP5VAchTooltips() {
@@ -1873,11 +1876,17 @@ function getAnnihilationRebuyableEff() {
 	return Math.pow(Math.log10(n+1)+1, 0.167)-1
 }
 
-function buyAnnihilationRebuyable() {
+function buyAnnihilationRebuyable(max=false) {
 	if (currentAnnihilationTier()==0) return 
 	if (player.eternityPoints.lt(getAnnihilationRebuyableCost())) return
+	let bulk = 1
+	if (max) {
+		let target = Math.floor(Math.sqrt(player.eternityPoints.div(Decimal.pow(10, 1e10)).log2()/1e10)+1)
+		bulk = target - player.ghostify.annihilation.rebuyable
+		if (bulk<1) return
+	}
 	player.eternityPoints = player.eternityPoints.minus(getAnnihilationRebuyableCost())
-	player.ghostify.annihilation.rebuyable += 1
+	player.ghostify.annihilation.rebuyable += bulk
 }
 
 function buyMaxAnnihilationUpgs() {
@@ -2089,33 +2098,35 @@ function getCascadeCost() {
 function cascadeAntiBaryons() {
 	if (player.aarexModifications.ngp5V===undefined) return
 	if (getEachAntiBaryons()<getCascadeCost()) return
-	if (player.ghostify.annihilation.cascade.times<3) if (!confirm("This will reset your Exotic Matter, Anti-Baryons, and Annihilation Upgrades. This will also perform a Light Empowerment reset and exit Annihilation if active. Are you sure you want to do this?")) return
+	if (player.ghostify.annihilation.cascade.times<3&&!hasResearch(11)) if (!confirm("This will reset your Exotic Matter, Anti-Baryons, and Annihilation Upgrades. This will also perform a Light Empowerment reset and exit Annihilation if active. Are you sure you want to do this?")) return
 	let gain = getEachAntiBaryons()*4
-	updateAnnihilationStorage()
-	ghostify(false, true)
-	player.ghostify.annihilation.exoticMatter = new Decimal(0)
-	player.ghostify.annihilation.antibaryons = {
-		positrons: 0,
-		antiprotons: 0,
-		antineutrons: 0,
-		antihyperons: 0,
-		total: 0,
+	if (!hasResearch(11)) {
+		updateAnnihilationStorage()
+		ghostify(false, true)
+		player.ghostify.annihilation.exoticMatter = new Decimal(0)
+		player.ghostify.annihilation.antibaryons = {
+			positrons: 0,
+			antiprotons: 0,
+			antineutrons: 0,
+			antihyperons: 0,
+			total: 0,
+		}
+		player.ghostify.annihilation.upgrades = []
+		player.ghostify.annihilation.active = false
+		player.ghostify.ghostlyPhotons.amount=new Decimal(0)
+		player.ghostify.ghostlyPhotons.darkMatter=new Decimal(0)
+		player.ghostify.ghostlyPhotons.ghostlyRays=new Decimal(0)
+		player.ghostify.ghostlyPhotons.lights=[0,0,0,0,0,0,0,0]
 	}
-	player.ghostify.annihilation.upgrades = []
-	player.ghostify.annihilation.active = false
-	player.ghostify.ghostlyPhotons.amount=new Decimal(0)
-	player.ghostify.ghostlyPhotons.darkMatter=new Decimal(0)
-	player.ghostify.ghostlyPhotons.ghostlyRays=new Decimal(0)
-	player.ghostify.ghostlyPhotons.lights=[0,0,0,0,0,0,0,0]
 	
 	player.ghostify.annihilation.cascade.times += 1
-	player.ghostify.annihilation.cascade.amount = Math.floor(player.ghostify.annihilation.cascade.amount+gain)
+	player.ghostify.annihilation.cascade.amount = nP(Decimal.floor(nA(player.ghostify.annihilation.cascade.amount, gain)))
 	showAnnihilationTab("cascade")
 }
 
 function updateCascade() {
-	document.getElementById("cascadedBaryons").textContent = getFullExpansion(player.ghostify.annihilation.cascade.amount)
-	document.getElementById("cascades").textContent = getFullExpansion(player.ghostify.annihilation.cascade.times)
+	document.getElementById("cascadedBaryons").textContent = getFullExpansion(nF(player.ghostify.annihilation.cascade.amount))
+	document.getElementById("cascades").textContent = getFullExpansion(Math.floor(player.ghostify.annihilation.cascade.times))
 	document.getElementById("cascadePower").textContent = shorten(player.ghostify.annihilation.cascade.power)
 	document.getElementById("cascadePowerEff").textContent = shorten(getCascadePowerEff())
 	document.getElementById("cascadePowerEff2").textContent = getFullExpansion(Math.round((getCascadePowerEff2()-1)*1e3)/10)
@@ -2229,6 +2240,7 @@ function hadronize(force=false) {
 		if (getHadronGain().lt(1)) return false
 		player.hadronize.times++
 		player.hadronize.best = Math.min(player.hadronize.time, player.hadronize.best)
+		if (player.hadronize.time<300) giveAchievement("Human to Ghost to Hadron?")
 		player.hadronize.time = 0
 		player.hadronize.hadrons = player.hadronize.hadrons.plus(getHadronGain())
 		giveAchievement("True Hadronization")
@@ -2771,7 +2783,8 @@ function hadronize(force=false) {
 				  endlessMirrors: player.ghostify.endlessMirrors,
 				  dimensions: player.ghostify.dimensions,
 				  baryons: player.ghostify.baryons,
-				  annihilation: player.ghostify.annihilation
+				  annihilation: player.ghostify.annihilation,
+				  banked: nM(player.ghostify.banked, 0.05),
         },
 		aarexModifications: player.aarexModifications,
 		replicantiBoosts: player.replicantiBoosts,
@@ -2799,7 +2812,7 @@ function hadronize(force=false) {
 		},
 	}
 	player.ghostify.dimensions = {
-		amount: [null,new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0)],
+		amount: hasResearch(6) ? [null,new Decimal(1),new Decimal(1),new Decimal(1),new Decimal(1),new Decimal(1),new Decimal(1),new Decimal(1),new Decimal(1)] : [null,new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0)],
 		bought: hasResearch(6) ? [null,1,1,1,1,1,1,1,1] : [null,0,0,0,0,0,0,0,0],
 		power: new Decimal(0),
 		spirits: 0,
@@ -2817,25 +2830,25 @@ function hadronize(force=false) {
 			sacrificed: 0,
 		},
 		hyperons: {
-			unl: false,
+			unl: hasResearch(9) ? true : false,
 			target: 0,
 			lambda: 0,
 			sigma: 0,
 			xi: 0,
 			omega: 0,
 			supercharge: {
-				hyperons: 0,
+				hyperons: hasResearch(9) ? player.ghostify.baryons.hyperons.supercharge.hyperons : 0,
 				active: false,
 			},
 		},
 	}
 	player.ghostify.annihilation = {
 		active: false,
-		tier: 1,
+		tier: hasResearch(10) ? player.ghostify.annihilation.tier : 1,
 		exoticMatter: new Decimal(0),
-		upgrades: [],
+		upgrades: hasResearch(10) ? player.ghostify.annihilation.upgrades : [],
 		rebuyable: 0,
-		maxTier: 1,
+		maxTier: hasResearch(10) ? player.ghostify.annihilation.maxTier : 1,
 		storage: {
 			lE: 0,
 			brBreak: false,
@@ -2869,7 +2882,7 @@ function hadronize(force=false) {
 			total: 0,
 		},
 		cascade: {
-			times: 0,
+			times: hasResearch(11) ? player.ghostify.annihilation.cascade.times : 0,
 			amount: 0,
 			power: new Decimal(0),
 		},
@@ -3123,12 +3136,22 @@ function hadronizeTick(diff) {
 	for (i=1;i<=7;i++) player.hadronize.bonds.amount[i-1] = player.hadronize.bonds.amount[i-1].add(player.hadronize.bonds.amount[i].times(getBondMult(i)).times(diff/10))
 	player.hadronize.bondPower = player.hadronize.bondPower.add(player.hadronize.bonds.amount[0].times(getBondMult(1)).times(diff/10))
 	if (hasResearch(4)) player.ghostify.darkness.generators = player.ghostify.darkness.generators.plus(getDarknessSacReward().times(diff/10))
+	if (hasResearch(11)) {
+		player.ghostify.annihilation.cascade.amount = nA(player.ghostify.annihilation.cascade.amount, getEachAntiBaryons()*3*diff/10)
+		player.ghostify.annihilation.cascade.times += diff/10*3/4
+	}
+	if (hasResearch(12)) {
+		player.ghostify.annihilation.exoticMatter = Decimal.add(player.ghostify.annihilation.exoticMatter, Decimal.mul(getExoticMatterGain(), diff/1000))
+		player.ghostify.ghostParticles = Decimal.add(player.ghostify.ghostParticles, Decimal.mul(getGHPGain(), diff/1000))
+		document.getElementById("GHPAmount").textContent = shortenDimensions(player.ghostify.ghostParticles)
+	}
+	if (player.achievements.includes("ng5p54")) player.ghostify.times = nA(player.ghostify.times, Decimal.mul(Decimal.sqrt(getGhostifiedGain()), diff/10))
 }
 
 //Bonds
 
 var bondTab = "normBonds"
-var bondUpgCosts = [null, 1e3, 1.5e3, 2.5e3, 5e3, 7.5e3, 1.2e4, 2e4, 3.2e4, 4e4, 7.5e4, 1.44e7, 2.67e8, 4.096e9, 3.2e10, 7.5e11, 5e4, 8e4, 1e13, 3e5, 3.2e5, 1e15, 1.5e11, 2.7e13, 9e15, 3.5e16]
+var bondUpgCosts = [null, 1e3, 1.5e3, 2.5e3, 5e3, 7.5e3, 1.2e4, 2e4, 3.2e4, 4e4, 7.5e4, 1.44e7, 2.67e8, 4.096e9, 3.2e10, 7.5e11, 5e4, 8e4, 1e13, 3e5, 3.2e5, 1e15, 1.5e11, 2.7e13, 9e15, 3.5e16, 5e17, 1e21, 5e22]
 
 function showBondTab(name) {
 	bondTab = name
@@ -3216,7 +3239,7 @@ function buyBondB(x) {
 
 //Hadronic Researches
 
-var researchReqs = [null, 2, 5, 7, 9, 13, 15]
+var researchReqs = [null, 2, 5, 7, 9, 13, 15, 18, 20, 24, 32, 80, 150]
 
 function getResearchPoints() {
 	if (player.hadronize === undefined) return 0

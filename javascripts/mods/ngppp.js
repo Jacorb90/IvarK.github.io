@@ -2365,8 +2365,9 @@ function updateQuantumWorth(mode) {
 	} else if (mode=="notation") return
 	if (mode != "notation") {
 		if (mode != "display") quantumWorth = tmp.qu.quarks.add(tmp.qu.usedQuarks.r).add(tmp.qu.usedQuarks.g).add(tmp.qu.usedQuarks.b).add(tmp.qu.gluons.rg).add(tmp.qu.gluons.gb).add(tmp.qu.gluons.br).round()
-		if (player.ghostify.times) {
+		if (player.ghostify.times||(player.hadronize?player.hadronize.times:false)) {
 			let mod = hasBondUpg(9) ? 1.6 : 1
+			if (hasBondUpg(26)) mod *= 1.6
 			var automaticCharge = mod*(Math.max(Math.log10(quantumWorth.add(1).log10()/150)/Math.log10(2),0)+Math.max(tmp.qu.bigRip.spaceShards.add(1).log10()/20-0.5,0))
 			player.ghostify.automatorGhosts.power = Math.max(automaticCharge, player.ghostify.automatorGhosts.power)
 			if (mode != "quick") {
@@ -4489,9 +4490,9 @@ function setupAutomaticGhostsData() {
 	return data
 }
 
-var autoGhostRequirements=[2,4,4,4.5,5,5,6,6.5,7,7,7.5,8,40,75,200,300,400,450,480,500]
+var autoGhostRequirements=[2,4,4,4.5,5,5,6,6.5,7,7,7.5,8,40,75,200,300,400,450,480,500,540,575,640,720]
 var powerConsumed
-var powerConsumptions=[0,1,1,1,1,2,2,0.5,0.5,0.5,1,0.5,0.5,0.5,0.5,0.5,25,30,120,90,110,60,32,18]
+var powerConsumptions=[0,1,1,1,1,2,2,0.5,0.5,0.5,1,0.5,0.5,0.5,0.5,0.5,25,30,120,90,110,60,32,18,40,32,60,90]
 function isAutoGhostUnl(n) {
 	if (n<=15) return true
 	else if (n<=17) return hasResearch(3)
@@ -4499,6 +4500,9 @@ function isAutoGhostUnl(n) {
 	else if (n<=20) return hasResearch(5)
 	else if (n<=22) return hasResearch(6)
 	else if (n==23) return hasResearch(7)
+	else if (n<=25) return hasResearch(8)
+	else if (n==26) return hasResearch(9)
+	else if (n==27) return hasResearch(10)
 	else return false
 }
 
@@ -4532,6 +4536,8 @@ function updateAutoGhosts(load) {
 		document.getElementById("autoGhost13t").value=player.ghostify.automatorGhosts[13].t
 		document.getElementById("autoGhost13u").value=player.ghostify.automatorGhosts[13].u
 		document.getElementById("autoGhost15a").value=formatValue("Scientific", player.ghostify.automatorGhosts[15].a, 2, 1)
+		document.getElementById("autoGhost26t").value=player.ghostify.automatorGhosts[26]["t"]?player.ghostify.automatorGhosts[26]["t"]:1
+		document.getElementById("hyperonTarget").textContent = getFullExpansion(player.ghostify.baryons.hyperons.target)
 	}
 	document.getElementById("consumedPower").textContent=powerConsumed.toFixed(1)
 	isAutoGhostsSafe=player.ghostify.automatorGhosts.power>=powerConsumed
@@ -4579,6 +4585,9 @@ function changeAutoGhost(o) {
 		let modes = ["ghp", "mult", "time"]
 		player.ghostify.automatorGhosts[15].mode = modes[(modes.indexOf(player.ghostify.automatorGhosts[15].mode)+1) % 3]
 		updateAutoGhosts()
+	} else if (o=="26t") {
+		var num=parseInt(document.getElementById("autoGhost26t").value)
+		if (!isNaN(num)&&num>0&&num<=4) player.ghostify.automatorGhosts[26]["t"]=num
 	}
 }
 
@@ -4783,6 +4792,7 @@ function getLightEmpowermentBoost() {
 	if (player.ghostify === undefined) return 0
 	if (hasAnnihilationUpg(9)) return 0
 	let boost = player.ghostify.ghostlyPhotons.enpowerments
+	boost *= hasBondUpg(27)?(player.ghostify.dimensions.spirits*0.2+1):1
 	return boost
 }
 
@@ -4820,6 +4830,8 @@ function getGhostifiedGain() {
 }
 
 function getGhostifies() {
+	if (!tmp.ngp3) return 0
 	let ghostifies = player.ghostify.times
+	if (hasResearch(12)) ghostifies = nA(ghostifies, player.ghostify.banked)
 	return nP(ghostifies)
 }

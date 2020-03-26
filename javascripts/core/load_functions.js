@@ -1364,6 +1364,8 @@ if (player.version < 5) {
 	  }
 	  if (player.hadronize.bonds.upgrades === undefined) player.hadronize.bonds.upgrades = []
 	  if (player.hadronize.bonds.bondBought === undefined) player.hadronize.bonds.bondBought = [0,0,0,0,0,0,0,0]
+	  if (player.ghostify.banked === undefined) player.ghostify.banked = 0
+	  player.ghostify.banked = nP(player.ghostify.banked)
   }
   if (player.aarexModifications.newGameMinusMinusVersion === undefined && !player.meta) {
       if (player.exdilation == undefined && player.version == 13) player.version = 12
