@@ -4303,7 +4303,7 @@ function updateGhostifyTabs() {
 		document.getElementById("dtGPH").textContent=shorten(player.dilation.dilatedTime)
 		document.getElementById("gphProduction").textContent=shorten(getGPHProduction())
 		document.getElementById("gphProduction").className=(tmp.qu.bigRip.active?"gph":"dm")+"Amount"
-		document.getElementById("gphProductionType").textContent=hasAnnihilationUpg(9)?"Ghostly Photons and Dark Matter":(tmp.qu.bigRip.active?"Ghostly Photons":"Dark Matter")
+		document.getElementById("gphProductionType").textContent=(hasAnnihilationUpg(9)||hasBondUpg(23))?"Ghostly Photons and Dark Matter":(tmp.qu.bigRip.active?"Ghostly Photons":"Dark Matter")
 		document.getElementById("gph").textContent=shortenMoney(gphData.amount)
 		document.getElementById("dm").textContent=shortenMoney(gphData.darkMatter)
 		document.getElementById("ghrProduction").textContent=shortenMoney(getGHRProduction())
@@ -4489,12 +4489,13 @@ function setupAutomaticGhostsData() {
 	return data
 }
 
-var autoGhostRequirements=[2,4,4,4.5,5,5,6,6.5,7,7,7.5,8,40,75]
+var autoGhostRequirements=[2,4,4,4.5,5,5,6,6.5,7,7,7.5,8,40,75,200]
 var powerConsumed
-var powerConsumptions=[0,1,1,1,1,2,2,0.5,0.5,0.5,1,0.5,0.5,0.5,0.5,0.5,25,30]
+var powerConsumptions=[0,1,1,1,1,2,2,0.5,0.5,0.5,1,0.5,0.5,0.5,0.5,0.5,25,30,120]
 function isAutoGhostUnl(n) {
 	if (n<=15) return true
 	else if (n<=17) return hasResearch(3)
+	else if (n==18) return hasResearch(4)
 	else return false
 }
 
@@ -4682,7 +4683,7 @@ function getGPHProduction() {
 	if (dt.gte(Decimal.pow(10,4000).pow(exp))) dt = dt.pow(0.3).times(Decimal.pow(Decimal.pow(10,4000).pow(exp),0.7))
 	if (dt.gte(Decimal.pow(10,5000).pow(exp))) dt = dt.pow(0.2).times(Decimal.pow(Decimal.pow(10,5000).pow(exp),0.8))
 	if (dt.gte(Decimal.pow(10,10000).pow(exp))) dt = dt.pow(0.1).times(Decimal.pow(Decimal.pow(10,10000).pow(exp),0.9))
-	if (tmp.qu.bigRip.active) var ret=dt.div(Decimal.pow("1e485",exp))
+	if (tmp.qu.bigRip.active||hasBondUpg(23)) var ret=dt.div(Decimal.pow("1e485",exp))
 	else var ret=dt.div(Decimal.pow("1e935",exp))
 	if (ret.gt(1)) ret=ret.pow(0.02*exp)
 	if (player.aarexModifications.ngp5V !== undefined) {
@@ -4724,17 +4725,18 @@ function getLightEmpowermentReq() {
 	return Math.floor(req)
 }
 
-function lightEmpowerment() {
+function lightEmpowerment(qm=false) {
 	if (!(player.ghostify.ghostlyPhotons.lights[7]>=getLightEmpowermentReq())) return
-	if (player.ghostify.ghostlyPhotons.enpowerments<3) if (!confirm((currentAnnihilationTier()>0?"You will go quantum, but ":"You will become a ghost, but ") +"Ghostly Photons will be reset. You will gain 1 Light Empowerment from this. Are you sure you want to proceed?")) return
-	if (currentAnnihilationTier()==0) ghostify(false, true)
-	else quantum(false, true, 0, false)
+	let hads = (player.hadronize?player.hadronize.times:0)
+	if (!qm) if (player.ghostify.ghostlyPhotons.enpowerments<Math.max(3-hads, 0)) if (!confirm((currentAnnihilationTier()>0?"You will go quantum, but ":"You will become a ghost, but ") +"Ghostly Photons will be reset. You will gain 1 Light Empowerment from this. Are you sure you want to proceed?")) return
+	if (currentAnnihilationTier()==0 && !qm) ghostify(false, true)
+	else if (!qm) quantum(false, true, 0, false)
 	player.ghostify.ghostlyPhotons.amount=new Decimal(0)
 	player.ghostify.ghostlyPhotons.darkMatter=new Decimal(0)
 	player.ghostify.ghostlyPhotons.ghostlyRays=new Decimal(0)
 	player.ghostify.ghostlyPhotons.lights=[0,0,0,0,0,0,0,0]
 	player.ghostify.ghostlyPhotons.enpowerments++
-	if (player.ghostify.ghostlyPhotons.enpowerments==3) {
+	if (player.ghostify.ghostlyPhotons.enpowerments==3 && !qm) {
 		if (player.aarexModifications.ngp5V === undefined) {
 			if (confirm("You have reached the end of NG+++. Would you like to convert to a NG+5 save?")) {
 				convertToNG5()

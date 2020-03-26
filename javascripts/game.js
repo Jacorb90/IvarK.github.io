@@ -7796,6 +7796,7 @@ function updatePerSec() {
         }
 		if (isAutoGhostActive(16)) maxNeutrinoMult()
 		if (isAutoGhostActive(17)) maxGHPMult()
+		if (isAutoGhostActive(18)) lightEmpowerment(true)
         if (currentAnnihilationTier()==0) if (isAutoGhostActive(8)) buyMaxQuantumFood()
         if (isAutoGhostActive(7)) maxQuarkMult()
         var chall=getCurrentQCData()
@@ -8086,7 +8087,7 @@ function gameLoop(diff) {
         if (player.ghostify.ghostlyPhotons.unl) {
             var data=player.ghostify.ghostlyPhotons
             data[tmp.qu.bigRip.active?"amount":"darkMatter"]=data[tmp.qu.bigRip.active?"amount":"darkMatter"].add(getGPHProduction().times(diff/10))
-			if (hasAnnihilationUpg(9)) data[tmp.qu.bigRip.active?"darkMatter":"amount"]=data[tmp.qu.bigRip.active?"darkMatter":"amount"].add(getGPHProduction().times(diff/10))
+			if (hasAnnihilationUpg(9)||hasBondUpg(23)) data[tmp.qu.bigRip.active?"darkMatter":"amount"]=data[tmp.qu.bigRip.active?"darkMatter":"amount"].add(getGPHProduction().times(diff/10))
             data.ghostlyRays=data.ghostlyRays.add(getGHRProduction().times(diff/10)).min(getGHRCap())
             for (var c=0;c<8;c++) if (data.ghostlyRays.gte(getLightThreshold(c))) data.lights[c]+=Math.floor(data.ghostlyRays.div(getLightThreshold(c)).log(tmp.lti[c])+1)
             data.maxRed = Math.max(data.lights[0], data.maxRed)

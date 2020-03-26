@@ -210,6 +210,7 @@
 							</tr>
 							<tr>
 								<td><button id="bondupg22" class="gluonupgrade hadron" onclick="buyBondUpg(22)" style="font-size:10px;">While Annihilated, Space Shards boost Exotic Matter gain (while in Annihilation Tier I).<br>Cost: <span id="bondupgcost22"></span> Bond Power<div id="bondupgbg22" class="hadron bg"></div></button></td>
+								<td><button id="bondupg23" class="gluonupgrade hadron" onclick="buyBondUpg(23)" style="font-size:9px;">You always gain both Dark Matter & Ghostly Photons at the same time, and while not Big Ripped, you gain more of them.<br>Cost: <span id="bondupgcost23"></span> Bond Power<div id="bondupgbg23" class="hadron bg"></div></button></td>
 							</tr>
 						</table>
 					</div>
@@ -222,10 +223,13 @@
 								<div id="research1" class="achievement achievementlocked" ach-tooltip="Keep the first row of Brave Milestones & all Automator Ghosts.">2 Research Points</div>
 							</td>
 							<td>
-								<div id="research2" class="achievement achievementlocked" ach-tooltip="Keep the second row of Brave Milestones & all Neutrino Boosts.">3 Research Points</div>
+								<div id="research2" class="achievement achievementlocked" ach-tooltip="Keep the second row of Brave Milestones, all Neutrino Boosts, & all Ghostly Challenge completions.">5 Research Points</div>
 							</td>
 							<td>
-								<div id="research3" class="achievement achievementlocked" ach-tooltip="Keep all Neutrino Upgrades, and unlock two new Automator Ghosts.">5 Research Points</div>
+								<div id="research3" class="achievement achievementlocked" ach-tooltip="Keep all Neutrino Upgrades, and unlock two new Automator Ghosts.">7 Research Points</div>
+							</td>
+							<td>
+								<div id="research4" class="achievement achievementlocked" ach-tooltip="Start with 3 Light Empowerments, keep all Darkness Upgrades, unlock a new Automator Ghost, and gain Darkness Generators automatically.">9 Research Points</div>
 							</td>
 						</tr>
 					</table>
@@ -5576,13 +5580,18 @@
 					<tr>
 						<td id="autoGhost16"><div class="autoBuyerDiv" style="display:block">
 							<b>Auto-Neutrino Multi Upgrade Ghost</b><br>
-							Power consumption: 2.5<br>
+							Power consumption: 25<br>
 							Is active: <input id="isAutoGhostOn16" type="checkbox" onchange="toggleAutoGhost(16)"></input>
 						</div></td>
 						<td id="autoGhost17"><div class="autoBuyerDiv" style="display:block">
 							<b>Auto-GHP Multi Upgrade Ghost</b><br>
-							Power consumption: 2.5<br>
+							Power consumption: 30<br>
 							Is active: <input id="isAutoGhostOn17" type="checkbox" onchange="toggleAutoGhost(17)"></input>
+						</div></td>
+						<td id="autoGhost18"><div class="autoBuyerDiv" style="display:block">
+							<b>Auto-Light Empowerment Ghost (No Ghostify Reset)</b><br>
+							Power consumption: 120<br>
+							Is active: <input id="isAutoGhostOn18" type="checkbox" onchange="toggleAutoGhost(18)"></input>
 						</div></td>
 					</tr>
 				</table>
