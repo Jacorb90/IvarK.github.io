@@ -4489,14 +4489,16 @@ function setupAutomaticGhostsData() {
 	return data
 }
 
-var autoGhostRequirements=[2,4,4,4.5,5,5,6,6.5,7,7,7.5,8,40,75,200,300,400]
+var autoGhostRequirements=[2,4,4,4.5,5,5,6,6.5,7,7,7.5,8,40,75,200,300,400,450,480,500]
 var powerConsumed
-var powerConsumptions=[0,1,1,1,1,2,2,0.5,0.5,0.5,1,0.5,0.5,0.5,0.5,0.5,25,30,120,90,110]
+var powerConsumptions=[0,1,1,1,1,2,2,0.5,0.5,0.5,1,0.5,0.5,0.5,0.5,0.5,25,30,120,90,110,60,32,18]
 function isAutoGhostUnl(n) {
 	if (n<=15) return true
 	else if (n<=17) return hasResearch(3)
 	else if (n==18) return hasResearch(4)
 	else if (n<=20) return hasResearch(5)
+	else if (n<=22) return hasResearch(6)
+	else if (n==23) return hasResearch(7)
 	else return false
 }
 

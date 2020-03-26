@@ -212,6 +212,7 @@
 								<td><button id="bondupg22" class="gluonupgrade hadron" onclick="buyBondUpg(22)" style="font-size:10px;">While Annihilated, Space Shards boost Exotic Matter gain (while in Annihilation Tier I).<br>Cost: <span id="bondupgcost22"></span> Bond Power<div id="bondupgbg22" class="hadron bg"></div></button></td>
 								<td><button id="bondupg23" class="gluonupgrade hadron" onclick="buyBondUpg(23)" style="font-size:9px;">You always gain both Dark Matter & Ghostly Photons at the same time, and while not Big Ripped, you gain more of them.<br>Cost: <span id="bondupgcost23"></span> Bond Power<div id="bondupgbg23" class="hadron bg"></div></button></td>
 								<td><button id="bondupg24" class="gluonupgrade hadron" onclick="buyBondUpg(24)">You can buy max Light Empowerments (finally!).<br>Cost: <span id="bondupgcost24"></span> Bond Power<div id="bondupgbg24" class="hadron bg"></div></button></td>
+								<td><button id="bondupg25" class="gluonupgrade hadron" onclick="buyBondUpg(25)">Tickspeed boosts your Hadron gain.<br>Currently: <span id="bondupgeff25"></span>x<br>Cost: <span id="bondupgcost25"></span> Bond Power<div id="bondupgbg25" class="hadron bg"></div></button></td>
 							</tr>
 						</table>
 					</div>
@@ -234,6 +235,14 @@
 							</td>
 							<td>
 								<div id="research5" class="achievement achievementlocked" ach-tooltip="Start with 25 Endless Mirrors, and unlock two new Automator Ghosts.">13 Research Points</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div id="research6" class="achievement achievementlocked" ach-tooltip="Start with 1 of each Ghost Dimension bought, and unlock two new Automator Ghosts.">15 Research Points</div>
+							</td>
+							<td>
+								<div id="research7" class="achievement achievementlocked" ach-tooltip="Keep all Break Dilation upgrades, Break Dilation starts active, and unlock one new Automator Ghost.">18 Research Points</div>
 							</td>
 						</tr>
 					</table>
@@ -5608,6 +5617,23 @@
 							<b>Auto-Refraction Rebuyable Upgrade Ghost</b><br>
 							Power consumption: 110<br>
 							Is active: <input id="isAutoGhostOn20" type="checkbox" onchange="toggleAutoGhost(20)"></input>
+						</div></td>
+						<td id="autoGhost21"><div class="autoBuyerDiv" style="display:block">
+							<b>Auto-Ghost Dimension Ghost</b><br>
+							Power consumption: 60<br>
+							Is active: <input id="isAutoGhostOn21" type="checkbox" onchange="toggleAutoGhost(21)"></input>
+						</div></td>
+					</tr>
+					<tr>
+						<td id="autoGhost22"><div class="autoBuyerDiv" style="display:block">
+							<b>Auto-Spirit Ghost</b><br>
+							Power consumption: 30<br>
+							Is active: <input id="isAutoGhostOn22" type="checkbox" onchange="toggleAutoGhost(22)"></input>
+						</div></td>
+						<td id="autoGhost23"><div class="autoBuyerDiv" style="display:block">
+							<b>Auto-Break Dilation Rebuyable Ghost</b><br>
+							Power consumption: 18<br>
+							Is active: <input id="isAutoGhostOn23" type="checkbox" onchange="toggleAutoGhost(23)"></input>
 						</div></td>
 					</tr>
 				</table>

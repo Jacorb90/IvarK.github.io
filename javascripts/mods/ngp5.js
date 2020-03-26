@@ -1072,8 +1072,9 @@ function buyGhostDim(d,bulk=false) {
 	player.ghostify.dimensions.amount[d] = player.ghostify.dimensions.amount[d].plus(inc)
 }
 
-function maxAllGhostDims() {
-	for (i=8;i>=1;i--) buyGhostDim(i,true)
+function maxAllGhostDims(rev=false) {
+	if (rev) for (i=1;i<=8;i++) buyGhostDim(i,true)
+	else for (i=8;i>=1;i--) buyGhostDim(i,true)
 }
 
 function getSpiritRequirement() {
@@ -1101,7 +1102,7 @@ function spiritReset(bulk=false) {
 	}
 	player.ghostify.dimensions = {
 		amount: [null,new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0)],
-		bought: [null,0,0,0,0,0,0,0,0],
+		bought: hasResearch(6) ? [null,1,1,1,1,1,1,1,1] : [null,0,0,0,0,0,0,0,0],
 		power: new Decimal(0),
 		spirits: player.ghostify.dimensions.spirits,
 	}
@@ -2218,14 +2219,14 @@ var hadronizeTab = "bonds"
 
 function getHadronGain() {
 	let em = player.ghostify.annihilation.exoticMatter
-	if (em.lt(Number.MAX_SAFE_INTEGER)) return new Decimal(0)
 	let gain = em.div(Number.MAX_SAFE_INTEGER).pow(0.15)
-	return gain.floor()
+	if (hasBondUpg(25)) gain = gain.times(Decimal.pow(10, Math.pow(Decimal.pow(Decimal.div(1e3, getTickspeed()).add(1), 1/1e21).log10(),0.2)))
+	return gain.floor().max(0)
 }
 
 function hadronize(force=false) {
 	if (!force) {
-		if (player.ghostify.annihilation.exoticMatter.lt(Number.MAX_SAFE_INTEGER) || getHadronGain().lt(1)) return false
+		if (getHadronGain().lt(1)) return false
 		player.hadronize.times++
 		player.hadronize.best = Math.min(player.hadronize.time, player.hadronize.best)
 		player.hadronize.time = 0
@@ -2799,13 +2800,13 @@ function hadronize(force=false) {
 	}
 	player.ghostify.dimensions = {
 		amount: [null,new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0)],
-		bought: [null,0,0,0,0,0,0,0,0],
+		bought: hasResearch(6) ? [null,1,1,1,1,1,1,1,1] : [null,0,0,0,0,0,0,0,0],
 		power: new Decimal(0),
 		spirits: 0,
 	}
 	player.dilation.br = {
-		"break": false,
-		upgrades: [],
+		"break": hasResearch(7) ? true : false,
+		upgrades: hasResearch(7) ? player.dilation.br.upgrades : [],
 		rebuyable: 0,
 		cherenkovRadiation: new Decimal(0),
 	}
@@ -3097,6 +3098,7 @@ function updateHadronize() {
 		document.getElementById("bondupgeff1").textContent = shortenDimensions(999*(hasBondUpg(11)?tmp.qu.bigRip.spaceShards.add(1).log(1.1)+1:1))
 		document.getElementById("bondupg4cap").textContent = shorten(Decimal.pow(Number.MAX_VALUE, hasBondUpg(14)?(Math.log2(player.ghostify.ghostlyPhotons.enpowerments+1)+1):1))
 		document.getElementById("bondupg16cap").textContent = shorten(hasBondUpg(18)?new Decimal("1e6400"):new Decimal("1e6250"))
+		document.getElementById("bondupgeff25").textContent = shorten(Decimal.pow(10, Math.pow(Decimal.pow(Decimal.div(1e3, getTickspeed()).add(1), 1/1e21).log10(),0.2)))
 	}
 	if (hadronizeTab == "research") {
 		document.getElementById("researchPnts").textContent = getFullExpansion(getResearchPoints())
@@ -3126,7 +3128,7 @@ function hadronizeTick(diff) {
 //Bonds
 
 var bondTab = "normBonds"
-var bondUpgCosts = [null, 1e3, 1.5e3, 2.5e3, 5e3, 7.5e3, 1.2e4, 2e4, 3.2e4, 4e4, 7.5e4, 1.44e7, 2.67e8, 4.096e9, 3.2e10, 7.5e11, 5e4, 8e4, 1e13, 3e5, 3.2e5, 1e15, 1.5e11, 2.7e13, 9e15]
+var bondUpgCosts = [null, 1e3, 1.5e3, 2.5e3, 5e3, 7.5e3, 1.2e4, 2e4, 3.2e4, 4e4, 7.5e4, 1.44e7, 2.67e8, 4.096e9, 3.2e10, 7.5e11, 5e4, 8e4, 1e13, 3e5, 3.2e5, 1e15, 1.5e11, 2.7e13, 9e15, 3.5e16]
 
 function showBondTab(name) {
 	bondTab = name
@@ -3214,7 +3216,7 @@ function buyBondB(x) {
 
 //Hadronic Researches
 
-var researchReqs = [null, 2, 5, 7, 9, 13]
+var researchReqs = [null, 2, 5, 7, 9, 13, 15]
 
 function getResearchPoints() {
 	if (player.hadronize === undefined) return 0

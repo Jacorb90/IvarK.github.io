@@ -7799,6 +7799,9 @@ function updatePerSec() {
 		if (isAutoGhostActive(18)) lightEmpowerment(true)
 		if (isAutoGhostActive(19)) maxEndlessMirror()
 		if (isAutoGhostActive(20)) maxRefractionRebuyable()
+		if (isAutoGhostActive(21)) maxAllGhostDims(true)
+		if (isAutoGhostActive(22)) spiritReset(true)
+		if (isAutoGhostActive(23)) buyBreakDilationUpg(0, true)
 	
         if (currentAnnihilationTier()==0) if (isAutoGhostActive(8)) buyMaxQuantumFood()
         if (isAutoGhostActive(7)) maxQuarkMult()
@@ -9458,6 +9461,10 @@ window.addEventListener('keydown', function(event) {
 		case 71: // G
 			if (player.achievements.includes("ng3p51")) ghostify()
 			else document.getElementById("secondSoftReset").onclick()
+		break;
+		
+		case 72: // H
+			if (player.hadronize) if (player.hadronize.times) hadronize()
 		break;
 
 		case 77: // M
