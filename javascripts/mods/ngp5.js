@@ -334,7 +334,12 @@ function updateNGP5V(active,diff) {
 			if (creationMenu == "hadron") updateHadronize()
 		}
 	}
-	if (player.hadronize !== undefined) hadronizeTick(diff)
+	if (player.hadronize !== undefined) {
+		let target = Math.floor((1+Math.sqrt(1-4*(-1*(player.ghostify.annihilation.exoticMatter.div(5e3).times(getCascadePowerEff()).plus(1).log10()/Math.log10(getABThresholdInc())))))/2)
+		let inc = target - player.ghostify.annihilation.antibaryons.total
+		nextAntiBaryon(inc)
+		hadronizeTick(diff)
+	}
 	let menus = ["origin","creation"]
 	for (i=0;i<menus.length;i++) updateMenu(menus[i])
 }
@@ -1479,6 +1484,7 @@ function updateNGP5VAchs() {
 	if (player.hadronize.bondPower.gte(Number.MAX_SAFE_INTEGER) && !player.achievements.includes("ng5p52")) giveAchievement("Meta-Bonds")
 	// ng5p53: In hadronize()
 	if (hasResearch(12) && !player.achievements.includes("ng5p54")) giveAchievement("All your knowledge is mine!")
+	if (player.dilation.tachyonParticles.gte(Number.MAX_VALUE)&&!player.dilation.br['break']&&currentAnnihilationTier()>0&&!player.achievements.includes("ng5p55")) giveAchievement("Broken Tachyons")
 }
 
 function setNGP5VAchTooltips() {
@@ -1496,6 +1502,7 @@ function setNGP5VAchTooltips() {
 	document.getElementById("So Close!").setAttribute("ach-tooltip", "Reach " +shorten(5e14) +" Exotic Matter.")
 	document.getElementById("Death on another plane of existence").setAttribute("ach-tooltip", "Reach "+shortenDimensions(Decimal.pow(10, 26.1e6))+" IP while dilated, big ripped, and while your timeline is Annihilated.")
 	document.getElementById("Meta-Bonds").setAttribute("ach-tooltip", "Reach "+shorten(Number.MAX_SAFE_INTEGER)+" Bond Power.")
+	document.getElementById("Broken Tachyons").setAttribute("ach-tooltip", "Reach "+shorten(Number.MAX_VALUE)+" Tachyon Particles while Annihilated without Break Dilation")
 }
 
 // Scaling Data
@@ -1525,6 +1532,7 @@ function updateScaleData() {
 
 function getExoticMatterGain() {
 	if (player.aarexModifications.ngp5V === undefined) return new Decimal(0)
+	if (currentAnnihilationTier()==0) return new Decimal(0)
 	let gain = Decimal.pow(player.money.plus(1).log10(), 0.9).times(Decimal.pow(1e6, Math.pow(player.ghostify.annihilation.tier-1, 0.7))).div(5e12)
 	if (hasAnnihilationUpg(7)) gain = gain.times(getAnnihilationUpgEff(7))
 	if (hasAnnihilationUpg(9)) gain = gain.times(getAnnihilationUpgEff(9))
@@ -1976,9 +1984,6 @@ function updateAntiBaryons() {
 	document.getElementById("ABGain").textContent = getFullExpansion(getABGain())
 	document.getElementById("nextAB").textContent = getNextAB(true)
 	document.getElementById("nextABThreshold").textContent = shorten(nextABThreshold())
-	let target = Math.floor((1+Math.sqrt(1-4*(-1*(player.ghostify.annihilation.exoticMatter.div(5e3).times(getCascadePowerEff()).plus(1).log10()/Math.log10(getABThresholdInc())))))/2)
-	let inc = target - player.ghostify.annihilation.antibaryons.total
-	nextAntiBaryon(inc)
 	document.getElementById("positrons").textContent = getFullExpansion(player.ghostify.annihilation.antibaryons.positrons)
 	document.getElementById("antiprotons").textContent = getFullExpansion(player.ghostify.annihilation.antibaryons.antiprotons)
 	document.getElementById("antineutrons").textContent = getFullExpansion(player.ghostify.annihilation.antibaryons.antineutrons)
@@ -2784,7 +2789,7 @@ function hadronize(force=false) {
 				  dimensions: player.ghostify.dimensions,
 				  baryons: player.ghostify.baryons,
 				  annihilation: player.ghostify.annihilation,
-				  banked: nM(player.ghostify.banked, 0.05),
+				  banked: nA(player.ghostify.banked, nM(player.ghostify.times, 0.05)),
         },
 		aarexModifications: player.aarexModifications,
 		replicantiBoosts: player.replicantiBoosts,
@@ -3009,7 +3014,7 @@ function hadronize(force=false) {
 	showQuantumTab("uquarks")
 	var permUnlocks=[7,9,10,10,11,11,12,12]
 	for (var i=1;i<9;i++) {
-		var num=0
+		var num=bm>=permUnlocks[i-1]?10:0
 		eds[i]={workers:new Decimal(num),progress:new Decimal(0),perm:num}
 		if (num>9) tmp.qu.replicants.limitDim=i
 	}
@@ -3069,6 +3074,7 @@ function hadronize(force=false) {
 	for (i=1;i<=4;i++) updateGC(i)
 		
 	//Extra updating just to be safe :)
+	updateOnAnnihilation()
 	updateTemp()
 	updateGPHUnlocks()
 	updateGhostifyTabs()
@@ -3080,6 +3086,7 @@ function hadronize(force=false) {
 	updateAutoGhosts(true)
 	
 	//Tabs
+	if (player.hadronize.times>1) return
 	gotoMenu("origin")
 	showTab("dimensions")
 	showDimTab("antimatterdimensions")
@@ -3151,7 +3158,7 @@ function hadronizeTick(diff) {
 //Bonds
 
 var bondTab = "normBonds"
-var bondUpgCosts = [null, 1e3, 1.5e3, 2.5e3, 5e3, 7.5e3, 1.2e4, 2e4, 3.2e4, 4e4, 7.5e4, 1.44e7, 2.67e8, 4.096e9, 3.2e10, 7.5e11, 5e4, 8e4, 1e13, 3e5, 3.2e5, 1e15, 1.5e11, 2.7e13, 9e15, 3.5e16, 5e17, 1e21, 5e22]
+var bondUpgCosts = [null, 1e3, 1.5e3, 2.5e3, 5e3, 7.5e3, 1.2e4, 2e4, 3.2e4, 4e4, 7.5e4, 1.44e7, 2.67e8, 4.096e9, 3.2e10, 7.5e11, 5e4, 8e4, 1e13, 3e5, 3.2e5, 1e15, 1.5e11, 2.7e13, 9e15, 3.5e16, 5e17, 1e21, 5e22, 1e31]
 
 function showBondTab(name) {
 	bondTab = name
@@ -3216,12 +3223,12 @@ function hasBondUpg(x) {
 }
 
 function getBondBCostInc(x) {
-	let incs = [null, 2, 10, 1e4, 1e6, 1e10, 1e25, 1e50, 1e75]
+	let incs = [null, 2, 10, 1e4, 1e6, 1e10, 1e15, 1e25, 1e40]
 	return incs[x]
 }
 
 function getBondBCostStart(x) {
-	let starts = [null, 1e3, 1e6, 1e20, 1e30, 1e100, 1e150, 1e250, new Decimal("1e400")]
+	let starts = [null, 1e3, 1e6, 1e20, 1e30, 1e40, 1e50, 1e75, 1e100]
 	return starts[x]
 }
 

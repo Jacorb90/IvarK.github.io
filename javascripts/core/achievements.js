@@ -209,7 +209,7 @@ const allAchievements = {
   ng5p52 : "Meta-Bonds",
   ng5p53 : "Human to Ghost to Hadron?",
   ng5p54 : "All your knowledge is mine!",
-  ng5p55 : "ng5p55",
+  ng5p55 : "Broken Tachyons",
   ng5p56 : "ng5p56",
   ng5p57 : "ng5p57",
   ng5p58 : "ng5p58",

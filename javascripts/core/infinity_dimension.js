@@ -207,6 +207,7 @@ function getInfinityPowerEffect() {
 
 function getInfPowSS() {
 	let ss=1e16
+	if (hasBondUpg(29)) ss=1e20
 	if (player.aarexModifications.ngp5V!==undefined) if (currentAnnihilationTier()==0) if (player.ghostify.annihilation.upgrades.includes(22)) ss *= getAnnihilationUpgEff(22)/100+1
 	if (tmp.ngp3) ss *= getNanofieldRewardEffect("7t")+1
 	return ss

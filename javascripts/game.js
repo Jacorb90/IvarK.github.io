@@ -7860,14 +7860,22 @@ function updatePerSec() {
     }
 }
 
-setInterval(function() {
-	updatePerSec()
-}, getUPSRate())
+var upsr = 1000
 
-function getUPSRate() {
+var interval = setInterval(function() {
+	updatePerSec()
+	updateUPSRate()
+}, upsr)
+
+function updateUPSRate() {
 	let rate = 1000
 	if (hasBondUpg(28)) rate = 333
-	return rate
+	upsr = rate
+	clearInterval(interval)
+	interval = setInterval(function() {
+		updatePerSec()
+		updateUPSRate()
+	}, upsr)
 }
 
 function fact(v) {
