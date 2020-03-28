@@ -1896,6 +1896,7 @@ function getEDMultiplier(dim) {
 		if (player.ghostify.darkness.upgrades[1][3] === true) ret = ret.times(getDarknessUpgReward(1,3)['reward'])
 		if (player.ghostify.darkness.upgrades[3][2] === true) ret = ret.times(getDarknessUpgReward(3,2)['reward'])
 		if (player.ghostify.darkness.upgrades[5][0] === true) ret = ret.times(getDarknessUpgReward(5,0)['reward'])
+		if (hasBondUpg(30) && currentAnnihilationTier()==0 && !tmp.qu.bigRip.active) ret = ret.times(player.ghostify.dimensions.power.max(1).pow(0.6))
 		if (inGC(2)) ret = ret.pow(getGCNerf(2))
 	}
 	if (player.dilation.active || player.galacticSacrifice) ret = Decimal.pow(10, Math.pow(ret.log10(), dilationPowerStrength()))

@@ -771,6 +771,7 @@ function getFTUSS() {
 	if (player.masterystudies !== undefined) if (player.quantum.bigRip.active) {
 		ss = 1.3e6
 		if (player.quantum.breakEternity.upgrades.includes(13)) ss += 4e5
+		if (player.achievements.includes("ng5p56")) ss *= 1.02
 	}
 	if (currentAnnihilationTier()>0) ss /= 12*currentAnnihilationTier()
 	return ss
@@ -989,7 +990,7 @@ function getGhostPowerEff2() {
 function getGhostPowerEff3() {
 	let power = player.ghostify.dimensions.power
 	power = power.div(getHyperonNerf('xi'))
-	if (power.gte(Number.MAX_VALUE)) power = Decimal.pow(power, 0.2).times(Decimal.pow(Number.MAX_VALUE, 0.8))
+	if (power.gte(Number.MAX_VALUE) && !hasBondUpg(31)) power = Decimal.pow(power, 0.2).times(Decimal.pow(Number.MAX_VALUE, 0.8))
 	let exp = 0.05
 	if (hasNU(19)) exp += 0.01
 	if (hasNU(21)) exp += 0.01
@@ -1484,7 +1485,10 @@ function updateNGP5VAchs() {
 	if (player.hadronize.bondPower.gte(Number.MAX_SAFE_INTEGER) && !player.achievements.includes("ng5p52")) giveAchievement("Meta-Bonds")
 	// ng5p53: In hadronize()
 	if (hasResearch(12) && !player.achievements.includes("ng5p54")) giveAchievement("All your knowledge is mine!")
-	if (player.dilation.tachyonParticles.gte(Number.MAX_VALUE)&&!player.dilation.br['break']&&currentAnnihilationTier()>0&&!player.achievements.includes("ng5p55")) giveAchievement("Broken Tachyons")
+	if (player.dilation.tachyonParticles.gte(1e265)&&!player.dilation.br['break']&&currentAnnihilationTier()>0&&!player.achievements.includes("ng5p55")) giveAchievement("Broken Tachyons")
+	if (player.totalTickGained>=325e6 && currentAnnihilationTier()>0 && !player.achievements.includes("ng5p56")) giveAchievement("Ticks Ticks Ticks Ticks")
+	if (player.ghostify.dimensions.power.gte(1e240) && player.ghostify.dimensions.spirits==0 && !player.achievements.includes("ng5p57")) giveAchievement("The most powerful ghosts")
+	checkMultiversalHarmony() // ng5p58
 }
 
 function setNGP5VAchTooltips() {
@@ -1502,7 +1506,8 @@ function setNGP5VAchTooltips() {
 	document.getElementById("So Close!").setAttribute("ach-tooltip", "Reach " +shorten(5e14) +" Exotic Matter.")
 	document.getElementById("Death on another plane of existence").setAttribute("ach-tooltip", "Reach "+shortenDimensions(Decimal.pow(10, 26.1e6))+" IP while dilated, big ripped, and while your timeline is Annihilated.")
 	document.getElementById("Meta-Bonds").setAttribute("ach-tooltip", "Reach "+shorten(Number.MAX_SAFE_INTEGER)+" Bond Power.")
-	document.getElementById("Broken Tachyons").setAttribute("ach-tooltip", "Reach "+shorten(Number.MAX_VALUE)+" Tachyon Particles while Annihilated without Break Dilation")
+	document.getElementById("Broken Tachyons").setAttribute("ach-tooltip", "Reach "+shorten(1e265)+" Tachyon Particles while Annihilated without Break Dilation")
+	document.getElementById("The most powerful ghosts").setAttribute("ach-tooltip", "Reach "+shorten(1e240)+" Ghost Power without any Spirits.")
 }
 
 // Scaling Data
@@ -1514,8 +1519,9 @@ function updateScaleData() {
 	document.getElementById('dbdhs').textContent = getFullExpansion(Math.floor(getHypersonicStart()))
 	document.getElementById('dbdhp').textContent = getFullExpansion(Math.round(getHypersonicMultIncrease())/100)
 	document.getElementById("gdds").textContent = getFullExpansion(Math.floor(getGalaxyCostScalingStart(player.galaxies, (player.galaxies >= 302500 / (tmp.be ? 55 : 1) ? Math.pow(2, (player.galaxies + 1 - (302500 / (tmp.be ? 55 : 1) + getGhostlyGalaxyPush(tmp.be))) * (tmp.be ? 55 : 1) / 1e4 / (player.ghostify.ghostlyPhotons.enpowerments>2&&tmp.be?tmp.le[8]&&!inGC(3):1)) : 1))))
-	document.getElementById('gddp').textContent = getFullExpansion(Math.round((getDistantGalaxyScalingSpeed())*10000)/100)
-	document.getElementById('gdrd').style.display = (player.galaxies >= getRemoteGalaxyScalingStart(player.galaxies) || quantumed || ghostified) ? "" : "none"
+	let dgss = getDistantGalaxyScalingSpeed()
+	document.getElementById('gddp').textContent = dgss>=0.0006?getFullExpansion(Math.round(dgss*10000)/100):("1/"+getFullExpansion(Math.round(1/dgss/10)/10))
+	document.getElementById('gdrd').style.display = (getRemoteGalaxyScalingPower()*((!tmp.be && !hasNU(6) || inGC(4)) ? 1 : 0)>0 && (player.galaxies >= getRemoteGalaxyScalingStart(player.galaxies) || quantumed || ghostified)) ? "" : "none"
 	document.getElementById('gdrs').textContent = getFullExpansion(Math.floor(getRemoteGalaxyScalingStart(player.galaxies)))
 	document.getElementById('gdrp').textContent = getFullExpansion(Math.round(getRemoteGalaxyScalingPower()*((!tmp.be && !hasNU(6) || inGC(4)) ? 1 : 0)*10000)/100)
 	document.getElementById('gddmd').style.display = (player.galaxies > 1399 || quantumed || ghostified) ? "" : "none"
@@ -3158,7 +3164,7 @@ function hadronizeTick(diff) {
 //Bonds
 
 var bondTab = "normBonds"
-var bondUpgCosts = [null, 1e3, 1.5e3, 2.5e3, 5e3, 7.5e3, 1.2e4, 2e4, 3.2e4, 4e4, 7.5e4, 1.44e7, 2.67e8, 4.096e9, 3.2e10, 7.5e11, 5e4, 8e4, 1e13, 3e5, 3.2e5, 1e15, 1.5e11, 2.7e13, 9e15, 3.5e16, 5e17, 1e21, 5e22, 1e31]
+var bondUpgCosts = [null, 1e3, 1.5e3, 2.5e3, 5e3, 7.5e3, 1.2e4, 2e4, 3.2e4, 4e4, 7.5e4, 1.44e7, 2.67e8, 4.096e9, 3.2e10, 7.5e11, 5e4, 8e4, 1e13, 3e5, 3.2e5, 1e15, 1.5e11, 2.7e13, 9e15, 3.5e16, 5e17, 1e21, 5e22, 1e31, 1e32, 1e33]
 
 function showBondTab(name) {
 	bondTab = name
@@ -3178,6 +3184,7 @@ function getMPB(x) {
 
 function getBondMult(x) {
 	let mult = Decimal.pow(getMPB(x), player.hadronize.bonds.bought[x-1]+player.hadronize.bonds.bondBought[x-1])
+	if (player.achievements.includes("ng5p58")) mult = mult.times(Decimal.pow(1.01, Math.pow(player.galaxies, 1/3.6)))
 	return mult
 }
 
@@ -3259,4 +3266,15 @@ function getResearchPoints() {
 
 function hasResearch(n) {
 	return getResearchPoints()>=researchReqs[n]
+}
+
+// Achievement Reward :)
+
+function checkMultiversalHarmony() {
+	if (player.achievements.includes("ng5p58")) return
+	if (currentAnnihilationTier()==0) return
+	if (player.hadronize!=undefined) {
+		if (player.galaxies<700||player.replicanti.galaxies+extraReplGalaxies<700||player.dilation.freeGalaxies<700) return
+	} else return
+	giveAchievement("Multiversal Harmony")
 }

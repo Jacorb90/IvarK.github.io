@@ -74,6 +74,7 @@ function getMetaDimensionMultiplier (tier) {
   multiplier = multiplier.times(getQCReward(6))
   if (player.aarexModifications.ngp5V !== undefined) {
 	  if (player.ghostify.darkness.upgrades[3][3] === true) multiplier = multiplier.times(getDarknessUpgReward(3,3)['reward'])
+	  if (hasBondUpg(30) && currentAnnihilationTier()==0 && !tmp.qu.bigRip.active) multiplier = multiplier.times(tmp.qu.replicants.amount.max(1).pow(25.6))
 	  if (inGC(1)) multiplier = multiplier.pow(getGCNerf(1))
   }
   multiplier = dilates(multiplier.max(1), "meta")
