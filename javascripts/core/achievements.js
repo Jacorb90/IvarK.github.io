@@ -213,6 +213,14 @@ const allAchievements = {
   ng5p56 : "Ticks Ticks Ticks Ticks",
   ng5p57 : "The most powerful ghosts",
   ng5p58 : "Multiversal Harmony",
+  ng5p61 : "ng5p61",
+  ng5p62 : "ng5p62",
+  ng5p63 : "ng5p63",
+  ng5p64 : "ng5p64",
+  ng5p65 : "ng5p65",
+  ng5p66 : "ng5p66",
+  ng5p67 : "ng5p67",
+  ng5p68 : "ng5p68",
   s11 : "The first one's always free",
   s12 : "Just in case",
   s13 : "It pays to have respect",
@@ -354,7 +362,7 @@ function giveAchievement(name) {
 function updateAchievements() {
 	var amount = 0
 	var rowsShown = 0
-	for (var i=1; i<28; i++) {
+	for (var i=1; i<29; i++) {
 		var shown=true
 		var rowid=i
 		if (i>22) {

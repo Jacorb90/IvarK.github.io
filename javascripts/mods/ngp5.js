@@ -3132,6 +3132,11 @@ function updateHadronize() {
 			document.getElementById("research"+i).className = "achievement achievement"+(hasResearch(i)?"unlocked":"locked")
 		}
 	}
+	if (hadronizeTab == "colliders") {
+		document.getElementById("bondPower2").textContent = shorten(player.hadronize.bondPower)
+		document.getElementById("colliderlocked").textContent = "Reach "+shortenCosts(1e36)+" Bond Power to unlock Colliders."
+		document.getElementById("colliderdiv").style.display = "none"
+	}
 }
 
 function showHadronizeTab(name) {
