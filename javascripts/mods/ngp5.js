@@ -114,6 +114,12 @@ function resetNGP5V() {
 			upgrades: [],
 			bondBought: [0,0,0,0,0,0,0,0],
 		},
+		colliders: {
+			unl: false,
+			eV: new Decimal(0),
+			dP: 0,
+			eVmult: 0,
+		},
 	}
 	player.ghostify.banked = 0
 }
@@ -1489,6 +1495,7 @@ function updateNGP5VAchs() {
 	if (player.totalTickGained>=325e6 && currentAnnihilationTier()>0 && !player.achievements.includes("ng5p56")) giveAchievement("Ticks Ticks Ticks Ticks")
 	if (player.ghostify.dimensions.power.gte(1e240) && player.ghostify.dimensions.spirits==0 && !player.achievements.includes("ng5p57")) giveAchievement("The most powerful ghosts")
 	checkMultiversalHarmony() // ng5p58
+	if (player.hadronize.colliders.unl && !player.achievements.includes("ng5p61")) giveAchievement("Hadronize is the new Ghostify.")
 }
 
 function setNGP5VAchTooltips() {
@@ -3135,7 +3142,13 @@ function updateHadronize() {
 	if (hadronizeTab == "colliders") {
 		document.getElementById("bondPower2").textContent = shorten(player.hadronize.bondPower)
 		document.getElementById("colliderlocked").textContent = "Reach "+shortenCosts(1e36)+" Bond Power to unlock Colliders."
-		document.getElementById("colliderdiv").style.display = "none"
+		document.getElementById("colliderlocked").style.display = player.hadronize.colliders.unl ? "none" : ""
+		document.getElementById("colliderdiv").style.display = player.hadronize.colliders.unl ? "" : "none"
+		document.getElementById("eV").textContent = shorten(player.hadronize.colliders.eV)
+		document.getElementById("eVgain").textContent = shorten(getElectronVoltGain())
+		document.getElementById("eVmultinfo").innerHTML = "Double Electron Volt gain.<br>Cost: "+shorten(getEVMultCost())+" Electron Volts."
+		document.getElementById("eVmult").className = player.hadronize.colliders.eV.gte(getEVMultCost())?"gluonupgrade hadron":"gluonupgrade unavailablebtn"
+		document.getElementById("eVmultdiv").className = player.hadronize.colliders.eV.gte(getEVMultCost()) ? "hadron bg" : ""
 	}
 }
 
@@ -3164,6 +3177,10 @@ function hadronizeTick(diff) {
 		document.getElementById("GHPAmount").textContent = shortenDimensions(player.ghostify.ghostParticles)
 	}
 	if (player.achievements.includes("ng5p54")) player.ghostify.times = nA(player.ghostify.times, Decimal.mul(Decimal.sqrt(getGhostifiedGain()), diff/10))
+	if (!player.hadronize.colliders.unl && player.hadronize.bondPower.gte(1e36)) player.hadronize.colliders.unl = true
+	if (player.hadronize.colliders.unl) {
+		player.hadronize.colliders.eV = player.hadronize.colliders.eV.add(getElectronVoltGain().times(diff/10))
+	}
 }
 
 //Bonds
@@ -3190,6 +3207,7 @@ function getMPB(x) {
 function getBondMult(x) {
 	let mult = Decimal.pow(getMPB(x), player.hadronize.bonds.bought[x-1]+player.hadronize.bonds.bondBought[x-1])
 	if (player.achievements.includes("ng5p58")) mult = mult.times(Decimal.pow(1.01, Math.pow(player.galaxies, 1/3.6)))
+	if (player.achievements.includes("ng5p61")) mult = mult.times(Decimal.pow(player.achPow, 0.4))
 	return mult
 }
 
@@ -3273,7 +3291,7 @@ function hasResearch(n) {
 	return getResearchPoints()>=researchReqs[n]
 }
 
-// Achievement Reward :)
+//Achievement Reward :)
 
 function checkMultiversalHarmony() {
 	if (player.achievements.includes("ng5p58")) return
@@ -3282,4 +3300,27 @@ function checkMultiversalHarmony() {
 		if (player.galaxies<700||player.replicanti.galaxies+extraReplGalaxies<700||player.dilation.freeGalaxies<700) return
 	} else return
 	giveAchievement("Multiversal Harmony")
+}
+
+//Colliders
+
+function getElectronVoltGain() {
+	if (!player.hadronize.colliders.unl) return new Decimal(0)
+	let gain = player.hadronize.bondPower.div(1e36).pow(0.44).times(Decimal.pow(2, player.hadronize.colliders.eVmult))
+	return gain
+}
+
+function getEVMultCost() {
+	let amt = player.hadronize.colliders.eVmult
+	if (amt>=25) amt = Decimal.pow(amt, 2).div(25)
+	let cost = Decimal.pow(1.1, Decimal.pow(amt, 1.6)).times(100)
+	return cost
+}
+
+function buyEVMult() {
+	if (!player.hadronize.colliders.unl) return
+	let cost = getEVMultCost()
+	if (player.hadronize.colliders.eV.lt(cost)) return
+	player.hadronize.colliders.eV = player.hadronize.colliders.eV.sub(cost)
+	player.hadronize.colliders.eVmult++
 }
