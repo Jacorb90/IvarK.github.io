@@ -4833,6 +4833,6 @@ function getGhostifiedGain() {
 function getGhostifies() {
 	if (!tmp.ngp3) return 0
 	let ghostifies = player.ghostify.times
-	if (hasResearch(12)) ghostifies = nA(ghostifies, player.ghostify.banked)
+	if (nG(player.ghostify.banked, 0)) ghostifies = nA(ghostifies, player.ghostify.banked)
 	return nP(ghostifies)
 }

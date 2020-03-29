@@ -1496,6 +1496,7 @@ function updateNGP5VAchs() {
 	if (player.ghostify.dimensions.power.gte(1e240) && player.ghostify.dimensions.spirits==0 && !player.achievements.includes("ng5p57")) giveAchievement("The most powerful ghosts")
 	checkMultiversalHarmony() // ng5p58
 	if (player.hadronize.colliders.unl && !player.achievements.includes("ng5p61")) giveAchievement("Hadronize is the new Ghostify.")
+	if (player.ghostify.neutrinos.electron.add(player.ghostify.neutrinos.mu).add(player.ghostify.neutrinos.tau).gte(new Decimal("1e650")) && player.ghostify.neutrinos.multPower == 1 && !player.achievements.includes("ng5p62")) giveAchievement("I thought we moved on")
 }
 
 function setNGP5VAchTooltips() {
@@ -1515,6 +1516,7 @@ function setNGP5VAchTooltips() {
 	document.getElementById("Meta-Bonds").setAttribute("ach-tooltip", "Reach "+shorten(Number.MAX_SAFE_INTEGER)+" Bond Power.")
 	document.getElementById("Broken Tachyons").setAttribute("ach-tooltip", "Reach "+shorten(1e265)+" Tachyon Particles while Annihilated without Break Dilation")
 	document.getElementById("The most powerful ghosts").setAttribute("ach-tooltip", "Reach "+shorten(1e240)+" Ghost Power without any Spirits.")
+	document.getElementById("I thought we moved on").setAttribute("ach-tooltip", "Reach "+shorten(new Decimal("1e650"))+" Neutrinos without any Neutrino multipliers bought.")
 }
 
 // Scaling Data
@@ -2900,7 +2902,7 @@ function hadronize(force=false) {
 			total: 0,
 		},
 		cascade: {
-			times: hasResearch(11) ? player.ghostify.annihilation.cascade.times : 0,
+			times: hasResearch(11) ? 1 : 0,
 			amount: 0,
 			power: new Decimal(0),
 		},
@@ -3146,9 +3148,15 @@ function updateHadronize() {
 		document.getElementById("colliderdiv").style.display = player.hadronize.colliders.unl ? "" : "none"
 		document.getElementById("eV").textContent = shorten(player.hadronize.colliders.eV)
 		document.getElementById("eVgain").textContent = shorten(getElectronVoltGain())
-		document.getElementById("eVmultinfo").innerHTML = "Double Electron Volt gain.<br>Cost: "+shorten(getEVMultCost())+" Electron Volts."
+		document.getElementById("eVmultinfo").innerHTML = "Double Electron Volt gain.<br>Cost: "+shorten(getEVMultCost())+" eV."
 		document.getElementById("eVmult").className = player.hadronize.colliders.eV.gte(getEVMultCost())?"gluonupgrade hadron":"gluonupgrade unavailablebtn"
 		document.getElementById("eVmultdiv").className = player.hadronize.colliders.eV.gte(getEVMultCost()) ? "hadron bg" : ""
+		document.getElementById("collidereq").textContent = shorten(getCollideReq())
+		document.getElementById("collide").className = player.hadronize.colliders.eV.gte(getCollideReq())?"gluonupgrade hadron":"gluonupgrade unavailablebtn"
+		document.getElementById("collidebg").className = player.hadronize.colliders.eV.gte(getCollideReq()) ? "hadron bg" : ""
+		document.getElementById("dP").textContent = getFullExpansion(player.hadronize.colliders.dP)
+		document.getElementById("dPeff").textContent = shorten(getDPEff())
+		document.getElementById("dPeff2").textContent = shorten(getDPEff2())
 	}
 }
 
@@ -3208,16 +3216,17 @@ function getBondMult(x) {
 	let mult = Decimal.pow(getMPB(x), player.hadronize.bonds.bought[x-1]+player.hadronize.bonds.bondBought[x-1])
 	if (player.achievements.includes("ng5p58")) mult = mult.times(Decimal.pow(1.01, Math.pow(player.galaxies, 1/3.6)))
 	if (player.achievements.includes("ng5p61")) mult = mult.times(Decimal.pow(player.achPow, 0.4))
+	mult = mult.times(getDPEff())
 	return mult
 }
 
 function getBondCostInc(x) {
-	let incs = [null, 2, 5, 10, 30, 100, 1e3, 1e5, 1e8]
+	let incs = [null, 2, 5, 10, 30, 50, 100, 1e3, 1e4]
 	return incs[x]
 }
 
 function getBondCostStart(x) {
-	let starts = [null, 1, 10, 100, 1e3, 1e10, 1e15, 1e25, 1e40]
+	let starts = [null, 1, 10, 100, 1e3, 1e5, 1e7, 1e9, 1e12]
 	return starts[x]
 }
 
@@ -3307,11 +3316,12 @@ function checkMultiversalHarmony() {
 function getElectronVoltGain() {
 	if (!player.hadronize.colliders.unl) return new Decimal(0)
 	let gain = player.hadronize.bondPower.div(1e36).pow(0.44).times(Decimal.pow(2, player.hadronize.colliders.eVmult))
+	gain = gain.times(getDPEff2())
 	return gain
 }
 
-function getEVMultCost() {
-	let amt = player.hadronize.colliders.eVmult
+function getEVMultCost(mod=0) {
+	let amt = player.hadronize.colliders.eVmult+mod
 	if (amt>=25) amt = Decimal.pow(amt, 2).div(25)
 	let cost = Decimal.pow(1.1, Decimal.pow(amt, 1.6)).times(100)
 	return cost
@@ -3323,4 +3333,48 @@ function buyEVMult() {
 	if (player.hadronize.colliders.eV.lt(cost)) return
 	player.hadronize.colliders.eV = player.hadronize.colliders.eV.sub(cost)
 	player.hadronize.colliders.eVmult++
+}
+
+function maxEVMult() {
+	if (!player.hadronize.colliders.unl) return
+	let cost = getEVMultCost()
+	if (player.hadronize.colliders.eV.lt(cost)) return
+	let amt = player.hadronize.colliders.eVmult
+	let target = amt+1
+	if (amt<25) target = Math.min(Math.floor(Math.pow(player.hadronize.colliders.eV.div(100).max(1).log(1.1), 1/1.6)+1), 25)
+	else target = Math.floor(Math.sqrt(Math.pow(player.hadronize.colliders.eV.div(100).max(1).log(1.1), 1/1.6)*25)+1)
+	let bulk = target - amt
+	player.hadronize.colliders.eV = player.hadronize.colliders.eV.sub(getEVMultCost(bulk-1))
+	player.hadronize.colliders.eVmult+=bulk
+	if (target==25 && amt<25) maxEVMult()
+}
+
+function getCollideReq() {
+	let amt = player.hadronize.colliders.dP
+	let req = Decimal.pow(7, Math.pow(amt, 2)).times(13e12)
+	return req
+}
+
+function collide() {
+	if (!player.hadronize.colliders.unl) return
+	let cost = getCollideReq()
+	if (player.hadronize.colliders.eV.lt(cost)) return
+	player.hadronize.colliders.eV = new Decimal(0)
+	player.hadronize.colliders.eVmult = 0
+	player.hadronize.colliders.dP++
+}
+
+function getDPEff() {
+	let eff = Decimal.pow(getDPMult(), player.hadronize.colliders.dP)
+	return eff
+}
+
+function getDPMult() {
+	let mult = new Decimal(2)
+	return mult
+}
+
+function getDPEff2() {
+	let eff = Decimal.pow(getDPMult().times(2), player.hadronize.colliders.dP)
+	return eff
 }

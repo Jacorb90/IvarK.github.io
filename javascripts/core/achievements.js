@@ -214,7 +214,7 @@ const allAchievements = {
   ng5p57 : "The most powerful ghosts",
   ng5p58 : "Multiversal Harmony",
   ng5p61 : "Hadronize is the new Ghostify.",
-  ng5p62 : "ng5p62",
+  ng5p62 : "I thought we moved on",
   ng5p63 : "ng5p63",
   ng5p64 : "ng5p64",
   ng5p65 : "ng5p65",

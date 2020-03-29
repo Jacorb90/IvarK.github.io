@@ -286,11 +286,11 @@
 						</tr>
 						<tr>
 							<td>You have <span id="eV" class="electrictxt"></span> eV (+<span id="eVgain"></span>/s).</td>
-							<td></td>
-							<td></td>
+							<td><button id="collide" class="gluonupgrade hadron" onclick="collide()">Activate Collider.<br>Req: <span id="collidereq"></span> eV.<div id="collidebg" class='hadron bg'></div></button></td>
+							<td>You have <span id="dP" class="electrictxt"></span> Decrepit Particles, which translates to a <span id="dPeff" class="electrictxt"></span>x multiplier to all Normal Bonds, and a <span id="dPeff2" class="electrictxt"></span>x multiplier to eV gain.</td>
 						</tr>
 						<tr>
-							<td><button id="eVmult" class="gluonupgrade hadron" onclick="buyEVMult()"><span id="eVmultinfo"></span><div id="eVmultdiv" class='hadron bg'></div></button></td>
+							<td><button id="eVmult" class="gluonupgrade hadron" onclick="buyEVMult()"><span id="eVmultinfo"></span><div id="eVmultdiv" class='hadron bg'></div></button><br><button class="storebtn" onclick="maxEVMult()">Buy Max</button></td>
 							<td></td>
 							<td></td>
 						</tr>
@@ -3194,7 +3194,7 @@
 								<div id="Hadronize is the new Ghostify." class="achievement achievementlocked" ach-tooltip="Unlock Hadron Colliders. Reward: Normal Bonds are boosted by the achievement multiplier ^0.4."></div>
 							</td>
 							<td>
-								<div id="ng5p62" class="achievement achievementlocked"></div>
+								<div id="I thought we moved on" class="achievement achievementlocked"></div>
 							</td>
 							<td>
 								<div id="ng5p63" class="achievement achievementlocked"></div>
