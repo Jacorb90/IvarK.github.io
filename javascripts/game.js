@@ -1036,6 +1036,7 @@ function updateTemp() {
 	tmp.rg4=false
 	if (player.aarexModifications.ngp5V) {
 		tmp.bnd15 = hasBondUpg(15)?(Decimal.add(getEternitied(), 1).pow(0.01).log10()*0.01+1):1
+		tmp.nb6nbr = (tmp.nb[6]!==undefined)?Math.pow(tmp.nb[6], 0.25):1
 	}
 	if (tmp.ngp3) {
 		tmp.ns=new Decimal(nanospeed)
@@ -1050,7 +1051,7 @@ function updateTemp() {
 		if (hasNU(15)) tmp.ns=tmp.ns.times(tmp.nu[5])
 		if (player.ghostify.ghostlyPhotons.unl) {
 			for (var c=6;c>-1;c--) {
-				var x=player.ghostify.ghostlyPhotons.lights[c]
+				var x=player.ghostify.ghostlyPhotons.lights[c]+(c==1?getFreeOrangeLight():0)
 				if (c<1) x=(player.ghostify.ghostlyPhotons.maxRed+x*2)/3
 				tmp.ls[c]=x*(Math.sqrt(c>5?1:tmp.ls[c+1]+1)+getLightEmpowermentBoost())
 			}
@@ -1059,8 +1060,9 @@ function updateTemp() {
 			if (tmp.le[0]>1.5) tmp.le[0]=Math.log10(tmp.le[0]*20/3)*1.5
 			if (tmp.le[0]>1.75) tmp.le[0] = 0.75+Math.log10(tmp.le[0])/Math.log10(1.75)
 			if (tmp.le[0]>1.9) tmp.le[0] = 1.9
-			tmp.le[1]=tmp.ls[1]>64?Math.log10(tmp.ls[1]/64)+14:tmp.ls[1]>8?Math.sqrt(tmp.ls[1])+6:tmp.ls[1]+1 //Orange light
-			if (tmp.le[1]>20) tmp.le[1] = 19+Math.log10(tmp.le[1])/Math.log10(20)
+			let ss = (hasBondUpg(33)&&!tmp.qu.bigRip.active)?4:1
+			tmp.le[1]=tmp.ls[1]>64*ss?Math.log10(tmp.ls[1]/(64*ss))+((hasBondUpg(33)&&!tmp.qu.bigRip.active)?22:14):tmp.ls[1]>8?Math.sqrt(tmp.ls[1])+6:tmp.ls[1]+1 //Orange light
+			if (tmp.le[1]>20*ss) tmp.le[1] = (20*ss-1)+Math.log10(tmp.le[1])/Math.log10(20*ss)
 			tmp.le[2]=Math.sqrt(tmp.ls[2]>60?(Math.log10(tmp.ls[2]/6)+2)/3*Math.sqrt(1200):tmp.ls[2]>20?Math.sqrt(tmp.ls[2]*20):tmp.ls[2])*45e3 //Yellow light
 			if (tmp.le[2]>4e5) tmp.le[2] = 4e5*Math.log10(tmp.le[2])/Math.log10(4e5)
 			tmp.le[3]=tmp.ls[3]>8?Math.log10(tmp.ls[3]/8)+Math.sqrt(12)+1:Math.sqrt(tmp.ls[3]*1.5)+1 //Green light

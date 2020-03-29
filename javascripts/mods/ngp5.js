@@ -1497,6 +1497,7 @@ function updateNGP5VAchs() {
 	checkMultiversalHarmony() // ng5p58
 	if (player.hadronize.colliders.unl && !player.achievements.includes("ng5p61")) giveAchievement("Hadronize is the new Ghostify.")
 	if (player.ghostify.neutrinos.electron.add(player.ghostify.neutrinos.mu).add(player.ghostify.neutrinos.tau).gte(new Decimal("1e650")) && player.ghostify.neutrinos.multPower == 1 && !player.achievements.includes("ng5p62")) giveAchievement("I thought we moved on")
+	if (player.ghostify.challenges.tiers[0]>=10 && !player.achievements.includes("ng5p63")) giveAchievement("Hey! You cheated!")
 }
 
 function setNGP5VAchTooltips() {
@@ -3194,7 +3195,7 @@ function hadronizeTick(diff) {
 //Bonds
 
 var bondTab = "normBonds"
-var bondUpgCosts = [null, 1e3, 1.5e3, 2.5e3, 5e3, 7.5e3, 1.2e4, 2e4, 3.2e4, 4e4, 7.5e4, 1.44e7, 2.67e8, 4.096e9, 3.2e10, 7.5e11, 5e4, 8e4, 1e13, 3e5, 3.2e5, 1e15, 1.5e11, 2.7e13, 9e15, 3.5e16, 5e17, 1e21, 5e22, 1e31, 1e32, 1e33]
+var bondUpgCosts = [null, 1e3, 1.5e3, 2.5e3, 5e3, 7.5e3, 1.2e4, 2e4, 3.2e4, 4e4, 7.5e4, 1.44e7, 2.67e8, 4.096e9, 3.2e10, 7.5e11, 5e4, 8e4, 1e13, 3e5, 3.2e5, 1e15, 1.5e11, 2.7e13, 9e15, 3.5e16, 5e17, 1e21, 5e22, 1e31, 1e32, 1e33, 1e50, 1e60]
 
 function showBondTab(name) {
 	bondTab = name
@@ -3281,6 +3282,14 @@ function buyBondB(x) {
 	player.hadronize.bondPower = player.hadronize.bondPower.sub(getBondBCost(x))
 	player.hadronize.bonds.bondBought[x-1]++
 	player.hadronize.bonds.amount[x-1] = player.hadronize.bonds.amount[x-1].add(1)
+}
+
+function getFreeOrangeLight() {
+	if (!tmp.ngp3) return 0
+	if (!hasBondUpg(33) || tmp.qu.bigRip.active) return 0
+	let ol = player.hadronize.bondPower.add(1).log10()
+	if (ol>=100) ol = Math.sqrt(ol)*10
+	return Math.floor(ol)
 }
 
 //Hadronic Researches

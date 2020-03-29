@@ -818,6 +818,7 @@ function updateQuantumTabs() {
 			document.getElementById("treeupg"+u+"current").textContent=getTreeUpgradeEffectDesc(u)
 		}
 		document.getElementById("todspeed").textContent = todspeed.gt(1) ? "ToD speed multiplier is currently "+shorten(todspeed)+"x." : ""
+		if (branchNum<1) document.getElementById("treeupgefficiency").textContent = getTreeUpgPower()==1?"":("Tree Upgrade Efficiency: "+getFullExpansion(Math.round(getTreeUpgPower()*10000)/100)+"%")
 	}
 }
 
@@ -4264,7 +4265,10 @@ function updateGhostifyTabs() {
 		if (player.ghostify.neutrinos.boosts>3) document.getElementById("neutrinoBoost4").textContent=(tmp.nb[3]*100-100).toFixed(1)
 		if (player.ghostify.neutrinos.boosts>4) document.getElementById("neutrinoBoost5").textContent=(100-tmp.nb[4]*100).toFixed(1)
 		if (player.ghostify.neutrinos.boosts>5) document.getElementById("neutrinoBoost6").textContent=tmp.nb[5]<10.995?(tmp.nb[5]*100-100).toFixed(1):getFullExpansion(Math.floor(tmp.nb[5]*100-100))
-		if (player.ghostify.neutrinos.boosts>6) document.getElementById("neutrinoBoost7").textContent=getFullExpansion(Math.round((tmp.nb[6]*100-100)*10)/10)
+		if (player.ghostify.neutrinos.boosts>6) {
+			document.getElementById("nb7loc").textContent = hasBondUpg(32)?"T":"In Big Rips, t"
+			document.getElementById("neutrinoBoost7").textContent=getFullExpansion(Math.round((tmp.nb[6]*100-100)*10)/10)
+		}
 		if (player.ghostify.neutrinos.boosts>7) document.getElementById("neutrinoBoost8").textContent=getFullExpansion(Math.round((tmp.nb[7]*100-100)*10)/10)
 		if (player.ghostify.neutrinos.boosts>8) document.getElementById("neutrinoBoost9").textContent=shorten(tmp.nb[8])
 		document.getElementById("neutrinoUpg1Pow").textContent=tmp.nu[0]
@@ -4312,7 +4316,8 @@ function updateGhostifyTabs() {
 		document.getElementById("ghrCap").textContent=shortenMoney(getGHRCap())
 		document.getElementById("ghr").textContent=shortenMoney(gphData.ghostlyRays)
 		for (var c=0;c<8;c++) {
-			document.getElementById("light"+(c+1)).textContent=getFullExpansion(gphData.lights[c])
+			let extra = c==1?(getFreeOrangeLight()>0?(" + "+getFullExpansion(getFreeOrangeLight())):""):""
+			document.getElementById("light"+(c+1)).textContent=getFullExpansion(gphData.lights[c])+extra
 			document.getElementById("lightThreshold"+(c+1)).textContent=shorten(getLightThreshold(c))
 			if (c>0) document.getElementById("lightStrength"+c).textContent=shorten((Math.sqrt(c>6?1:tmp.ls[c]+1)+getLightEmpowermentBoost()))
 		}
@@ -4799,7 +4804,11 @@ function getLightEmpowermentBoost() {
 
 function getTreeUpgPower() {
 	let power = 1
-	if (tmp.qu.bigRip.active&&player.ghostify.neutrinos.boosts>6) power*=tmp.nb[6]
+	if ((tmp.qu.bigRip.active||hasBondUpg(32))&&player.ghostify.neutrinos.boosts>6) {
+		let br = tmp.qu.bigRip.active
+		if (!br && hasBondUpg(32)) power*=tmp.nb6nbr
+		else if (br) power*=tmp.nb[6]
+	}
 	if (player.aarexModifications.ngp5V !== undefined) {
 		if (inGC(2)) power /= 100
 		power *= getGCReward(2).toNumber()
