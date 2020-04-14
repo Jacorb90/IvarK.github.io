@@ -8881,6 +8881,7 @@ function simulateTime(seconds, real) {
     else popupString+= "."
     if (nG(player.infinitied,playerStart.infinitied)) popupString+= "<br>you infinitied "+getFullExpansion(nS(player.infinitied,playerStart.infinitied))+" times."
     if (nG(player.eternities,playerStart.eternities)) popupString+= " <br>you eternitied "+getFullExpansion(nS(player.eternities,playerStart.eternities))+" times."
+	if (player.ghostify !== undefined) if (nG(player.ghostify.times,playerStart.ghostify.times)) popupString+= " <br>you ghostified "+getFullExpansion(nS(player.ghostify.times,playerStart.ghostify.times))+" times."
     if (popupString.length == 20) {
         popupString = popupString.slice(0, -1);
         popupString+= "... Nothing happened."

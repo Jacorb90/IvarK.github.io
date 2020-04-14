@@ -219,13 +219,13 @@
 								<td><button id="bondupg28" class="gluonupgrade hadron" onclick="buyBondUpg(28)">Automator Ghosts work 200% faster.<br>Cost: <span id="bondupgcost28"></span> Bond Power<div id="bondupgbg28" class="hadron bg"></div></button></td>
 							</tr>
 							<tr>
-								<td></td>
 								<td><button id="bondupg29" class="gluonupgrade hadron" onclick="buyBondUpg(29)">The Infinity Power softcap starts much later.<br>Cost: <span id="bondupgcost29"></span> Bond Power<div id="bondupgbg29" class="hadron bg"></div></button></td>
 								<td><button id="bondupg30" class="gluonupgrade hadron" onclick="buyBondUpg(30)" style="font-size:8px;">While not Big Ripped or Annihilated, Emperor Dimensions are multiplied by Ghost Power ^0.6, and Meta Dimensions are multiplied by Normal Replicants ^25.6.<br>Cost: <span id="bondupgcost30"></span> Bond Power<div id="bondupgbg30" class="hadron bg"></div></button></td>
 								<td><button id="bondupg31" class="gluonupgrade hadron" onclick="buyBondUpg(31)">The third Ghost Power effect does not softcap.<br>Cost: <span id="bondupgcost31"></span> Bond Power<div id="bondupgbg31" class="hadron bg"></div></button></td>
 								<td><button id="bondupg32" class="gluonupgrade hadron" onclick="buyBondUpg(32)">Neutrino Boost 7 works outside of Big Rips at a reduced rate.<br>Cost: <span id="bondupgcost32"></span> Bond Power<div id="bondupgbg32" class="hadron bg"></div></button></td>
 								<td><button id="bondupg33" class="gluonupgrade hadron" onclick="buyBondUpg(33)" style="font-size:10px;">In non-Big Rips, Bond Power provides free Orange Light and Orange Light effect softcap starts later.<br>Cost: <span id="bondupgcost33"></span> Bond Power<div id="bondupgbg33" class="hadron bg"></div></button></td>
-								<td></td>
+								<td><button id="bondupg34" class="gluonupgrade hadron" onclick="buyBondUpg(34)" style="font-size:10px;">Nanofield reward switches are always set to BOTH.<br>Cost: <span id="bondupgcost34"></span> Bond Power<div id="bondupgbg34" class="hadron bg"></div></button></td>
+								<td><button id="bondupg35" class="gluonupgrade hadron" onclick="buyBondUpg(35)" style="font-size:10px;">You gain 1.1x more Hadrons for every OoM of Ghostifies.<br>Cost: <span id="bondupgcost35"></span> Bond Power<div id="bondupgbg35" class="hadron bg"></div></button></td>
 							</tr>
 						</table>
 					</div>
@@ -2193,6 +2193,7 @@
 				<td><button class="secondarytabbtn aarexmodsghostifybtn" onclick="showStatsTab('lasttenghostifies')" id="pastghostifies" >Past Ghostifies</button><td>
 				<td><button class="secondarytabbtn" onclick="showStatsTab('dimboostdata')" id="dimboostdatabtn" >Dimension Boost Data</button><td>
 				<td><button class="secondarytabbtn" onclick="showStatsTab('galaxydata')" id="galaxydatabtn" >Galaxy Data</button><td>
+				<td><button class="secondarytabbtn" onclick="showStatsTab('replgaldata')" id="replgaldatabtn" >Replicated Galaxies</button><td>
 			</div>
 			<div id="stats" class="statstab">
 				<div id='brfilter'><br></div>
@@ -2462,6 +2463,27 @@
 				<ul>
 					<li>Start: <span id='gdss'></span></li>
 					<li>Power: <span id='gdsp'></span>%</li>
+				</ul><br><br>
+				</span>
+			</div>
+			<div id="replgaldata" class="statstab">
+				Distant Replicated Galaxy Scaling:
+				<ul>
+					<li>Start: <span id='drgss'></span></li>
+					<li>Power: <span id='drgsp'></span>%</li>
+				</ul><br><br>
+				<span id='grgsd'>
+				Ghostly Replicated Galaxy Scaling: 
+				<ul>
+					<li>Start: <span id='grgss'></span></li>
+					<li>Power: <span id='grgsp'></span>%</li>
+				</ul><br><br>
+				</span>
+				<span id='srgsd'>
+				Spooky Replicated Galaxy Scaling: 
+				<ul>
+					<li>Start: <span id='srgss'></span></li>
+					<li>Power: <span id='srgsp'></span>%</li>
 				</ul><br><br>
 				</span>
 			</div>
@@ -3197,10 +3219,10 @@
 								<div id="I thought we moved on" class="achievement achievementlocked"></div>
 							</td>
 							<td>
-								<div id="Hey! You cheated!" class="achievement achievementlocked" ach-tooltip="Reach Tier 10 of GC1."></div>
+								<div id="Hey! You cheated!" class="achievement achievementlocked" ach-tooltip="Reach Tier 10 of GC1. Reward: Ghostly Challenge completions give additional free Nanofield Rewards."></div>
 							</td>
 							<td>
-								<div id="ng5p64" class="achievement achievementlocked"></div>
+								<div id="The game is fixed!" class="achievement achievementlocked"></div>
 							</td>
 							<td>
 								<div id="ng5p65" class="achievement achievementlocked"></div>

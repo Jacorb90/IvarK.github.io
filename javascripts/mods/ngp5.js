@@ -153,6 +153,7 @@ function updateNGP5V(active,diff) {
 	if (player.replicanti.unl && player.replicanti.amount.eq(0)) player.replicanti.amount = new Decimal(1)
 	document.getElementById("dimboostdatabtn").style.display = (player.resets >= getSupersonicStart() || player.resets >= getHypersonicStart() || quantumed || ghostified) ? "" : "none"
 	document.getElementById("galaxydatabtn").style.display = (player.galaxies >= 100 || quantumed || ghostified) ? "" : "none"
+	document.getElementById("replgaldatabtn").style.display = (player.replicanti.gal >= 3e3 || ghostified) ? "" : "none"
 	updateScaleData()
 	if (active) updateBreakEternity()
 	document.getElementById("lEbG").textContent = currentAnnihilationTier()>0?"go quantum and ":"become a ghost and "
@@ -1017,7 +1018,10 @@ function getBRDBLim() {
 
 function getNanofieldRewards() {
 	let rewards = player.quantum.nanofield.rewards
-	if (player.aarexModifications.ngp5V !== undefined) rewards += getGhostPowerEff()
+	if (player.aarexModifications.ngp5V !== undefined) {
+		rewards += getGhostPowerEff()
+		if (player.achievements.includes("ng5p63")) rewards += player.ghostify.challenges.tiers.reduce((a,c) => a+c)
+	}
 	return rewards
 }
 
@@ -1498,6 +1502,7 @@ function updateNGP5VAchs() {
 	if (player.hadronize.colliders.unl && !player.achievements.includes("ng5p61")) giveAchievement("Hadronize is the new Ghostify.")
 	if (player.ghostify.neutrinos.electron.add(player.ghostify.neutrinos.mu).add(player.ghostify.neutrinos.tau).gte(new Decimal("1e650")) && player.ghostify.neutrinos.multPower == 1 && !player.achievements.includes("ng5p62")) giveAchievement("I thought we moved on")
 	if (player.ghostify.challenges.tiers[0]>=10 && !player.achievements.includes("ng5p63")) giveAchievement("Hey! You cheated!")
+	if (!player.quantum.breakEternity.did && player.money.gte(Decimal.pow(10, 32e21)) && !player.dilation.br.active && !player.achievements.includes("ng5p64")) giveAchievement("The game is fixed!")
 }
 
 function setNGP5VAchTooltips() {
@@ -1518,6 +1523,7 @@ function setNGP5VAchTooltips() {
 	document.getElementById("Broken Tachyons").setAttribute("ach-tooltip", "Reach "+shorten(1e265)+" Tachyon Particles while Annihilated without Break Dilation")
 	document.getElementById("The most powerful ghosts").setAttribute("ach-tooltip", "Reach "+shorten(1e240)+" Ghost Power without any Spirits.")
 	document.getElementById("I thought we moved on").setAttribute("ach-tooltip", "Reach "+shorten(new Decimal("1e650"))+" Neutrinos without any Neutrino multipliers bought.")
+	document.getElementById("The game is fixed!").setAttribute("ach-tooltip", "Reach "+shorten(Decimal.pow(10, 32e21))+" Antimatter without Break Eternity or Break Dilation.")
 }
 
 // Scaling Data
@@ -1542,6 +1548,14 @@ function updateScaleData() {
 	document.getElementById("gdsd").style.display = (player.galaxies >= getSpookyGalaxyData().start) ? "" : "none"
 	document.getElementById("gdss").textContent = getFullExpansion(Math.floor(getSpookyGalaxyData().start))
 	document.getElementById("gdsp").textContent = getFullExpansion(Math.round(getSpookyGalaxyData().power*1e4)/100)
+	document.getElementById("drgss").textContent = getFullExpansion(3e3)
+	document.getElementById("drgsp").textContent = getFullExpansion(100)
+	document.getElementById("grgsd").style.display = player.replicanti.gal >= getGRSS() ? "" : "none"
+	document.getElementById("grgss").textContent = getFullExpansion(Math.floor(getGRSS()))
+	document.getElementById("grgsp").textContent = getFullExpansion(100)
+	document.getElementById("srgsd").style.display = player.replicanti.gal >= getSRSS() ? "" : "none"
+	document.getElementById("srgss").textContent = getFullExpansion(Math.floor(getSRSS()))
+	document.getElementById("srgsp").textContent = getFullExpansion(Math.round(getSRSP()/1e5)/100)
 }
 
 // Annihilation Stuff
@@ -2080,9 +2094,13 @@ function nanofieldToggle(n) {
 	return tmp.qu.nanofield['toggles'].includes(n)
 }
 
+function nanofieldToggleBoth(n) {
+	return hasBondUpg(34)
+}
+
 function updateNanofieldToggles() {
 	for (i=1;i<=8;i++) {
-		document.getElementById("nanofieldToggle"+i).textContent = "Reward "+i+" Switch: O" +(nanofieldToggle(i) ? "N" : "FF")
+		document.getElementById("nanofieldToggle"+i).textContent = "Reward "+i+" Switch: "+(hasBondUpg(34)?"BOTH":"O" +(nanofieldToggle(i) ? "N" : "FF"))
 		document.getElementById("nanofieldToggle"+i).style.display = isNanofieldToggleAvailable(i) ? "" : "none"
 	}
 }
@@ -2253,6 +2271,7 @@ function getHadronGain() {
 	let em = player.ghostify.annihilation.exoticMatter
 	let gain = em.div(Number.MAX_SAFE_INTEGER).pow(0.15)
 	if (hasBondUpg(25)) gain = gain.times(Decimal.pow(10, Math.pow(Decimal.pow(Decimal.div(1e3, getTickspeed()).add(1), 1/1e21).log10(),0.2)))
+	if (hasBondUpg(35)) gain = gain.times(Decimal.pow(1.1, Decimal.add(getGhostifies(),1).log10()))
 	return gain.floor().max(0)
 }
 
@@ -3195,7 +3214,7 @@ function hadronizeTick(diff) {
 //Bonds
 
 var bondTab = "normBonds"
-var bondUpgCosts = [null, 1e3, 1.5e3, 2.5e3, 5e3, 7.5e3, 1.2e4, 2e4, 3.2e4, 4e4, 7.5e4, 1.44e7, 2.67e8, 4.096e9, 3.2e10, 7.5e11, 5e4, 8e4, 1e13, 3e5, 3.2e5, 1e15, 1.5e11, 2.7e13, 9e15, 3.5e16, 5e17, 1e21, 5e22, 1e31, 1e32, 1e33, 1e50, 1e60]
+var bondUpgCosts = [null, 1e3, 1.5e3, 2.5e3, 5e3, 7.5e3, 1.2e4, 2e4, 3.2e4, 4e4, 7.5e4, 1.44e7, 2.67e8, 4.096e9, 3.2e10, 7.5e11, 5e4, 8e4, 1e13, 3e5, 3.2e5, 1e15, 1.5e11, 2.7e13, 9e15, 3.5e16, 5e17, 1e21, 5e22, 1e31, 1e32, 1e33, 1e50, 1e60, 1e70, 1e84]
 
 function showBondTab(name) {
 	bondTab = name

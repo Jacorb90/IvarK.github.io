@@ -760,7 +760,7 @@ function updateQuantumTabs() {
 		document.getElementById("quarkAntienergyRate").textContent=shortenMoney(getQuarkAntienergyProduction())
 		document.getElementById("quarkChargeProductionCap").textContent=shortenMoney(getQuarkChargeProductionCap())
 		document.getElementById("rewards").textContent=getFullExpansion(tmp.qu.nanofield.rewards)
-		if (player.aarexModifications.ngp5V !== undefined) if (getGhostPowerEff()>0) document.getElementById("rewards").textContent=getFullExpansion(tmp.qu.nanofield.rewards)+" + "+getFullExpansion(getGhostPowerEff())
+		if (player.aarexModifications.ngp5V !== undefined) if (getNanofieldRewards()-tmp.qu.nanofield.rewards>0) document.getElementById("rewards").textContent=getFullExpansion(tmp.qu.nanofield.rewards)+" + "+getFullExpansion(getNanofieldRewards()-tmp.qu.nanofield.rewards)
 
 		for (var reward=1; reward<9; reward++) {
 			document.getElementById("nanofieldreward" + reward).className = reward > rewards ? "nanofieldrewardlocked" : "nanofieldreward"
@@ -1989,12 +1989,12 @@ function getNanofieldRewardEffect(id) {
 	if (id == "8t") si = 8
 	stacks = Math.ceil((rewards - si + 1) / 8)
 	if (stacks>=125) stacks = Math.sqrt(stacks)*Math.sqrt(125)
-	if (id == 1) return nanofieldToggle(1) ? new Decimal(1) : Decimal.pow(30, stacks)
-	if (id == "1t") return nanofieldToggle(1) ? Math.sqrt(stacks)*7.5 : 0
+	if (id == 1) return nanofieldToggle(1)&&!nanofieldToggleBoth(1) ? new Decimal(1) : Decimal.pow(30, stacks)
+	if (id == "1t") return nanofieldToggle(1)||nanofieldToggleBoth(1) ? Math.sqrt(stacks)*7.5 : 0
 	if (id == 2) return stacks * 6.8
-	if (id == 3) return nanofieldToggle(3) ? 1 : 1 + Math.pow(stacks, 0.83) * 0.039
+	if (id == 3) return nanofieldToggle(3)&&!nanofieldToggleBoth(3) ? 1 : 1 + Math.pow(stacks, 0.83) * 0.039
 	if (id == "3t") {
-		if (!nanofieldToggle(3)) return 0
+		if (!nanofieldToggle(3)&&!nanofieldToggleBoth(3)) return 0
 		let s = stacks
 		if (s>=5) s = s/5+4
 		if (s>=10) s = Math.sqrt(s)*Math.sqrt(10)
@@ -2008,7 +2008,7 @@ function getNanofieldRewardEffect(id) {
 	}
 	if (id == 4) return 0.1 + Math.sqrt(stacks) * 0.021
 	if (id == 5) {
-		if (nanofieldToggle(5)) return 1
+		if (nanofieldToggle(5)&&!nanofieldToggleBoth(5)) return 1
 		let ret = 1 + stacks * 0.36
 		if (ret>=12.5) ret = Math.sqrt(ret)*Math.sqrt(12.5)
 		if (ret>=16) ret = Math.pow(Math.log2(ret), 2)
@@ -2018,7 +2018,7 @@ function getNanofieldRewardEffect(id) {
 		return ret
 	}
 	if (id == "5t") {
-		if (!nanofieldToggle(5)) return 0
+		if (!nanofieldToggle(5)&&!nanofieldToggleBoth(5)) return 0
 		let ret = stacks * 0.01
 		if (ret>=1) ret = Math.sqrt(ret)
 		if (ret>=2) ret = Math.cbrt(ret)*Math.pow(2, 2/3)
@@ -2026,17 +2026,17 @@ function getNanofieldRewardEffect(id) {
 		return ret
 	}
 	if (id == 6) return 3 + stacks * 1.34
-	if (id == 7) return nanofieldToggle(7) ? 0 : stacks * 2150
+	if (id == 7) return nanofieldToggle(7)&&!nanofieldToggleBoth(7) ? 0 : stacks * 2150
 	if (id == "7g") return Decimal.pow(2.6,Math.ceil((rewards - 6) / 8))
 	if (id == "7t") {
 		let ret = stacks * 0.01
 		if (stacks >= 10) ret = (stacks - 10) * 0.001 + 0.1
 		if (stacks >= 25) ret = (Math.sqrt(stacks) - 5) * 0.001 + 0.115
-		return nanofieldToggle(7) ? ret : 0
+		return nanofieldToggle(7)||nanofieldToggleBoth(7) ? ret : 0
 	}
-	if (id == 8) return nanofieldToggle(8) ? 0 : stacks * 0.76
+	if (id == 8) return nanofieldToggle(8)&&!nanofieldToggleBoth(8) ? 0 : stacks * 0.76
 	if (id == "8c") return getNanofieldRewards()>7?2.5:1
-	if (id == "8t") return nanofieldToggle(8) ? Math.sqrt(stacks)*1e4 : 0
+	if (id == "8t") return nanofieldToggle(8)||nanofieldToggleBoth(8) ? Math.sqrt(stacks)*1e4 : 0
 }
 
 function updateAutoQuantumMode() {
