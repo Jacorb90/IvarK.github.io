@@ -1318,6 +1318,7 @@ function getDistantGalaxyScalingSpeed() {
 	if (GUBought("gb6")) speed /= 1+Math.pow(player.infinityPower.max(1).log10(),0.25)/2810
 	if (GUBought("br6")) speed /= 1+player.meta.resets/340
 	if (ghostified) if (player.ghostify.neutrinos.boosts > 5) speed /= tmp.nb[5]
+	if (player.achievements.includes("ng5p65")) speed *= 0.5
 	return speed
 }
 
@@ -3593,7 +3594,7 @@ function changeSaveDesc(saveId, placement) {
 					var data = temp.ghostify.annihilation
 					let other = (", Positrons: "+getFullExpansion(data.antibaryons.positrons)+", Anti-Protons: "+getFullExpansion(data.antibaryons.antiprotons)+", Anti-Neutrons: "+getFullExpansion(data.antibaryons.antineutrons)+", Anti-Hyperons: "+getFullExpansion(data.antibaryons.antihyperons))
 					if (data.cascade.times) {
-						other = ", Cascaded Anti-Baryons: "+getFullExpansion(data.cascade.amount)+", Cascade Power: "+shortenDimensions(new Decimal(data.cascade.power))
+						other = ", Cascaded Anti-Baryons: "+getFullExpansion(Math.floor(data.cascade.amount))+", Cascade Power: "+shortenDimensions(new Decimal(data.cascade.power))
 					}
 					message+="Exotic Matter: "+shortenDimensions(new Decimal(data.exoticMatter))+", Maximum Tier: "+getFullExpansion(data.maxTier)+other
 				} else if (temp.ghostify.baryons.hyperons.unl) {

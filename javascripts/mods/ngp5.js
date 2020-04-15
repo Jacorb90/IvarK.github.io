@@ -1503,6 +1503,10 @@ function updateNGP5VAchs() {
 	if (player.ghostify.neutrinos.electron.add(player.ghostify.neutrinos.mu).add(player.ghostify.neutrinos.tau).gte(new Decimal("1e650")) && player.ghostify.neutrinos.multPower == 1 && !player.achievements.includes("ng5p62")) giveAchievement("I thought we moved on")
 	if (player.ghostify.challenges.tiers[0]>=10 && !player.achievements.includes("ng5p63")) giveAchievement("Hey! You cheated!")
 	if (!player.quantum.breakEternity.did && player.money.gte(Decimal.pow(10, 32e21)) && !player.dilation.br.active && !player.achievements.includes("ng5p64")) giveAchievement("The game is fixed!")
+	if (Math.floor(getGalaxyCostScalingStart(player.galaxies, (player.galaxies >= 302500 / (tmp.be ? 55 : 1) ? Math.pow(2, (player.galaxies + 1 - (302500 / (tmp.be ? 55 : 1) + getGhostlyGalaxyPush(tmp.be))) * (tmp.be ? 55 : 1) / 1e4 / (player.ghostify.ghostlyPhotons.enpowerments>2&&tmp.be?tmp.le[8]&&!inGC(3):1)) : 1)))<-5e8 && !player.achievements.includes("ng5p65")) giveAchievement("The Earliest Scaling")
+	if (tmp.qu.bigRip.spaceShards.gte(Decimal.pow(10, 3200)) && currentAnnihilationTier()>0 && !player.achievements.includes("ng5p66")) giveAchievement("To Annihilation and Beyond!")
+	if (getTreeUpgPower()>=150 && !player.achievements.includes("ng5p67")) giveAchievement("The Tree of Pain")
+	if (currentAnnihilationTier()==5 && !player.achievements.includes("ng5p68")) giveAchievement("Playing the fifth")
 }
 
 function setNGP5VAchTooltips() {
@@ -1523,7 +1527,8 @@ function setNGP5VAchTooltips() {
 	document.getElementById("Broken Tachyons").setAttribute("ach-tooltip", "Reach "+shorten(1e265)+" Tachyon Particles while Annihilated without Break Dilation")
 	document.getElementById("The most powerful ghosts").setAttribute("ach-tooltip", "Reach "+shorten(1e240)+" Ghost Power without any Spirits.")
 	document.getElementById("I thought we moved on").setAttribute("ach-tooltip", "Reach "+shorten(new Decimal("1e650"))+" Neutrinos without any Neutrino multipliers bought.")
-	document.getElementById("The game is fixed!").setAttribute("ach-tooltip", "Reach "+shorten(Decimal.pow(10, 32e21))+" Antimatter without Break Eternity or Break Dilation.")
+	document.getElementById("The game is fixed!").setAttribute("ach-tooltip", "Reach "+shortenCosts(Decimal.pow(10, 32e21))+" Antimatter without Break Eternity or Break Dilation.")
+	document.getElementById("To Annihilation and Beyond!").setAttribute("ach-tooltip", "Reach "+shortenCosts(Decimal.pow(10, 3200))+" Space Shards while Annihilated. Reward: Space Shard gain is raised to the power of 1.5 while not Big Ripped.")
 }
 
 // Scaling Data
@@ -3246,7 +3251,7 @@ function getBondCostInc(x) {
 }
 
 function getBondCostStart(x) {
-	let starts = [null, 1, 10, 100, 1e3, 1e5, 1e7, 1e9, 1e12]
+	let starts = [null, 1, 10, 100, 1e3, 1e5, 1e6, 1e7, 1e8]
 	return starts[x]
 }
 

@@ -3134,6 +3134,7 @@ function getSpaceShardsGain() {
 		let ghostifies = Decimal.max(getGhostifies(), 1)
 		ret = ret.times(ghostifies.pow(48))
 	}
+	if (player.achievements.includes("ng5p66") && !tmp.qu.bigRip.active) ret = ret.pow(1.5)
 	ret = ret.floor()
 	if (isNaN(ret.e)) return new Decimal(0)
 	return ret
