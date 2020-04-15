@@ -55,6 +55,7 @@
 				<tr>
 					<td><button class='secondarytabbtn' onclick='showHadronizeTab("bonds")'>Bonds</button></td>
 					<td><button class='secondarytabbtn' onclick='showHadronizeTab("research")'>Researches</button></td>
+					<td><button class='secondarytabbtn' onclick='showHadronizeTab("colliders")'>Colliders</button></td>
 				</tr>
 				<div id="bondstab" class="hadronizetab">
 					You have <span id="bondPower" class="hadronizetxt"></span> Bond Power, translated to <span id='bondsEff' class="hadronizetxt"></span> additional multiplier per 10 dimensions before electrons.<br><br>
@@ -218,13 +219,13 @@
 								<td><button id="bondupg28" class="gluonupgrade hadron" onclick="buyBondUpg(28)">Automator Ghosts work 200% faster.<br>Cost: <span id="bondupgcost28"></span> Bond Power<div id="bondupgbg28" class="hadron bg"></div></button></td>
 							</tr>
 							<tr>
-								<td></td>
-								<td></td>
 								<td><button id="bondupg29" class="gluonupgrade hadron" onclick="buyBondUpg(29)">The Infinity Power softcap starts much later.<br>Cost: <span id="bondupgcost29"></span> Bond Power<div id="bondupgbg29" class="hadron bg"></div></button></td>
 								<td><button id="bondupg30" class="gluonupgrade hadron" onclick="buyBondUpg(30)" style="font-size:8px;">While not Big Ripped or Annihilated, Emperor Dimensions are multiplied by Ghost Power ^0.6, and Meta Dimensions are multiplied by Normal Replicants ^25.6.<br>Cost: <span id="bondupgcost30"></span> Bond Power<div id="bondupgbg30" class="hadron bg"></div></button></td>
 								<td><button id="bondupg31" class="gluonupgrade hadron" onclick="buyBondUpg(31)">The third Ghost Power effect does not softcap.<br>Cost: <span id="bondupgcost31"></span> Bond Power<div id="bondupgbg31" class="hadron bg"></div></button></td>
-								<td></td>
-								<td></td>
+								<td><button id="bondupg32" class="gluonupgrade hadron" onclick="buyBondUpg(32)">Neutrino Boost 7 works outside of Big Rips at a reduced rate.<br>Cost: <span id="bondupgcost32"></span> Bond Power<div id="bondupgbg32" class="hadron bg"></div></button></td>
+								<td><button id="bondupg33" class="gluonupgrade hadron" onclick="buyBondUpg(33)" style="font-size:10px;">In non-Big Rips, Bond Power provides free Orange Light and Orange Light effect softcap starts later.<br>Cost: <span id="bondupgcost33"></span> Bond Power<div id="bondupgbg33" class="hadron bg"></div></button></td>
+								<td><button id="bondupg34" class="gluonupgrade hadron" onclick="buyBondUpg(34)" style="font-size:10px;">Nanofield reward switches are always set to BOTH.<br>Cost: <span id="bondupgcost34"></span> Bond Power<div id="bondupgbg34" class="hadron bg"></div></button></td>
+								<td><button id="bondupg35" class="gluonupgrade hadron" onclick="buyBondUpg(35)" style="font-size:10px;">You gain 1.1x more Hadrons for every OoM of Ghostifies.<br>Cost: <span id="bondupgcost35"></span> Bond Power<div id="bondupgbg35" class="hadron bg"></div></button></td>
 							</tr>
 						</table>
 					</div>
@@ -273,6 +274,28 @@
 							</td>
 						</tr>
 					</table>
+				</div>
+				<div id="colliderstab" class="hadronizetab">
+					<div id="colliderlocked"></div>
+					<div id="colliderdiv">
+					<table class="qtable">
+						<tr>
+							<td></td>
+							<td>You have <b><span id="bondPower2"></span></b> Bond Power.</td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>You have <span id="eV" class="electrictxt"></span> eV (+<span id="eVgain"></span>/s).</td>
+							<td><button id="collide" class="gluonupgrade hadron" onclick="collide()">Activate Collider.<br>Req: <span id="collidereq"></span> eV.<div id="collidebg" class='hadron bg'></div></button></td>
+							<td>You have <span id="dP" class="electrictxt"></span> Decrepit Particles, which translates to a <span id="dPeff" class="electrictxt"></span>x multiplier to all Normal Bonds, and a <span id="dPeff2" class="electrictxt"></span>x multiplier to eV gain.</td>
+						</tr>
+						<tr>
+							<td><button id="eVmult" class="gluonupgrade hadron" onclick="buyEVMult()"><span id="eVmultinfo"></span><div id="eVmultdiv" class='hadron bg'></div></button><br><button class="storebtn" onclick="maxEVMult()">Buy Max</button></td>
+							<td></td>
+							<td></td>
+						</tr>
+					</table>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -2170,6 +2193,7 @@
 				<td><button class="secondarytabbtn aarexmodsghostifybtn" onclick="showStatsTab('lasttenghostifies')" id="pastghostifies" >Past Ghostifies</button><td>
 				<td><button class="secondarytabbtn" onclick="showStatsTab('dimboostdata')" id="dimboostdatabtn" >Dimension Boost Data</button><td>
 				<td><button class="secondarytabbtn" onclick="showStatsTab('galaxydata')" id="galaxydatabtn" >Galaxy Data</button><td>
+				<td><button class="secondarytabbtn" onclick="showStatsTab('replgaldata')" id="replgaldatabtn" >Replicated Galaxies</button><td>
 			</div>
 			<div id="stats" class="statstab">
 				<div id='brfilter'><br></div>
@@ -2439,6 +2463,27 @@
 				<ul>
 					<li>Start: <span id='gdss'></span></li>
 					<li>Power: <span id='gdsp'></span>%</li>
+				</ul><br><br>
+				</span>
+			</div>
+			<div id="replgaldata" class="statstab">
+				Distant Replicated Galaxy Scaling:
+				<ul>
+					<li>Start: <span id='drgss'></span></li>
+					<li>Power: <span id='drgsp'></span>%</li>
+				</ul><br><br>
+				<span id='grgsd'>
+				Ghostly Replicated Galaxy Scaling: 
+				<ul>
+					<li>Start: <span id='grgss'></span></li>
+					<li>Power: <span id='grgsp'></span>%</li>
+				</ul><br><br>
+				</span>
+				<span id='srgsd'>
+				Spooky Replicated Galaxy Scaling: 
+				<ul>
+					<li>Start: <span id='srgss'></span></li>
+					<li>Power: <span id='srgsp'></span>%</li>
 				</ul><br><br>
 				</span>
 			</div>
@@ -3164,6 +3209,32 @@
 							</td>
 							<td>
 								<div id="Multiversal Harmony" class="achievement achievementlocked" ach-tooltip='Have at least 700 normal, replicanti, and free dilated galaxies while Annihilated. Reward: Normal Galaxies boost Normal Bonds (1.01^(x^(1/3.6))).'></div>
+							</td>
+						</tr>
+						<tr id="achRowng5p6">
+							<td>
+								<div id="Hadronize is the new Ghostify." class="achievement achievementlocked" ach-tooltip="Unlock Hadron Colliders. Reward: Normal Bonds are boosted by the achievement multiplier ^0.4."></div>
+							</td>
+							<td>
+								<div id="I thought we moved on" class="achievement achievementlocked"></div>
+							</td>
+							<td>
+								<div id="Hey! You cheated!" class="achievement achievementlocked" ach-tooltip="Reach Tier 10 of GC1. Reward: Ghostly Challenge completions give additional free Nanofield Rewards."></div>
+							</td>
+							<td>
+								<div id="The game is fixed!" class="achievement achievementlocked"></div>
+							</td>
+							<td>
+								<div id="The Earliest Scaling" class="achievement achievementlocked" ach-tooltip="Make Distant Galaxy scaling start earlier than -500,000,000 galaxies. Reward: Distant Galaxy scaling is 50% weaker."></div>
+							</td>
+							<td>
+								<div id="To Annihilation and Beyond!" class="achievement achievementlocked"></div>
+							</td>
+							<td>
+								<div id="The Tree of Pain" class="achievement achievementlocked" ach-tooltip="Make Tree Upgrades be at 15,000% power."></div>
+							</td>
+							<td>
+								<div id="Playing the fifth" class="achievement achievementlocked" ach-tooltip="Annihilate at Tier 5."></div>
 							</td>
 						</tr>
 				</table>
@@ -5342,6 +5413,7 @@
 				<div class="branchtab" id="greenBranch"></div>
 				<div class="branchtab" id="blueBranch"></div>
 				<div class="branchtab" id="upgradesBranch">
+					<span id="treeupgefficiency"></span>
 					<table class="table" align="center" style="margin: auto"><tr>
 						<td><button class='gluonupgrade unavailablebtn' id='treeupg1' onclick='buyTreeUpg(1)'>Meta Dimension Boosts are cheaper.<br>Level: <span id='treeupg1lvl'>?</span><br>Currently: -<span id='treeupg1current'>?</span><br>Cost: <span id="treeupg1cost"></span> quark spin</button></td>
 						<td><button class='gluonupgrade unavailablebtn' id='treeupg2' onclick='buyTreeUpg(2)'>TP gain formula exponent is increased.<br>Level: <span id='treeupg2lvl'>?</span><br>Currently: <span id='treeupg2current'>?</span><br>Cost: <span id="treeupg2cost"></span> quark spin</button></td>
@@ -5456,7 +5528,7 @@
 						<td id="neutrinoBoostCell6">They slow down Distant Antimatter Galaxies by <span class="neutrinos" id="neutrinoBoost6" style="font-size:35px">0.0</span>%.<br>(Nerfed in Big Rip runs)</td>
 					</tr>
 					<tr class="neutrinoBoosts" id="neutrinoBoostRow3">
-						<td>In Big Rips, they make Tree Upgrades stronger by <span class="neutrinos" id="neutrinoBoost7" style="font-size:35px">0.0</span>%.</td>
+						<td><span id="nb7loc">In Big Rips, t</span>hey make Tree Upgrades stronger by <span class="neutrinos" id="neutrinoBoost7" style="font-size:35px">0.0</span>%.</td>
 						<td id="neutrinoBoostCell8">In Big Rips, they boost first Big Rip upgrade strength by <span class="neutrinos" id="neutrinoBoost8" style="font-size:35px">0.0</span>%.</td>
 						<td id="neutrinoBoostCell9">In Big Rips, they boost IC3 reward strength by <span class="neutrinos" id="neutrinoBoost9" style="font-size:35px">1.00</span>x.</td>
 						<td></td>

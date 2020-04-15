@@ -760,7 +760,7 @@ function updateQuantumTabs() {
 		document.getElementById("quarkAntienergyRate").textContent=shortenMoney(getQuarkAntienergyProduction())
 		document.getElementById("quarkChargeProductionCap").textContent=shortenMoney(getQuarkChargeProductionCap())
 		document.getElementById("rewards").textContent=getFullExpansion(tmp.qu.nanofield.rewards)
-		if (player.aarexModifications.ngp5V !== undefined) if (getGhostPowerEff()>0) document.getElementById("rewards").textContent=getFullExpansion(tmp.qu.nanofield.rewards)+" + "+getFullExpansion(getGhostPowerEff())
+		if (player.aarexModifications.ngp5V !== undefined) if (getNanofieldRewards()-tmp.qu.nanofield.rewards>0) document.getElementById("rewards").textContent=getFullExpansion(tmp.qu.nanofield.rewards)+" + "+getFullExpansion(getNanofieldRewards()-tmp.qu.nanofield.rewards)
 
 		for (var reward=1; reward<9; reward++) {
 			document.getElementById("nanofieldreward" + reward).className = reward > rewards ? "nanofieldrewardlocked" : "nanofieldreward"
@@ -818,6 +818,7 @@ function updateQuantumTabs() {
 			document.getElementById("treeupg"+u+"current").textContent=getTreeUpgradeEffectDesc(u)
 		}
 		document.getElementById("todspeed").textContent = todspeed.gt(1) ? "ToD speed multiplier is currently "+shorten(todspeed)+"x." : ""
+		if (branchNum<1) document.getElementById("treeupgefficiency").textContent = getTreeUpgPower()==1?"":("Tree Upgrade Efficiency: "+getFullExpansion(Math.round(getTreeUpgPower()*10000)/100)+"%")
 	}
 }
 
@@ -1988,12 +1989,12 @@ function getNanofieldRewardEffect(id) {
 	if (id == "8t") si = 8
 	stacks = Math.ceil((rewards - si + 1) / 8)
 	if (stacks>=125) stacks = Math.sqrt(stacks)*Math.sqrt(125)
-	if (id == 1) return nanofieldToggle(1) ? new Decimal(1) : Decimal.pow(30, stacks)
-	if (id == "1t") return nanofieldToggle(1) ? Math.sqrt(stacks)*7.5 : 0
+	if (id == 1) return nanofieldToggle(1)&&!nanofieldToggleBoth(1) ? new Decimal(1) : Decimal.pow(30, stacks)
+	if (id == "1t") return nanofieldToggle(1)||nanofieldToggleBoth(1) ? Math.sqrt(stacks)*7.5 : 0
 	if (id == 2) return stacks * 6.8
-	if (id == 3) return nanofieldToggle(3) ? 1 : 1 + Math.pow(stacks, 0.83) * 0.039
+	if (id == 3) return nanofieldToggle(3)&&!nanofieldToggleBoth(3) ? 1 : 1 + Math.pow(stacks, 0.83) * 0.039
 	if (id == "3t") {
-		if (!nanofieldToggle(3)) return 0
+		if (!nanofieldToggle(3)&&!nanofieldToggleBoth(3)) return 0
 		let s = stacks
 		if (s>=5) s = s/5+4
 		if (s>=10) s = Math.sqrt(s)*Math.sqrt(10)
@@ -2007,7 +2008,7 @@ function getNanofieldRewardEffect(id) {
 	}
 	if (id == 4) return 0.1 + Math.sqrt(stacks) * 0.021
 	if (id == 5) {
-		if (nanofieldToggle(5)) return 1
+		if (nanofieldToggle(5)&&!nanofieldToggleBoth(5)) return 1
 		let ret = 1 + stacks * 0.36
 		if (ret>=12.5) ret = Math.sqrt(ret)*Math.sqrt(12.5)
 		if (ret>=16) ret = Math.pow(Math.log2(ret), 2)
@@ -2017,7 +2018,7 @@ function getNanofieldRewardEffect(id) {
 		return ret
 	}
 	if (id == "5t") {
-		if (!nanofieldToggle(5)) return 0
+		if (!nanofieldToggle(5)&&!nanofieldToggleBoth(5)) return 0
 		let ret = stacks * 0.01
 		if (ret>=1) ret = Math.sqrt(ret)
 		if (ret>=2) ret = Math.cbrt(ret)*Math.pow(2, 2/3)
@@ -2025,17 +2026,17 @@ function getNanofieldRewardEffect(id) {
 		return ret
 	}
 	if (id == 6) return 3 + stacks * 1.34
-	if (id == 7) return nanofieldToggle(7) ? 0 : stacks * 2150
+	if (id == 7) return nanofieldToggle(7)&&!nanofieldToggleBoth(7) ? 0 : stacks * 2150
 	if (id == "7g") return Decimal.pow(2.6,Math.ceil((rewards - 6) / 8))
 	if (id == "7t") {
 		let ret = stacks * 0.01
 		if (stacks >= 10) ret = (stacks - 10) * 0.001 + 0.1
 		if (stacks >= 25) ret = (Math.sqrt(stacks) - 5) * 0.001 + 0.115
-		return nanofieldToggle(7) ? ret : 0
+		return nanofieldToggle(7)||nanofieldToggleBoth(7) ? ret : 0
 	}
-	if (id == 8) return nanofieldToggle(8) ? 0 : stacks * 0.76
+	if (id == 8) return nanofieldToggle(8)&&!nanofieldToggleBoth(8) ? 0 : stacks * 0.76
 	if (id == "8c") return getNanofieldRewards()>7?2.5:1
-	if (id == "8t") return nanofieldToggle(8) ? Math.sqrt(stacks)*1e4 : 0
+	if (id == "8t") return nanofieldToggle(8)||nanofieldToggleBoth(8) ? Math.sqrt(stacks)*1e4 : 0
 }
 
 function updateAutoQuantumMode() {
@@ -3133,6 +3134,7 @@ function getSpaceShardsGain() {
 		let ghostifies = Decimal.max(getGhostifies(), 1)
 		ret = ret.times(ghostifies.pow(48))
 	}
+	if (player.achievements.includes("ng5p66") && !tmp.qu.bigRip.active) ret = ret.pow(1.5)
 	ret = ret.floor()
 	if (isNaN(ret.e)) return new Decimal(0)
 	return ret
@@ -4264,7 +4266,10 @@ function updateGhostifyTabs() {
 		if (player.ghostify.neutrinos.boosts>3) document.getElementById("neutrinoBoost4").textContent=(tmp.nb[3]*100-100).toFixed(1)
 		if (player.ghostify.neutrinos.boosts>4) document.getElementById("neutrinoBoost5").textContent=(100-tmp.nb[4]*100).toFixed(1)
 		if (player.ghostify.neutrinos.boosts>5) document.getElementById("neutrinoBoost6").textContent=tmp.nb[5]<10.995?(tmp.nb[5]*100-100).toFixed(1):getFullExpansion(Math.floor(tmp.nb[5]*100-100))
-		if (player.ghostify.neutrinos.boosts>6) document.getElementById("neutrinoBoost7").textContent=getFullExpansion(Math.round((tmp.nb[6]*100-100)*10)/10)
+		if (player.ghostify.neutrinos.boosts>6) {
+			document.getElementById("nb7loc").textContent = hasBondUpg(32)?"T":"In Big Rips, t"
+			document.getElementById("neutrinoBoost7").textContent=getFullExpansion(Math.round((tmp.nb[6]*100-100)*10)/10)
+		}
 		if (player.ghostify.neutrinos.boosts>7) document.getElementById("neutrinoBoost8").textContent=getFullExpansion(Math.round((tmp.nb[7]*100-100)*10)/10)
 		if (player.ghostify.neutrinos.boosts>8) document.getElementById("neutrinoBoost9").textContent=shorten(tmp.nb[8])
 		document.getElementById("neutrinoUpg1Pow").textContent=tmp.nu[0]
@@ -4312,7 +4317,8 @@ function updateGhostifyTabs() {
 		document.getElementById("ghrCap").textContent=shortenMoney(getGHRCap())
 		document.getElementById("ghr").textContent=shortenMoney(gphData.ghostlyRays)
 		for (var c=0;c<8;c++) {
-			document.getElementById("light"+(c+1)).textContent=getFullExpansion(gphData.lights[c])
+			let extra = c==1?(getFreeOrangeLight()>0?(" + "+getFullExpansion(getFreeOrangeLight())):""):""
+			document.getElementById("light"+(c+1)).textContent=getFullExpansion(gphData.lights[c])+extra
 			document.getElementById("lightThreshold"+(c+1)).textContent=shorten(getLightThreshold(c))
 			if (c>0) document.getElementById("lightStrength"+c).textContent=shorten((Math.sqrt(c>6?1:tmp.ls[c]+1)+getLightEmpowermentBoost()))
 		}
@@ -4799,7 +4805,11 @@ function getLightEmpowermentBoost() {
 
 function getTreeUpgPower() {
 	let power = 1
-	if (tmp.qu.bigRip.active&&player.ghostify.neutrinos.boosts>6) power*=tmp.nb[6]
+	if ((tmp.qu.bigRip.active||hasBondUpg(32))&&player.ghostify.neutrinos.boosts>6) {
+		let br = tmp.qu.bigRip.active
+		if (!br && hasBondUpg(32)) power*=tmp.nb6nbr
+		else if (br) power*=tmp.nb[6]
+	}
 	if (player.aarexModifications.ngp5V !== undefined) {
 		if (inGC(2)) power /= 100
 		power *= getGCReward(2).toNumber()
@@ -4833,6 +4843,6 @@ function getGhostifiedGain() {
 function getGhostifies() {
 	if (!tmp.ngp3) return 0
 	let ghostifies = player.ghostify.times
-	if (hasResearch(12)) ghostifies = nA(ghostifies, player.ghostify.banked)
+	if (nG(player.ghostify.banked, 0)) ghostifies = nA(ghostifies, player.ghostify.banked)
 	return nP(ghostifies)
 }

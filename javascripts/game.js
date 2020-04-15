@@ -1036,6 +1036,7 @@ function updateTemp() {
 	tmp.rg4=false
 	if (player.aarexModifications.ngp5V) {
 		tmp.bnd15 = hasBondUpg(15)?(Decimal.add(getEternitied(), 1).pow(0.01).log10()*0.01+1):1
+		tmp.nb6nbr = (tmp.nb[6]!==undefined)?Math.pow(tmp.nb[6], 0.25):1
 	}
 	if (tmp.ngp3) {
 		tmp.ns=new Decimal(nanospeed)
@@ -1050,7 +1051,7 @@ function updateTemp() {
 		if (hasNU(15)) tmp.ns=tmp.ns.times(tmp.nu[5])
 		if (player.ghostify.ghostlyPhotons.unl) {
 			for (var c=6;c>-1;c--) {
-				var x=player.ghostify.ghostlyPhotons.lights[c]
+				var x=player.ghostify.ghostlyPhotons.lights[c]+(c==1?getFreeOrangeLight():0)
 				if (c<1) x=(player.ghostify.ghostlyPhotons.maxRed+x*2)/3
 				tmp.ls[c]=x*(Math.sqrt(c>5?1:tmp.ls[c+1]+1)+getLightEmpowermentBoost())
 			}
@@ -1059,8 +1060,9 @@ function updateTemp() {
 			if (tmp.le[0]>1.5) tmp.le[0]=Math.log10(tmp.le[0]*20/3)*1.5
 			if (tmp.le[0]>1.75) tmp.le[0] = 0.75+Math.log10(tmp.le[0])/Math.log10(1.75)
 			if (tmp.le[0]>1.9) tmp.le[0] = 1.9
-			tmp.le[1]=tmp.ls[1]>64?Math.log10(tmp.ls[1]/64)+14:tmp.ls[1]>8?Math.sqrt(tmp.ls[1])+6:tmp.ls[1]+1 //Orange light
-			if (tmp.le[1]>20) tmp.le[1] = 19+Math.log10(tmp.le[1])/Math.log10(20)
+			let ss = (hasBondUpg(33)&&!tmp.qu.bigRip.active)?4:1
+			tmp.le[1]=tmp.ls[1]>64*ss?Math.log10(tmp.ls[1]/(64*ss))+((hasBondUpg(33)&&!tmp.qu.bigRip.active)?22:14):tmp.ls[1]>8?Math.sqrt(tmp.ls[1])+6:tmp.ls[1]+1 //Orange light
+			if (tmp.le[1]>20*ss) tmp.le[1] = (20*ss-1)+Math.log10(tmp.le[1])/Math.log10(20*ss)
 			tmp.le[2]=Math.sqrt(tmp.ls[2]>60?(Math.log10(tmp.ls[2]/6)+2)/3*Math.sqrt(1200):tmp.ls[2]>20?Math.sqrt(tmp.ls[2]*20):tmp.ls[2])*45e3 //Yellow light
 			if (tmp.le[2]>4e5) tmp.le[2] = 4e5*Math.log10(tmp.le[2])/Math.log10(4e5)
 			tmp.le[3]=tmp.ls[3]>8?Math.log10(tmp.ls[3]/8)+Math.sqrt(12)+1:Math.sqrt(tmp.ls[3]*1.5)+1 //Green light
@@ -1316,6 +1318,7 @@ function getDistantGalaxyScalingSpeed() {
 	if (GUBought("gb6")) speed /= 1+Math.pow(player.infinityPower.max(1).log10(),0.25)/2810
 	if (GUBought("br6")) speed /= 1+player.meta.resets/340
 	if (ghostified) if (player.ghostify.neutrinos.boosts > 5) speed /= tmp.nb[5]
+	if (player.achievements.includes("ng5p65")) speed *= 0.5
 	return speed
 }
 
@@ -3591,7 +3594,7 @@ function changeSaveDesc(saveId, placement) {
 					var data = temp.ghostify.annihilation
 					let other = (", Positrons: "+getFullExpansion(data.antibaryons.positrons)+", Anti-Protons: "+getFullExpansion(data.antibaryons.antiprotons)+", Anti-Neutrons: "+getFullExpansion(data.antibaryons.antineutrons)+", Anti-Hyperons: "+getFullExpansion(data.antibaryons.antihyperons))
 					if (data.cascade.times) {
-						other = ", Cascaded Anti-Baryons: "+getFullExpansion(data.cascade.amount)+", Cascade Power: "+shortenDimensions(new Decimal(data.cascade.power))
+						other = ", Cascaded Anti-Baryons: "+getFullExpansion(Math.floor(data.cascade.amount))+", Cascade Power: "+shortenDimensions(new Decimal(data.cascade.power))
 					}
 					message+="Exotic Matter: "+shortenDimensions(new Decimal(data.exoticMatter))+", Maximum Tier: "+getFullExpansion(data.maxTier)+other
 				} else if (temp.ghostify.baryons.hyperons.unl) {
@@ -8879,6 +8882,7 @@ function simulateTime(seconds, real) {
     else popupString+= "."
     if (nG(player.infinitied,playerStart.infinitied)) popupString+= "<br>you infinitied "+getFullExpansion(nS(player.infinitied,playerStart.infinitied))+" times."
     if (nG(player.eternities,playerStart.eternities)) popupString+= " <br>you eternitied "+getFullExpansion(nS(player.eternities,playerStart.eternities))+" times."
+	if (player.ghostify !== undefined) if (nG(player.ghostify.times,playerStart.ghostify.times)) popupString+= " <br>you ghostified "+getFullExpansion(nS(player.ghostify.times,playerStart.ghostify.times))+" times."
     if (popupString.length == 20) {
         popupString = popupString.slice(0, -1);
         popupString+= "... Nothing happened."

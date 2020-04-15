@@ -213,6 +213,14 @@ const allAchievements = {
   ng5p56 : "Ticks Ticks Ticks Ticks",
   ng5p57 : "The most powerful ghosts",
   ng5p58 : "Multiversal Harmony",
+  ng5p61 : "Hadronize is the new Ghostify.",
+  ng5p62 : "I thought we moved on",
+  ng5p63 : "Hey! You cheated!",
+  ng5p64 : "The game is fixed!",
+  ng5p65 : "The Earliest Scaling",
+  ng5p66 : "To Annihilation and Beyond!",
+  ng5p67 : "The Tree of Pain",
+  ng5p68 : "Playing the fifth",
   s11 : "The first one's always free",
   s12 : "Just in case",
   s13 : "It pays to have respect",
@@ -354,7 +362,7 @@ function giveAchievement(name) {
 function updateAchievements() {
 	var amount = 0
 	var rowsShown = 0
-	for (var i=1; i<28; i++) {
+	for (var i=1; i<29; i++) {
 		var shown=true
 		var rowid=i
 		if (i>22) {

@@ -1366,6 +1366,14 @@ if (player.version < 5) {
 	  if (player.hadronize.bonds.bondBought === undefined) player.hadronize.bonds.bondBought = [0,0,0,0,0,0,0,0]
 	  if (player.ghostify.banked === undefined) player.ghostify.banked = 0
 	  player.ghostify.banked = nP(player.ghostify.banked)
+	  if (player.hadronize.colliders === undefined) {
+		  player.hadronize.colliders = {
+			unl: false,
+			eV: new Decimal(0),
+			dP: 0,
+		  }
+	  }
+	  if (player.hadronize.colliders.eVmult === undefined) player.hadronize.colliders.eVmult = 0
   }
   if (player.aarexModifications.newGameMinusMinusVersion === undefined && !player.meta) {
       if (player.exdilation == undefined && player.version == 13) player.version = 12
@@ -2756,6 +2764,7 @@ function transformSaveToDecimal() {
 			for (i=0;i<8;i++) {
 				player.hadronize.bonds.amount[i] = new Decimal(player.hadronize.bonds.amount[i])
 			}
+			if (player.hadronize.colliders !== undefined) player.hadronize.colliders.eV = new Decimal(player.hadronize.colliders.eV)
 		}
   }
   if (player.ghostify) player.ghostify.times = nP(player.ghostify.times)
