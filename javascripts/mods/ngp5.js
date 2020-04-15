@@ -3251,7 +3251,7 @@ function getBondCostInc(x) {
 }
 
 function getBondCostStart(x) {
-	let starts = [null, 1, 10, 100, 1e3, 1e5, 1e6, 1e7, 1e8]
+	let starts = [null, 1, 10, 100, 1e3, 1e5, 1e6, 4e6, 1e7]
 	return starts[x]
 }
 
