@@ -7042,7 +7042,7 @@ function startDilatedEternity(auto, shortcut) {
 function dilates(x, m) {
 	let e = 1
 	let a = false
-	let sa = player.dilation.active
+	let sa = false;
 	if (player.aarexModifications.ngp5V !== undefined) {
 		if (player.ghostify.baryons.hyperons.supercharge.active) sa = true
 	}
